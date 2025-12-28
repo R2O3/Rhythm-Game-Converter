@@ -1,0 +1,43 @@
+<script lang="ts">
+  import ItemReveal from '$lib/components/ItemReveal.svelte';
+  import ItemRevealContainer from '$lib/components/ItemRevealContainer.svelte';
+</script>
+
+<svelte:head>
+  <style>
+    :root {
+      --navbar-color: #c5a33b;
+      --accent-color: #a08123;
+      --content-color: #373123;
+      --accent-highlight: #977f3621;
+      --navbutton-separator-color: #ffd050;
+      --footer-accent-color: #36342d;
+      --footer-accent-color-lighter: #47453c;
+      --background-color: #2a2822;
+    }
+  </style>
+</svelte:head>
+
+<h1>Changelog</h1>
+
+<ItemRevealContainer>
+  <ItemReveal title="0.0.10 - Minor Update" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.10' />
+  <ItemReveal title="0.0.9 - fluXis support" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.9' />
+  <ItemReveal title="0.0.8 - Hotfix" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.8' />
+  <ItemReveal title="0.0.7 - Keysounds" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.7' />
+  <ItemReveal title="0.0.6 - Minor Fix" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.6' />
+  <ItemReveal title="0.0.5 - Minor Fix" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.5' />
+  <ItemReveal title="0.0.4 - Hotfix" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.4' />
+  <ItemReveal title="0.0.3 - Quaver support" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.3' />
+  <ItemReveal title="0.0.2 - Minor patch" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.2' />
+  <ItemReveal title="0.0.1 - Initial release" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.1' />
+</ItemRevealContainer>
+
+<div style="height: 30vh;"></div>
+
+<style>
+  :global(hr) {
+    background-color: var(--footer-accent-color-lighter);
+    filter: brightness(1.5);
+  }
+</style>

@@ -1,5 +1,5 @@
 <script>
-  import { parseColor } from '../../helpers';
+  import { parseColor } from '$lib/helpers';
   
   export let href;
   export let bgColor = 'rgba(128, 0, 255, 0.2)';
@@ -7,6 +7,10 @@
   let className = '';
   export { className as class };
 
+  /**
+     * @param {string} color
+     * @param {number} opacity
+     */
   function adjustColorOpacity(color, opacity) {
     try {
       const parsed = parseColor(color);

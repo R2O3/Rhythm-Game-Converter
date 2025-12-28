@@ -1,2 +1,98 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+  import ItemReveal from '$lib/components/ItemReveal.svelte';
+  import ItemRevealContainer from '$lib/components/ItemRevealContainer.svelte';
+</script>
+
+<svelte:head>
+  <style>
+    :root {
+      --navbar-color: #d47baf;
+      --accent-color: #b86a9a;
+      --content-color: #342b33;
+      --accent-highlight: #5849564b;
+      --navbutton-separator-color: #ffa0e0;
+      --footer-accent-color: #3d2836;
+      --footer-accent-color-lighter: #4f394a;
+      --background-color: #272026;
+    }
+  </style>
+</svelte:head>
+
+<header>
+  <h1>RGC (Rhythm Game Converter)</h1>
+</header>
+
+<section>
+  <h2>About</h2>
+  <p>
+    <abbr title="Rhythm Game Converter">RGC</abbr> is a web-based tool designed to make converting rhythm game maps more convenient.
+    While most existing converters require downloading software,
+    RGC tries to make conversion simple and accessible directly in the browser.
+  </p>
+  <div class="warning">
+    <strong>Warning:</strong> This project is still in its early stages so expect bugs and errors.
+    If you encounter an error please open an issue on Github.
+  </div>
+</section>
+
+<hr />
+
+<section>
+  <h2>FAQ</h2>
+  <ItemRevealContainer>
+    <ItemReveal title="Is RGC safe?">
+      <p>
+        Yes (duh), RGC is completely safe because it is entirely client-sided meaning
+        no data ever gets sent out to any third-party services.
+      </p>
+    </ItemReveal>
+    
+    <ItemReveal title="How do I report a bug?">
+      <p>
+        Submit your issue on Github using the issue tracker: <br />
+        Web Client: <a href="https://github.com/menvae/RGC-Web/issues">https://github.com/menvae/RGC-Web/issues</a> <br />
+        Chart Conversion: <a href="https://github.com/menvae/RGC-Chart/issues">https://github.com/menvae/RGC-Chart/issues</a> <br />
+        
+        if it's an issue with converting then: <br />
+        Open the console (ctrl + shift + i) and type <br />
+        <code style="z-index: -4; padding: 0.4rem; background-color: rgba(0, 0, 0, 0.288);">_DEBUG = true</code>
+        <br />
+        then reconvert your map and copy the output and include it in your issue submission.
+      </p>
+    </ItemReveal>
+    
+    <ItemReveal title="What do I do if loading is stuck?">
+      <p>
+        Try refreshing and retrying, if it keeps getting stuck then check out "How do I report a bug?"
+        Because it's most likely a bug.
+      </p>
+    </ItemReveal>
+    
+    <ItemReveal title="How do I request a feature?">
+      <p>
+        That's great! Go to Github and open an issue with the feature request label. <br />
+        Chart Conversion: <a rel="noopener" target="_blank" href="https://github.com/menvae/RGC-Chart/issues">https://github.com/menvae/RGC-Chart/issues</a> <br />
+        Web Client: <a rel="noopener" target="_blank" href="https://github.com/menvae/RGC-Web/issues">https://github.com/menvae/RGC-Web/issues</a> <br />
+      </p>
+    </ItemReveal>
+    
+    <ItemReveal title="I can't find my question here.">
+      <p>
+        You can go on Github and open an issue with the question label. <br />
+        Web Client: <a href="https://github.com/menvae/RGC-Web/issues">https://github.com/menvae/RGC-Web/issues</a> <br />
+        Chart conversion: <a href="https://github.com/menvae/RGC-Chart/issues">https://github.com/menvae/RGC-Chart/issues</a> <br />
+        or ask me directly: <br />
+        Discord: <a rel="noopener" target="_blank" href="https://discord.com/users/695720659988250765">@_theguy2</a> <br />
+        Github: <a rel="noopener" target="_blank" href="https://github.com/menvae">@menvae</a> <br />
+      </p>
+    </ItemReveal>
+    
+    <ItemReveal title="Are these really frequently asked questions?">
+      <p>
+        No, I just added them because I thought they'd be helpful. haha.
+      </p>
+    </ItemReveal>
+  </ItemRevealContainer>
+</section>
+
+<div style="height: 10rem;"></div>

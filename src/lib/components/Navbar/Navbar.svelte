@@ -1,11 +1,12 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
+  import { browser } from '$app/environment';
   import NavButton from './NavButton.svelte';
   import MobileMenu from './NavMobileMenu.svelte';
   import { initNavbarBg, destroyNavbarBg } from './Navbar_bg.ts';
   
-  import logoImage from '../../assets/logo.webp';
+  import logoImage from '$lib/assets/logo.webp';
   
   export let navItems = [
     { href: '/', label: 'Overview', bgColor: 'rgba(255, 100, 180, 0.4)', hoverTextColor: '#b8004d' },
@@ -18,6 +19,8 @@
   let particlesInitialized = false;
 
   function checkMobile() {
+    if (!browser) return;
+    
     const mobile = window.innerWidth < 768;
     isMobile.set(mobile);
     
@@ -26,6 +29,7 @@
       particlesInitialized = false;
     } else if (!mobile && !particlesInitialized) {
       initNavbarBg();
+      particlesInitialized = true;
     }
     
     if (!mobile) {
@@ -49,10 +53,12 @@
   });
 
   onDestroy(() => {
-    if (particlesInitialized) {
+    if (browser && particlesInitialized) {
       destroyNavbarBg();
     }
-    window.removeEventListener('resize', checkMobile);
+    if (browser) {
+      window.removeEventListener('resize', checkMobile);
+    }
   });
 </script>
 
@@ -67,10 +73,8 @@
     <a href="/" class="logo-link" aria-label="Home">
       <img 
         id="logo-image" 
-        src={logoImage.src} 
-        alt="Site Logo" 
-        width={logoImage.width} 
-        height={logoImage.height}
+        src={logoImage}
+        alt="Site Logo"
       />
     </a>
   </div>

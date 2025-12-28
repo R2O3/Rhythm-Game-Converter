@@ -1,3 +1,5 @@
+import { Debug } from "./stores";
+
 export function parseColor(colorString: string): { r: number; g: number; b: number; a?: number } {
     let match;
     let alpha = 1;
@@ -91,7 +93,7 @@ export async function sleep(ms: number): Promise<void>  {
 }
 
 export function debugLog(...args: any[]) {
-  if (typeof _DEBUG !== 'undefined' && _DEBUG) {
+  if (typeof Debug !== 'undefined' && Debug) {
     console.log('%c[DEBUG]', 'color:rgb(72, 180, 76); font-weight: bold;', ...args);
   }
 }
