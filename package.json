@@ -1,24 +1,24 @@
 {
-  "name": "rgc-web",
-  "type": "module",
-  "version": "0.0.10",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && npm run fix-sitemap",
-    "preview": "astro preview",
-    "astro": "astro",
-    "fix-sitemap": "node scripts/fix-sitemap.js"
-  },
-  "dependencies": {
-    "@astrojs/sitemap": "^3.4.0",
-    "@astrojs/svelte": "^7.1.0",
-    "@vitejs/plugin-basic-ssl": "^2.0.0",
-    "@zenfs/core": "^2.2.0",
-    "astro": "^5.7.9",
-    "svelte": "^5.38.2",
-    "typescript": "^5.9.2"
-  },
-  "devDependencies": {
-    "vite-plugin-static-copy": "^3.0.0"
-  }
+	"name": "rgc-web",
+	"private": true,
+	"version": "0.0.10",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"fix-sitemap": "node scripts/fix-sitemap.js"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^7.0.0",
+		"@sveltejs/kit": "^2.49.1",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"svelte": "^5.45.6",
+		"svelte-check": "^4.3.4",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.6"
+	}
 }
