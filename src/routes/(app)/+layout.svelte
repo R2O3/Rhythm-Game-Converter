@@ -6,8 +6,8 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { cubicOut, cubicInOut } from 'svelte/easing';
-  
   import { refreshNavbarColors } from '$lib/components/Navbar/Navbar_bg'; 
+  import { startBackgroundAnimation } from '$lib/Mania_bg';
   
   export let data: { subtitle?: string } = {};
   
@@ -32,6 +32,9 @@
   
   onMount(() => {
     refreshNavbarColors();
+    const stopAnimation = startBackgroundAnimation();
+    
+    return () => stopAnimation(); 
   });
 </script>
 
@@ -90,7 +93,7 @@
     height: 100%;
     background-image: url('$lib/assets/rgc-background.webp');
     background-size: 35rem;
-    background-position: center;
+    background-position: var(--bg-pos-x, 0px) var(--bg-pos-y, 0px);
     background-repeat: repeat;
     opacity: 0.2;
     mix-blend-mode: multiply; 
