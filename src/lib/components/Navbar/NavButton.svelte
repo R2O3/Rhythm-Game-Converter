@@ -8,12 +8,12 @@
   let className = '';
   export { className as class };
 
-  $: isActive = $page.url.pathname === href;
+  $: isCurrent = $page.url.pathname === href;
 
   /**
      * @param {string} color
-     * @param {number} opacity
      * @param {number} lightness
+     * @param {number} opacity
      */
   function adjustColor(color, lightness, opacity) {
     try {
@@ -27,16 +27,19 @@
 
   $: hoverBgColor = adjustColor(bgColor, 0, 0.8);
   $: activeBgColor = adjustColor(bgColor, 100, 0.8);
+  $: borderColor = adjustColor(bgColor, 100, 0.6); 
 </script>
 
 <a 
   {href}
   class="nav-button {className}"
+  class:active={isCurrent}
   style="
     user-select: none;
-    --navbutton-bg-color: { isActive ? bgColor : adjustColor(bgColor, -20, 0.1)};
+    --navbutton-bg-color: { isCurrent ? bgColor : adjustColor(bgColor, -20, 0.1)};
     --navbutton-hover-bg-color: {hoverBgColor};
     --navbutton-active-bg-color: {activeBgColor};
+    --navbutton-border-color: {borderColor};
   "
 >
   <span><slot /></span>
@@ -53,26 +56,27 @@
     font-weight: bold;
     transform: skewX(-20deg);
     transform-origin: left center;
-    margin-right: 0%;
-    margin-left: 0rem;
     transition: color 0.2s ease;
     z-index: 0;
     overflow: hidden;
     flex-shrink: 0;
     white-space: nowrap;
+    border: none; 
   }
 
   .nav-button::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     z-index: -1;
     transition: all 0.2s ease;
     background: var(--navbutton-bg-color);
-    border-radius: 0;
+    box-sizing: border-box;
+    border: 4px solid transparent;
+  }
+
+  .nav-button.active::before {
+    border-color: var(--navbutton-border-color);
   }
 
   .nav-button:hover::before {
@@ -96,15 +100,11 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: 5px;
+    width: 2px;
     background-color: var(--navbutton-separator-color);
     transition: opacity 0.15s ease;
     z-index: 1;
     opacity: 0.7;
-  }
-
-  .nav-button:hover::after {
-    opacity: 1;
   }
 
   .nav-button span {
@@ -118,11 +118,9 @@
 
   .nav-button:hover span {
     transform: skewX(20deg) scale(1.02);
-    transition-duration: 0.15s;
   }
 
   .nav-button:active span {
     transform: skewX(20deg) scale(0.98);
-    transition-duration: 0.05s;
   }
 </style>
