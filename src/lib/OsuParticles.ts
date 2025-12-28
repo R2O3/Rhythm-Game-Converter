@@ -109,7 +109,7 @@ export class OsuParticles {
 
     private createParticle(x?: number, y?: number): Particle {
         const size = Math.random() * this.sizeMultiplier + this.sizeOffset;
-        const lightness = [10, 30, 60, 100][Math.floor(Math.random() * 4)];
+        const lightness = [0, 30, 70, 120][Math.floor(Math.random() * 4)];
         
         const self = this;
         return {

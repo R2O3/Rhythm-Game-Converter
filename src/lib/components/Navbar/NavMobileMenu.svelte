@@ -87,12 +87,6 @@
     width: 150%;
     min-height: 300px;
     max-height: 70vh;
-    background: var(--background-color, linear-gradient(
-      135deg,
-      rgba(20, 20, 30, 0.95) 0%,
-      rgba(40, 40, 60, 0.95) 50%,
-      rgba(60, 60, 90, 0.95) 100%
-    ));
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
@@ -168,19 +162,13 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.1),
-      transparent
-    );
     transition: left 0.6s ease;
   }
   
   .mobile-nav-link:hover {
     color: var(--text-color, white);
     background-color: rgba(255, 255, 255, 0.1);
-    border-left-color: #00ff88;
+    border-left-color: var(--navbar-color);
     transform: translateX(0.5rem);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }

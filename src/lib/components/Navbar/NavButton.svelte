@@ -1,5 +1,6 @@
 <script>
   import { parseColor } from '$lib/helpers';
+  import { page } from '$app/stores';
   
   export let href;
   export let bgColor = 'rgba(128, 0, 255, 0.2)';
@@ -7,22 +8,25 @@
   let className = '';
   export { className as class };
 
+  $: isActive = $page.url.pathname === href;
+
   /**
      * @param {string} color
      * @param {number} opacity
+     * @param {number} lightness
      */
-  function adjustColorOpacity(color, opacity) {
+  function adjustColor(color, lightness, opacity) {
     try {
       const parsed = parseColor(color);
-      return `rgba(${parsed.r}, ${parsed.g}, ${parsed.b}, ${opacity})`;
+      return `rgba(${parsed.r + lightness}, ${parsed.g + lightness}, ${parsed.b + lightness}, ${opacity})`;
     } catch (e) {
       console.warn(`Couldn't parse color: ${color}`, e);
       return `rgba(128, 0, 255, ${opacity})`;
     }
   }
 
-  $: hoverBgColor = adjustColorOpacity(bgColor, 0.8);
-  $: activeBgColor = 'rgba(255, 255, 255, 1)';
+  $: hoverBgColor = adjustColor(bgColor, 0, 0.8);
+  $: activeBgColor = adjustColor(bgColor, 100, 0.8);
 </script>
 
 <a 
@@ -30,7 +34,7 @@
   class="nav-button {className}"
   style="
     user-select: none;
-    --navbutton-bg-color: {bgColor};
+    --navbutton-bg-color: { isActive ? bgColor : adjustColor(bgColor, -20, 0.1)};
     --navbutton-hover-bg-color: {hoverBgColor};
     --navbutton-active-bg-color: {activeBgColor};
   "
@@ -39,11 +43,6 @@
 </a>
 
 <style>
-  :root {
-    --preblur: blur(5px);
-    --postblur: blur(0px);
-  }
-
   .nav-button {
     position: relative;
     padding: 1rem 2.5rem;
@@ -72,23 +71,17 @@
     bottom: 0;
     z-index: -1;
     transition: all 0.2s ease;
-    backdrop-filter: var(--preblur);
-    -webkit-backdrop-filter: var(--preblur);
     background: var(--navbutton-bg-color);
     border-radius: 0;
   }
 
   .nav-button:hover::before {
-    backdrop-filter: var(--postblur);
-    -webkit-backdrop-filter: var(--postblur);
     background: var(--navbutton-hover-bg-color);
     transition-duration: 0.15s;
   }
 
   .nav-button:active::before {
     background: var(--navbutton-active-bg-color);
-    backdrop-filter: var(--postblur);
-    -webkit-backdrop-filter: var(--postblur);
     transition-duration: 0.05s;
   }
 

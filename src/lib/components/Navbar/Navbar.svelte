@@ -9,9 +9,9 @@
   import logoImage from '$lib/assets/logo.webp';
   
   export let navItems = [
-    { href: '/', label: 'Overview', bgColor: 'rgba(255, 100, 180, 0.4)', hoverTextColor: '#b8004d' },
-    { href: '/map', label: 'Convert Map', bgColor: 'rgba(50, 200, 255, 0.4)', hoverTextColor: '#003f66' },
-    { href: '/changelog', label: 'Changelog', bgColor: 'rgba(255, 180, 50, 0.4)', hoverTextColor: '#663300' }
+    { href: '/', label: 'Overview', bgColor: 'rgb(179, 84, 130)', hoverTextColor: '#b8004d' },
+    { href: '/map', label: 'Convert Map', bgColor: 'rgb(10, 150, 205)', hoverTextColor: '#003f66' },
+    { href: '/changelog', label: 'Changelog', bgColor: 'rgb(235, 160, 30)', hoverTextColor: '#663300' }
   ];
 
   let isMobile = writable(false);
@@ -170,6 +170,8 @@
     width: 100%;
     height: 100%;
     z-index: 0;
+    mix-blend-mode: screen;
+    opacity: 0.2;
     pointer-events: none;
   }
 
@@ -182,9 +184,9 @@
     z-index: 1;
     pointer-events: none;
     background: linear-gradient(
-      to bottom,
+      to top,
       transparent 0%,
-      rgba(0, 0, 0, 0.1) 60%,
+      rgba(0, 0, 0, 0.1) 40%,
       rgba(0, 0, 0, 0.4) 100%
     );
     mix-blend-mode: multiply;
@@ -193,9 +195,9 @@
   @media (max-width: 767px) {
     #navbar-gradient {
       background: linear-gradient(
-        to bottom,
+        to top,
         transparent 0%,
-        rgba(0, 0, 0, 0.05) 60%,
+        rgba(0, 0, 0, 0.05) 40%,
         rgba(0, 0, 0, 0.2) 100%
       );
     }
@@ -232,8 +234,8 @@
     border-radius: 4px; 
     filter:
       opacity(1)
-      saturate(2)
-      contrast(2);
+      saturate(0.5)
+      contrast(0.8);
     pointer-events: none;
   }
 

@@ -6,7 +6,7 @@
 <svelte:head>
   <style>
     :root {
-      --navbar-color: #c5a33b;
+      --navbar-color: #6e6030;
       --accent-color: #a08123;
       --content-color: #373123;
       --accent-highlight: #977f3621;

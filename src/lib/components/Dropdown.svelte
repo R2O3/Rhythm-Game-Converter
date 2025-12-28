@@ -164,7 +164,6 @@
     font-weight: 600;
   }
 
-  /* Custom Scrollbar */
   .options-list::-webkit-scrollbar {
     width: 6px;
   }

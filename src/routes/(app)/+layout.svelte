@@ -7,7 +7,7 @@
   import { fade, fly } from 'svelte/transition';
   import { cubicOut, cubicInOut } from 'svelte/easing';
   
-  import { refreshNavbarColors } from '../lib/components/Navbar/Navbar_bg'; 
+  import { refreshNavbarColors } from '$lib/components/Navbar/Navbar_bg'; 
   
   export let data: { subtitle?: string } = {};
   
@@ -172,7 +172,6 @@
     }
   }
 
-  /* Smooth transitions for all interactive elements */
   :global(a, button, input, select, textarea) {
     transition: all 0.2s ease;
   }
@@ -275,7 +274,6 @@
     margin-right: 5px;
   }
 
-  /* Add preference for reduced motion */
   @media (prefers-reduced-motion: reduce) {
     :global(*) {
       animation-duration: 0.01ms !important;
