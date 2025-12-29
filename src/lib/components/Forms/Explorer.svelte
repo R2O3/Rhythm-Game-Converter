@@ -1,9 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
   import FileTreeEntry from './FileTreeEntry.svelte';
+    import FormButton from './FormButton.svelte';
 
   export let files: any[] = [];
-  export let mapExportLabel: string = 'map';
+  export let specificExportLabel: string = 'Map';
 
   const dispatch = createEventDispatcher();
 
@@ -46,13 +47,14 @@
     
     <div class="button-group">
       <slot name="convert-button" />
-      <button
-        class="export-button"
+      <FormButton
+        icon="💾"
+        id="export-btn" 
         disabled={exportDisabled}
         on:click={() => handleExport('zip')}
       >
-        💾 Export
-      </button>
+        Export
+      </FormButton>
     </div>
   </div>
 
@@ -83,7 +85,7 @@
           </div>
         {:else}
           {#each files as item}
-            <FileTreeEntry node={item} {mapExportLabel} on:saveAs={handleSaveAs} />
+            <FileTreeEntry node={item} specificExportLabel={specificExportLabel} on:saveAs={handleSaveAs} />
           {/each}
         {/if}
       </div>
@@ -210,37 +212,6 @@
     justify-content: center;
     margin-top: auto;
     padding-top: 1rem;
-  }
-
-  .export-button {
-    color: white;
-    width: 8.5rem;
-    height: 3.2rem;
-    border: 3px solid rgba(255, 255, 255, 0.651);
-    border-radius: 15px;
-    transition: all 0.1s ease-out;
-    cursor: pointer;
-    background: #ff69b4;
-    font-size: 1.4em;
-    font-weight: 550;
-  }
-
-  .export-button:not([disabled]):hover {
-    background: #e2569c;
-    font-size: 1.5em;
-  }
-
-  .export-button:not([disabled]):active {
-    background: white;
-    border-color: var(--background-color);
-    border-width: 4px;
-    color: #ff69b4;
-    font-size: 1.3em;
-  }
-
-  .export-button[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 
   @media (max-width: 768px) {

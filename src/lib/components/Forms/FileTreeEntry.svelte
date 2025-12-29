@@ -3,7 +3,7 @@
   import { slide, fade } from 'svelte/transition';
 
   export let node: any;
-  export let mapExportLabel: string = 'map';
+  export let specificExportLabel: string = 'Map';
 
   const dispatch = createEventDispatcher();
   let isExpanded = false;
@@ -120,10 +120,10 @@
                 <li 
                   role="menuitem" 
                   tabindex="0"
-                  on:click={(e) => handleDropdown(e, mapExportLabel)}
-                  on:keydown={(e) => handleMenuItemKeyDown(e, mapExportLabel)}
+                  on:click={(e) => handleDropdown(e, 'specifc')}
+                  on:keydown={(e) => handleMenuItemKeyDown(e, specificExportLabel)}
                 >
-                  {mapExportLabel}
+                  {specificExportLabel}
                 </li>
               {/if}
             </ul>
@@ -135,7 +135,7 @@
   {#if isExpanded && node.children}
     <div class="folder-contents" transition:slide={{ duration: 150 }}>
       {#each node.children as child}
-        <svelte:self node={child} {mapExportLabel} on:saveAs />
+        <svelte:self node={child} mapExportLabel={specificExportLabel} on:saveAs />
       {/each}
     </div>
   {/if}

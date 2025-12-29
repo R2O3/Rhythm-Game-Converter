@@ -6,6 +6,7 @@
   import Dropdown from '$lib/components/Dropdown.svelte';
   import Explorer from '$lib/components/Forms/Explorer.svelte';
   import { onMount } from 'svelte';
+    import FormButton from '$lib/components/Forms/FormButton.svelte';
 
   let selectedTab = 'mania';
   let chartType = 'osu';
@@ -155,15 +156,14 @@
         </svelte:fragment>
 
         <svelte:fragment slot="convert-button">
-          <button 
-            type="button" 
+          <FormButton 
+            icon="⚡"
             id="map-convert-btn" 
-            class="convert-button"
             disabled={convertButtonDisabled}
             on:click={handleConvert}
           >
-            ⚡ Convert
-          </button>
+            Convert
+          </FormButton>
         </svelte:fragment>
       </Explorer>
     </AppFormTab>
@@ -190,38 +190,6 @@
   .conversion-wrapper {
     max-width: 65rem;
     margin: 0 auto;
-  }
-
-  .convert-button {
-    color: white;
-    width: 8.5rem;
-    height: 3.2rem;
-    border: 3px solid rgba(255, 255, 255, 0.651);
-    border-radius: 15px;
-    transition: all 0.1s ease-out;
-    cursor: pointer;
-    background: var(--accent-color);
-    font-size: 1.4em;
-    font-weight: 550;
-  }
-
-  .convert-button:not([disabled]):hover {
-    background: rgba(255, 255, 255, 0.116);
-    color: white;
-    font-size: 1.5em;
-  }
-
-  .convert-button:not([disabled]):active {
-    background: white;
-    border-color: var(--background-color);
-    border-width: 4px;
-    color: var(--accent-color);
-    font-size: 1.3em;
-  }
-
-  .convert-button[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 
   :global(fieldset) {
