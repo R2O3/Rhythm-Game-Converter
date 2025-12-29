@@ -1,5 +1,9 @@
 import { Debug } from "./stores";
 
+export function prefixList(list: any[], prefix: string) {
+    return list.map(item => `${prefix}${item}`); 
+}
+
 export function parseColor(colorString: string): { r: number; g: number; b: number; a?: number } {
     let match;
     let alpha = 1;

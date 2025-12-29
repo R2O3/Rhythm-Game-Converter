@@ -6,7 +6,9 @@
   import Dropdown from '$lib/components/Dropdown.svelte';
   import Explorer from '$lib/components/Forms/Explorer.svelte';
   import { onMount } from 'svelte';
-    import FormButton from '$lib/components/Forms/FormButton.svelte';
+  import FormButton from '$lib/components/Forms/FormButton.svelte';
+  import { SUPPORTED_MANIA_CHART_FORMATS, SUPPORTED_MANIA_MAPSET_FORMATS } from '$lib/stores';
+  import { prefixList } from '$lib/helpers';
 
   let selectedTab = 'mania';
   let chartType = 'osu';
@@ -132,7 +134,7 @@
       >
         <svelte:fragment slot="form">
           <FileSelector
-            accept=".osu, .sm, qua, fsc, .zip, .rar, .tar, .7z, .osz, .qp, .fms"
+            accept={prefixList(SUPPORTED_MANIA_CHART_FORMATS.concat(SUPPORTED_MANIA_MAPSET_FORMATS), '.').join(", ")+", .zip, .rar, .tar, .7z"}
             multiple={true}
             on:filesSelected={handleFilesSelected}
           />
@@ -175,13 +177,9 @@
 <section>
   <h2>Supported Formats</h2>
   <ul>
-    <li>.osu</li>
-    <li>.qua</li>
-    <li>.sm</li>
-    <li>.fsc</li>
-    <li>.osz</li>
-    <li>.qp</li>
-    <li>.fms</li>
+  {#each prefixList(SUPPORTED_MANIA_CHART_FORMATS.concat(SUPPORTED_MANIA_MAPSET_FORMATS), '.') as f }
+    <li>{f}</li>
+  {/each}
     <li>Most archives also work.</li>
   </ul>
 </section>
