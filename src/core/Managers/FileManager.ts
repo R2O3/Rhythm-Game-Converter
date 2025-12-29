@@ -1,14 +1,6 @@
 import { fs } from '@zenfs/core';
-import { debugLog } from '../helpers';
-import { Archive } from '../lib/libarchive/libarchive';
-// import formats from "../lib/libarchive/formats"
-
-const JSZip = (window as any).JSZip;
-
-Archive.init({
-  workerUrl: '/lib/libarchive/worker-bundle.js',
-  wasmUrl: '/lib/libarchive/libarchive.wasm'
-} as any);
+import { debugLog } from '$lib/helpers';
+import { baseLibraries } from '$core/Libraries/baselibs';
 
 interface ArchiveEntry {
     file: File;
@@ -33,56 +25,47 @@ export class FileManager {
         return fs;
     }
 
-    public get fs() {
-        return fs;
+    static async download(path: string, customFilename?: string): Promise<void> {
+        try {
+            const fileData = await fs.promises.readFile(path);
+            const filename = customFilename || await FileManager.getFileName(path);
+
+            const mimeType = "application/octet-stream";
+            const blob = new Blob([new Uint8Array(fileData)], { type: mimeType });
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+
+            requestAnimationFrame(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        } catch (error) {
+            console.error("Download failed:", error);
+        }
     }
 
-    async download(path: string, customFilename?: string): Promise<void> {
-    try {
-        const fileData = await this.fs.promises.readFile(path);
+    static async downloadFromBlob(blob: Blob, filename: string): Promise<void> {
+        try {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
 
-        const filename = customFilename || await this.getFileName(path);
-
-        const mimeType = "application/octet-stream";
-        const blob = new Blob([fileData], { type: mimeType });
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-
-        requestAnimationFrame(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-
-    } catch (error) {
-        console.error("Download failed:", error);
+            requestAnimationFrame(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        } catch (error) {
+            console.error("Download failed:", error);
+        }
     }
-}
-
-
-    async downloadFromBlob(blob: Blob, filename: string): Promise<void> {
-    try {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-
-        requestAnimationFrame(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-    } catch (error) {
-        console.error("Download failed:", error);
-    }
-}
-
-
 
     static async initFs(): Promise<void> {
         try {
@@ -115,12 +98,12 @@ export class FileManager {
         }
     }
 
-    async generateFileTree(rootPath: string): Promise<FileTreeNode[]> {
+    static async generateFileTree(rootPath: string): Promise<FileTreeNode[]> {
         const queue: Array<{ dirPath: string; node: FileTreeNode }> = [];
         const result: FileTreeNode[] = [];
 
         try {
-            const entries = this.fs.readdirSync(rootPath, { withFileTypes: true });
+            const entries = fs.readdirSync(rootPath, { withFileTypes: true });
 
             for (const entry of entries) {
                 const fullPath = `${rootPath}/${entry.name}`;
@@ -146,7 +129,7 @@ export class FileManager {
             while (queue.length) {
                 const { dirPath, node } = queue.shift()!;
                 try {
-                    const subEntries = this.fs.readdirSync(dirPath, { withFileTypes: true });
+                    const subEntries = fs.readdirSync(dirPath, { withFileTypes: true });
 
                     for (const subEntry of subEntries) {
                         const subPath = `${dirPath}/${subEntry.name}`;
@@ -180,43 +163,43 @@ export class FileManager {
         return result;
     }
 
-    async copyDirectory(src: string, dest: string): Promise<void> {
-    await fs.promises.access(src).catch(() => {
-        throw new Error(`Source directory does not exist: ${src}`);
-    });
+    static async copyDirectory(src: string, dest: string): Promise<void> {
+        await fs.promises.access(src).catch(() => {
+            throw new Error(`Source directory does not exist: ${src}`);
+        });
 
-    await fs.promises.mkdir(dest, { recursive: true });
+        await fs.promises.mkdir(dest, { recursive: true });
 
-    const entries = await fs.promises.readdir(src, { withFileTypes: true });
+        const entries = await fs.promises.readdir(src, { withFileTypes: true });
 
-    for (const entry of entries) {
-        const srcPath = `${src}/${entry.name}`;
-        const destPath = `${dest}/${entry.name}`;
+        for (const entry of entries) {
+            const srcPath = `${src}/${entry.name}`;
+            const destPath = `${dest}/${entry.name}`;
 
-        if (entry.isDirectory()) {
-            await this.copyDirectory(srcPath, destPath);
-        } else {
-            await fs.promises.copyFile(srcPath, destPath);
-            debugLog(`Copied file: ${srcPath} -> ${destPath}`);
+            if (entry.isDirectory()) {
+                await FileManager.copyDirectory(srcPath, destPath);
+            } else {
+                await fs.promises.copyFile(srcPath, destPath);
+                debugLog(`Copied file: ${srcPath} -> ${destPath}`);
+            }
         }
     }
-}
 
-    removeFileExtension(filename: string): string {
+    static removeFileExtension(filename: string): string {
         if (!filename.includes('.')) return filename;
         if (filename.startsWith('.') && filename.split('.').length === 2) return filename;
         const lastDotIndex = filename.lastIndexOf('.');
         return lastDotIndex === -1 ? filename : filename.substring(0, lastDotIndex);
     }
 
-    getFileExtension(filename: string): string {
+    static getFileExtension(filename: string): string {
         if (!filename.includes('.')) return '';
         const lastDotIndex = filename.lastIndexOf('.');
         if (lastDotIndex === 0) return ''; 
         return filename.slice(lastDotIndex + 1).toLowerCase();
     }
 
-    async getDirectoryNames(path: string): Promise<string[]> {
+    static async getDirectoryNames(path: string): Promise<string[]> {
         try {
             const entries = await fs.promises.readdir(path, { withFileTypes: true });
             return entries
@@ -231,7 +214,7 @@ export class FileManager {
         }
     }
 
-    async getFileNamesInDirectory(path: string): Promise<string[]> {
+    static async getFileNamesInDirectory(path: string): Promise<string[]> {
         try {
             const entries = await fs.promises.readdir(path, { withFileTypes: true });
             return entries
@@ -243,14 +226,14 @@ export class FileManager {
         }
     }
 
-    async getFileName(filePath: string): Promise<string> {
+    static async getFileName(filePath: string): Promise<string> {
         const parts = filePath.split("/");
         return parts.pop() || filePath;
-}
+    }
 
-    getDirectoryNamesSync(path: string): string[] {
+    static getDirectoryNamesSync(path: string): string[] {
         try {
-            const entries = this.fs.readdirSync(path, { withFileTypes: true });
+            const entries = fs.readdirSync(path, { withFileTypes: true });
             return entries
                 .filter(entry => entry.isDirectory())
                 .map(entry => entry.name);
@@ -263,9 +246,9 @@ export class FileManager {
         }
     }
 
-    getFileNamesInDirectorySync(path: string): string[] {
+    static getFileNamesInDirectorySync(path: string): string[] {
         try {
-            const entries = this.fs.readdirSync(path, { withFileTypes: true });
+            const entries = fs.readdirSync(path, { withFileTypes: true });
             return entries
                 .filter(entry => entry.isFile())
                 .map(file => file.name);
@@ -275,7 +258,7 @@ export class FileManager {
         }
     }
 
-    async clearDir(path: string): Promise<void> {
+    static async clearDir(path: string): Promise<void> {
         if (!await fs.promises.exists(path)) { 
             throw new Error("Directory doesn't exist to clear it"); 
         }
@@ -283,84 +266,88 @@ export class FileManager {
         await fs.promises.mkdir(path);
     }
 
-    async removeDir(path: string): Promise<void> {
+    static async removeDir(path: string): Promise<void> {
         if (!await fs.promises.exists(path)) { 
             throw new Error("Directory doesn't exist to clear it"); 
         }
         await fs.promises.rm(path, { recursive: true, force: true });
     }
 
-    async zip(
-    directoryPath: string, 
-    filename: string | null = null,
-    createTopLevelDir: boolean = false
-): Promise<File> {
-    try {
-        const zip = new JSZip();
-        const zipFilename = filename || "compressed";
-        const timestamp = Date.now();
+    static async zip(
+        directoryPath: string, 
+        filename: string | null = null,
+        createTopLevelDir: boolean = false
+    ): Promise<File> {
+        const { JSZip } = baseLibraries.get();
         
-        const collectFiles = async (currentPath: string, relativePath: string = ""): Promise<Array<{ name: string; content: Buffer; relativePath: string }>> => {
-            const entries = await fs.promises.readdir(currentPath, { withFileTypes: true });
-            const allFiles: Array<{ name: string; content: Buffer; relativePath: string }> = [];
+        try {
+            const zip = new (JSZip as any)();
+            const zipFilename = filename || "compressed";
+            const timestamp = Date.now();
             
-            const promises = entries.map(async entry => {
-                const fullPath = `${currentPath}/${entry.name}`;
-                const entryRelativePath = relativePath ? `${relativePath}/${entry.name}` : entry.name;
+            const collectFiles = async (currentPath: string, relativePath: string = ""): Promise<Array<{ name: string; content: Buffer; relativePath: string }>> => {
+                const entries = await fs.promises.readdir(currentPath, { withFileTypes: true });
+                const allFiles: Array<{ name: string; content: Buffer; relativePath: string }> = [];
                 
-                if (entry.isFile()) {
-                    const fileContent = await fs.promises.readFile(fullPath);
-                    return [{ name: entry.name, content: fileContent, relativePath: entryRelativePath }];
-                } else if (entry.isDirectory()) {
-                    return await collectFiles(fullPath, entryRelativePath);
-                }
-                return [];
-            });
+                const promises = entries.map(async entry => {
+                    const fullPath = `${currentPath}/${entry.name}`;
+                    const entryRelativePath = relativePath ? `${relativePath}/${entry.name}` : entry.name;
+                    
+                    if (entry.isFile()) {
+                        const fileContent = await fs.promises.readFile(fullPath);
+                        return [{ name: entry.name, content: fileContent, relativePath: entryRelativePath }];
+                    } else if (entry.isDirectory()) {
+                        return await collectFiles(fullPath, entryRelativePath);
+                    }
+                    return [];
+                });
+                
+                const results = await Promise.all(promises);
+                results.forEach(result => allFiles.push(...result));
+                
+                return allFiles;
+            };
             
-            const results = await Promise.all(promises);
-            results.forEach(result => allFiles.push(...result));
+            const allFiles = await collectFiles(directoryPath);
             
-            return allFiles;
-        };
-        
-        const allFiles = await collectFiles(directoryPath);
-        
-        allFiles.forEach(({ name, content, relativePath }) => {
-            const filePath = createTopLevelDir ? `${zipFilename}/${relativePath}` : relativePath;
-            zip.file(filePath, content, { 
-                binary: true,
-                createFolders: true 
+            allFiles.forEach(({ name, content, relativePath }) => {
+                const filePath = createTopLevelDir ? `${zipFilename}/${relativePath}` : relativePath;
+                (zip as any).file(filePath, content, { 
+                    binary: true,
+                    createFolders: true 
+                });
             });
-        });
 
-        const zipBlob = await zip.generateAsync({ 
-            type: "blob",
-            compression: "DEFLATE",
-            compressionOptions: {
-                level: 1 
-            },
-            streamFiles: true,
-            platform: "UNIX" 
-        });
+            const zipBlob = await (zip as any).generateAsync({ 
+                type: "blob",
+                compression: "DEFLATE",
+                compressionOptions: {
+                    level: 1 
+                },
+                streamFiles: true,
+                platform: "UNIX" 
+            });
 
-        return new File([zipBlob], `${zipFilename}.zip`, { 
-            type: "application/zip",
-            lastModified: timestamp
-        });
-    } catch (error) {
-        console.error("Compression failed:", error);
-        throw error;
+            return new File([zipBlob], `${zipFilename}.zip`, { 
+                type: "application/zip",
+                lastModified: timestamp
+            });
+        } catch (error) {
+            console.error("Compression failed:", error);
+            throw error;
+        }
     }
-}
 
-    async extractTo(
-    file: any,
-    extractPath: string
+    static async extractTo(
+        file: any,
+        extractPath: string
     ): Promise<void> {
+        const { libarchive } = baseLibraries.get();
+        
         try {
             await fs.promises.mkdir(extractPath, { recursive: true });
 
-            const archive = await Archive.open(file);
+            const archive = await libarchive.Archive.open(file);
             
             await new Promise<void>((resolve, reject) => {
                 archive.extractFiles(async (entry: ArchiveEntry) => {
@@ -385,5 +372,3 @@ export class FileManager {
         }
     }
 }
-
-FileManager.initFs();

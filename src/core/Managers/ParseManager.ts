@@ -1,5 +1,4 @@
-import { fs } from '@zenfs/core';
-import { Chart } from '../lib/rgc-chart/rgc_chart';
+import { type Chart } from '$core/Map/libs';
 
 export interface ChartEntry {
     readonly chart: Chart;
