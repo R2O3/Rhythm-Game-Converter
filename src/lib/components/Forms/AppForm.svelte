@@ -81,7 +81,7 @@
   }
 
   .app-form:hover {
-    transform: scale(1.01);
+    transform: scale(1.005);
   }
   
   .tabs-header {
