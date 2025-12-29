@@ -8,6 +8,7 @@
   import { cubicOut, cubicInOut } from 'svelte/easing';
   import { refreshNavbarColors } from '$lib/components/Navbar/Navbar_bg'; 
   import { startBackgroundAnimation } from '$lib/Mania_bg';
+    import ProgressOverlay from '$lib/components/Progress/ProgressOverlay.svelte';
   
   export let data: { subtitle?: string } = {};
   
@@ -54,6 +55,7 @@
 </svelte:head>
 
 <Navbar />
+<ProgressOverlay />
 
 <main class:navigating={isNavigating}>
   {#key $page.url.pathname}

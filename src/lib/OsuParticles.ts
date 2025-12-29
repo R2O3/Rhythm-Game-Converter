@@ -13,6 +13,7 @@ interface Particle {
     targetB: number;
     lightness: number;
     colorTransitionSpeed: number;
+    age: number;
     reset: () => void;
     update: () => void;
     draw: (ctx: CanvasRenderingContext2D) => void;
@@ -28,12 +29,13 @@ export class OsuParticles {
     private baseG: number = 255;
     private baseB: number = 255;
     private spawnInterval: number;
-    private maxParticles: number = 900;
+    private maxParticles: number;
     private spawnIntervalId: number | null = null;
     private sizeOffset: number;
     private sizeMultiplier: number;
     private speedOffset: number;
     private speedMultiplier: number;
+    private maxLifetime: number;
 
     constructor(
         canvasId: string,
@@ -44,7 +46,8 @@ export class OsuParticles {
         sizeOffset: number = 25,
         sizeMultipler: number = 40,
         speedOffset: number = 0.4,
-        speedMultiplier: number = 0.8
+        speedMultiplier: number = 0.8,
+        maxParticles: number = -1
     ) {
         const canvasElement = document.getElementById(canvasId);
         if (!canvasElement) throw new Error(`Canvas element with id ${canvasId} not found`);
@@ -59,7 +62,9 @@ export class OsuParticles {
         this.sizeMultiplier = sizeMultipler;
         this.speedOffset = speedOffset;
         this.speedMultiplier = speedMultiplier;
+        this.maxParticles = maxParticles;
         this.particles = [];
+        this.maxLifetime = 0;
     }
 
     public refreshColorFromCss(): void {
@@ -96,6 +101,7 @@ export class OsuParticles {
 
     public init(starterparticles: number): void {
         this.resizeCanvas();
+        this.maxLifetime = (this.canvas.height + 600) / this.speedOffset;
         window.addEventListener('resize', () => this.resizeCanvas());
         this.createInitialParticles(starterparticles);
         this.animate();
@@ -103,8 +109,10 @@ export class OsuParticles {
     }
 
     private spawnParticle(): void {
+        if (this.maxParticles >= 0 && this.particles.length >= this.maxParticles) {
+            return;
+        }
         this.particles.push(this.createParticle());
-        if (this.particles.length > this.maxParticles) this.particles.shift();
     }
 
     private createParticle(x?: number, y?: number): Particle {
@@ -119,13 +127,15 @@ export class OsuParticles {
             speed: Math.random() * this.speedMultiplier + this.speedOffset,
             currentR: this.baseR, currentG: this.baseG, currentB: this.baseB,
             targetR: this.baseR, targetG: this.baseG, targetB: this.baseB,
-            lightness, colorTransitionSpeed: 0.1,
+            lightness, colorTransitionSpeed: 0.1, age: 0,
             reset: function() {
                 this.x = Math.random() * self.canvas.width;
                 this.y = self.canvas.height + 100;
+                this.age = 0;
             },
             update: function() {
                 this.y -= this.speed;
+                this.age++;
                 if (this.y < -300) this.reset();
                 this.currentR += (this.targetR - this.currentR) * this.colorTransitionSpeed;
                 this.currentG += (this.targetG - this.currentG) * this.colorTransitionSpeed;
@@ -165,7 +175,16 @@ export class OsuParticles {
 
     private animate(): void {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.particles.forEach(p => { p.update(); p.draw(this.ctx); });
+        
+        this.particles = this.particles.filter(p => {
+            p.update();
+            if (p.age < this.maxLifetime) {
+                p.draw(this.ctx);
+                return true;
+            }
+            return false;
+        });
+        
         this.animationId = requestAnimationFrame(() => this.animate());
     }
 
