@@ -9,6 +9,7 @@
   import { refreshNavbarColors } from '$lib/components/Navbar/Navbar_bg'; 
   import { startBackgroundAnimation } from '$lib/Mania_bg';
   import ProgressOverlay from '$lib/components/Progress/ProgressOverlay.svelte';
+  import Bg from '$lib/assets/rgc-background.webp'
   
   export let data: { subtitle?: string } = {};
   
@@ -83,7 +84,7 @@
     width: 100%;
     height: 100%;
     background-color: var(--background-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
   }
   
   :global(body::before) {

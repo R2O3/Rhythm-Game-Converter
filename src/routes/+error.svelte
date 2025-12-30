@@ -40,7 +40,7 @@
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
-    background-color: #1a0f15;
+    background-color: var(--background-color);
   }
 
   .error-container {
