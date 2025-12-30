@@ -1,17 +1,13 @@
 import { fs } from '@zenfs/core';
 import { debugLog } from '$lib/helpers';
-import { baseLibraries } from '$core/Libraries/baselibs';
-
-interface ArchiveEntry {
-    file: File;
-    path: string;
-}
+import { Zip, ZipDeflate, unzip } from 'fflate';
+import { FsEntryType } from '$core/structures/Files';
 
 export interface FileTreeNode {
-  name: string;
-  type: 'folder' | 'file';
-  path: string;
-  children?: FileTreeNode[];
+    name: string;
+    type: FsEntryType.directory | FsEntryType.file;
+    path: string;
+    children?: FileTreeNode[];
 }
 
 const FsStructure = {
@@ -25,54 +21,12 @@ export class FileManager {
         return fs;
     }
 
-    static async download(path: string, customFilename?: string): Promise<void> {
-        try {
-            const fileData = await fs.promises.readFile(path);
-            const filename = customFilename || await FileManager.getFileName(path);
-
-            const mimeType = "application/octet-stream";
-            const blob = new Blob([new Uint8Array(fileData)], { type: mimeType });
-
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-
-            requestAnimationFrame(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            });
-        } catch (error) {
-            console.error("Download failed:", error);
-        }
-    }
-
-    static async downloadFromBlob(blob: Blob, filename: string): Promise<void> {
-        try {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-
-            requestAnimationFrame(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            });
-        } catch (error) {
-            console.error("Download failed:", error);
-        }
-    }
-
     static async initFs(): Promise<void> {
         try {
             for (const [dirName, contents] of Object.entries(FsStructure)) {
-                await fs.promises.mkdir(`/${dirName}`, { recursive: true });
-                debugLog(`Created directory: /${dirName}`);
-                
+                if (!await fs.promises.exists(`/${dirName}`)) {
+                    await fs.promises.mkdir(`/${dirName}`, { recursive: true });
+                }
                 if (typeof contents === 'object' && contents !== null) {
                     await FileManager.createSubdirectories(`/${dirName}`, contents);
                 }
@@ -86,289 +40,197 @@ export class FileManager {
     static async createSubdirectories(parentPath: string, structure: object): Promise<void> {
         for (const [name, content] of Object.entries(structure)) {
             const fullPath = `${parentPath}/${name}`;
-            
             if (typeof content === 'object' && content !== null) {
                 await fs.promises.mkdir(fullPath, { recursive: true });
-                debugLog(`Created subdirectory: ${fullPath}`);
                 await FileManager.createSubdirectories(fullPath, content);
             } else {
                 await fs.promises.writeFile(fullPath, content || '');
-                debugLog(`Created file: ${fullPath}`);
             }
         }
     }
 
     static async generateFileTree(rootPath: string): Promise<FileTreeNode[]> {
-        const queue: Array<{ dirPath: string; node: FileTreeNode }> = [];
         const result: FileTreeNode[] = [];
-
         try {
-            const entries = fs.readdirSync(rootPath, { withFileTypes: true });
+            if (!await fs.promises.exists(rootPath)) return [];
+            const entries = await fs.promises.readdir(rootPath, { withFileTypes: true });
 
             for (const entry of entries) {
                 const fullPath = `${rootPath}/${entry.name}`;
                 if (entry.isDirectory()) {
-                    const folderNode: FileTreeNode = {
+                    result.push({
                         name: entry.name,
-                        type: "folder",
+                        type: FsEntryType.directory,
                         path: fullPath,
-                        children: []
-                    };
-                    result.push(folderNode);
-                    queue.push({ dirPath: fullPath, node: folderNode });
+                        children: await FileManager.generateFileTree(fullPath)
+                    });
                 } else {
-                    const fileNode: FileTreeNode = {
-                        name: entry.name,
-                        type: "file",
-                        path: fullPath
-                    };
-                    result.push(fileNode);
-                }
-            }
-
-            while (queue.length) {
-                const { dirPath, node } = queue.shift()!;
-                try {
-                    const subEntries = fs.readdirSync(dirPath, { withFileTypes: true });
-
-                    for (const subEntry of subEntries) {
-                        const subPath = `${dirPath}/${subEntry.name}`;
-
-                        if (subEntry.isDirectory()) {
-                            const subFolderNode: FileTreeNode = {
-                                name: subEntry.name,
-                                type: "folder",
-                                path: subPath,
-                                children: []
-                            };
-                            node.children!.push(subFolderNode);
-                            queue.push({ dirPath: subPath, node: subFolderNode });
-                        } else {
-                            const subFileNode: FileTreeNode = {
-                                name: subEntry.name,
-                                type: "file",
-                                path: subPath
-                            };
-                            node.children!.push(subFileNode);
-                        }
-                    }
-                } catch (error) {
-                    console.error(`Error reading directory ${dirPath}:`, error);
+                    result.push({ name: entry.name, type: FsEntryType.file, path: fullPath });
                 }
             }
         } catch (error) {
-            console.error(`Error reading root directory ${rootPath}:`, error);
+            console.error(`Error reading directory ${rootPath}:`, error);
         }
-
         return result;
     }
 
     static async copyDirectory(src: string, dest: string): Promise<void> {
-        await fs.promises.access(src).catch(() => {
-            throw new Error(`Source directory does not exist: ${src}`);
-        });
-
         await fs.promises.mkdir(dest, { recursive: true });
-
         const entries = await fs.promises.readdir(src, { withFileTypes: true });
-
         for (const entry of entries) {
             const srcPath = `${src}/${entry.name}`;
             const destPath = `${dest}/${entry.name}`;
-
             if (entry.isDirectory()) {
                 await FileManager.copyDirectory(srcPath, destPath);
             } else {
                 await fs.promises.copyFile(srcPath, destPath);
-                debugLog(`Copied file: ${srcPath} -> ${destPath}`);
             }
         }
     }
 
+    static async clearDir(path: string): Promise<void> {
+        if (await fs.promises.exists(path)) {
+            await fs.promises.rm(path, { recursive: true, force: true });
+        }
+        await fs.promises.mkdir(path, { recursive: true });
+    }
+
     static removeFileExtension(filename: string): string {
-        if (!filename.includes('.')) return filename;
-        if (filename.startsWith('.') && filename.split('.').length === 2) return filename;
-        const lastDotIndex = filename.lastIndexOf('.');
-        return lastDotIndex === -1 ? filename : filename.substring(0, lastDotIndex);
+        const lastDot = filename.lastIndexOf('.');
+        if (lastDot <= 0) return filename;
+        return filename.substring(0, lastDot);
     }
 
     static getFileExtension(filename: string): string {
-        if (!filename.includes('.')) return '';
-        const lastDotIndex = filename.lastIndexOf('.');
-        if (lastDotIndex === 0) return ''; 
-        return filename.slice(lastDotIndex + 1).toLowerCase();
+        const lastDot = filename.lastIndexOf('.');
+        if (lastDot <= 0) return '';
+        return filename.slice(lastDot + 1).toLowerCase();
     }
 
     static async getDirectoryNames(path: string): Promise<string[]> {
         try {
             const entries = await fs.promises.readdir(path, { withFileTypes: true });
-            return entries
-                .filter(entry => entry.isDirectory())
-                .map(entry => entry.name);
-        } catch (error: any) {
-            if (error.code === 'ENOENT') {
-                console.warn(`Directory not found: ${path}`);
-                return [];
-            }
-            throw error;
-        }
+            return entries.filter(e => e.isDirectory()).map(e => e.name);
+        } catch (e) { return []; }
     }
 
     static async getFileNamesInDirectory(path: string): Promise<string[]> {
         try {
             const entries = await fs.promises.readdir(path, { withFileTypes: true });
-            return entries
-                .filter(entry => entry.isFile())
-                .map(file => file.name);
-        } catch (error: any) {
-            if (error.code === 'ENOENT') return [];
-            throw error;
-        }
+            return entries.filter(e => e.isFile()).map(e => e.name);
+        } catch (e) { return []; }
     }
 
     static async getFileName(filePath: string): Promise<string> {
-        const parts = filePath.split("/");
-        return parts.pop() || filePath;
+        return filePath.split('/').pop() || filePath;
     }
 
-    static getDirectoryNamesSync(path: string): string[] {
+    static async download(path: string, customFilename?: string): Promise<void> {
         try {
-            const entries = fs.readdirSync(path, { withFileTypes: true });
-            return entries
-                .filter(entry => entry.isDirectory())
-                .map(entry => entry.name);
-        } catch (error: any) {
-            if (error.code === 'ENOENT') {
-                console.warn(`Directory not found: ${path}`);
-                return [];
-            }
-            throw error;
+            const fileData = await fs.promises.readFile(path);
+            const filename = customFilename || await FileManager.getFileName(path);
+
+            const mimeType = "application/octet-stream";
+            const blob = new Blob([new Uint8Array(fileData)], { type: mimeType });
+
+            await FileManager.downloadFromBlob(blob, filename);
+        } catch (error) {
+            console.error("Download failed:", error);
         }
     }
 
-    static getFileNamesInDirectorySync(path: string): string[] {
-        try {
-            const entries = fs.readdirSync(path, { withFileTypes: true });
-            return entries
-                .filter(entry => entry.isFile())
-                .map(file => file.name);
-        } catch (error: any) {
-            if (error.code === 'ENOENT') return [];
-            throw error;
-        }
+    static async downloadFromBlob(blob: Blob, filename: string): Promise<void> {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
     }
 
-    static async clearDir(path: string): Promise<void> {
-        if (!await fs.promises.exists(path)) { 
-            throw new Error("Directory doesn't exist to clear it"); 
-        }
-        await fs.promises.rm(path, { recursive: true, force: true });
-        await fs.promises.mkdir(path);
-    }
+    static async zip(directoryPath: string, filename: string = "archive", createTopLevelDir = false): Promise<Blob> {
+        return new Promise((resolve, reject) => {
+            const chunks: any[] = [];
+            const zip = new Zip((err, dat, final) => {
+                if (err) reject(err);
+                else {
+                    chunks.push(dat);
+                    if (final) resolve(new Blob(chunks, { type: 'application/zip' }));
+                }
+            });
 
-    static async removeDir(path: string): Promise<void> {
-        if (!await fs.promises.exists(path)) { 
-            throw new Error("Directory doesn't exist to clear it"); 
-        }
-        await fs.promises.rm(path, { recursive: true, force: true });
-    }
-
-    static async zip(
-        directoryPath: string, 
-        filename: string | null = null,
-        createTopLevelDir: boolean = false
-    ): Promise<File> {
-        const { JSZip } = baseLibraries.get();
-        
-        try {
-            const zip = new (JSZip as any)();
-            const zipFilename = filename || "compressed";
-            const timestamp = Date.now();
-            
-            const collectFiles = async (currentPath: string, relativePath: string = ""): Promise<Array<{ name: string; content: Buffer; relativePath: string }>> => {
+            const processDirectory = async (currentPath: string, relativePath: string = "") => {
                 const entries = await fs.promises.readdir(currentPath, { withFileTypes: true });
-                const allFiles: Array<{ name: string; content: Buffer; relativePath: string }> = [];
-                
-                const promises = entries.map(async entry => {
+                for (const entry of entries) {
                     const fullPath = `${currentPath}/${entry.name}`;
-                    const entryRelativePath = relativePath ? `${relativePath}/${entry.name}` : entry.name;
-                    
+                    const entryRel = relativePath ? `${relativePath}/${entry.name}` : entry.name;
+                    const zipPath = createTopLevelDir ? `${filename}/${entryRel}` : entryRel;
+
                     if (entry.isFile()) {
-                        const fileContent = await fs.promises.readFile(fullPath);
-                        return [{ name: entry.name, content: fileContent, relativePath: entryRelativePath }];
+                        const content = await fs.promises.readFile(fullPath);
+                        const f = new ZipDeflate(zipPath, { level: 1 });
+                        zip.add(f);
+                        f.push(new Uint8Array(content as Uint8Array), true);
                     } else if (entry.isDirectory()) {
-                        return await collectFiles(fullPath, entryRelativePath);
+                        await processDirectory(fullPath, entryRel);
                     }
-                    return [];
-                });
-                
-                const results = await Promise.all(promises);
-                results.forEach(result => allFiles.push(...result));
-                
-                return allFiles;
+                }
             };
-            
-            const allFiles = await collectFiles(directoryPath);
-            
-            allFiles.forEach(({ name, content, relativePath }) => {
-                const filePath = createTopLevelDir ? `${zipFilename}/${relativePath}` : relativePath;
-                (zip as any).file(filePath, content, { 
-                    binary: true,
-                    createFolders: true 
-                });
-            });
 
-            const zipBlob = await (zip as any).generateAsync({ 
-                type: "blob",
-                compression: "DEFLATE",
-                compressionOptions: {
-                    level: 1 
-                },
-                streamFiles: true,
-                platform: "UNIX" 
-            });
-
-            return new File([zipBlob], `${zipFilename}.zip`, { 
-                type: "application/zip",
-                lastModified: timestamp
-            });
-        } catch (error) {
-            console.error("Compression failed:", error);
-            throw error;
-        }
+            processDirectory(directoryPath).then(() => zip.end()).catch(reject);
+        });
     }
 
-    static async extractTo(
-        file: any,
-        extractPath: string
-    ): Promise<void> {
-        const { libarchive } = baseLibraries.get();
-        
-        try {
-            await fs.promises.mkdir(extractPath, { recursive: true });
+    static async extractTo(file: File, extractPath: string): Promise<void> {
+        await fs.promises.mkdir(extractPath, { recursive: true });
+        const buffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(buffer);
 
-            const archive = await libarchive.Archive.open(file);
-            
-            await new Promise<void>((resolve, reject) => {
-                archive.extractFiles(async (entry: ArchiveEntry) => {
-                    try {
-                        const fullPath = `${extractPath}/${entry.path}`;
+        return new Promise((resolve, reject) => {
+            unzip(uint8Array, async (err, unzippedFiles) => {
+                if (err) return reject(err);
+
+                try {
+                    const createdDirs = new Set<string>();
+                    createdDirs.add(extractPath);
+
+                    const ensureDir = async (dir: string) => {
+                        if (createdDirs.has(dir)) return;
+                        const parent = dir.substring(0, dir.lastIndexOf('/'));
+                        if (parent && !createdDirs.has(parent)) await ensureDir(parent);
+                        
+                        try {
+                            await fs.promises.mkdir(dir, { recursive: true });
+                        } catch (e) { }
+                        createdDirs.add(dir);
+                    };
+
+                    for (const [rawPath, fileData] of Object.entries(unzippedFiles)) {
+                        const normalizedPath = rawPath.replace(/\\/g, '/');
+                        const fullPath = `${extractPath}/${normalizedPath}`;
+                        
+                        if (fileData.length === 0 && normalizedPath.endsWith('/')) {
+                            await ensureDir(fullPath.slice(0, -1));
+                            continue;
+                        }
+
                         const dirPath = fullPath.substring(0, fullPath.lastIndexOf('/'));
-                        
-                        await fs.promises.mkdir(dirPath, { recursive: true });
-                        
-                        const arrayBuffer = await entry.file.arrayBuffer();
-                        await fs.promises.writeFile(fullPath, new Uint8Array(arrayBuffer));
-                    } catch (err) {
-                        reject(err);
-                    }
-                }).then(resolve).catch(reject);
-            });
+                        await ensureDir(dirPath);
 
-            debugLog(`Successfully extracted to ${extractPath}`);
-        } catch (error) {
-            console.error(`Extraction failed:`, error);
-            throw error;
-        }
+                        await fs.promises.writeFile(fullPath, fileData);
+                        debugLog(`[FileManager] Extracted file: ${fullPath}`);
+                    }
+                    
+                    debugLog(`[FileManager] Successfully extracted ${Object.keys(unzippedFiles).length} items to ${extractPath}`);
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
     }
 }

@@ -1,37 +1,27 @@
-async function saveAs(fileTreeEntry: FileTreeNode, saveAsType: SaveAsType): Promise<void> {
-    progressBar.show('Exporting..', 0);
-    switch (saveAsType) {
-        case 'file':
-            fileManager.download(fileTreeEntry.path);
-            break;
-        case 'map':
-            fileManager.downloadFromBlob( await fileManager.zip(fileTreeEntry.path), `${fileTreeEntry.name}.${getMapFormat(targetFormat as string)}`);
-            break;
-        case 'zip':
-            fileManager.downloadFromBlob( await fileManager.zip(fileTreeEntry.path, fileTreeEntry.name, true), `${fileTreeEntry.name}.zip`);
-            break;
+import { FileManager, type FileTreeNode } from '$core/Managers/FileManager';
+import { FsEntryType, SaveAs } from '$core/structures/Files';
+import { getMapsetExtension } from '$lib/stores';
+
+export async function saveEntry(node: FileTreeNode, exportType: SaveAs, targetFormat: string) {
+    const isDirectory = node.type === FsEntryType.directory;
+
+    if (!isDirectory || exportType === SaveAs.file) {
+        await FileManager.download(node.path);
+        return;
     }
-  progressBar.update('Exporting.. done', 100)
-  progressBar.hide();
+
+    const blob = await FileManager.zip(node.path, node.name);
+
+    if (exportType === SaveAs.zip) {
+        await FileManager.downloadFromBlob(blob, `${node.name}.zip`);
+    } 
+    else if (exportType === SaveAs.specific) {
+        const ext = getMapsetExtension(targetFormat);
+        await FileManager.downloadFromBlob(blob, `${node.name}.${ext}`);
+    }
 }
 
-async function saveAllMaps(saveAsType: SaveAsType): Promise<void> {
-    progressBar.show('Exporting..', 0);
-    const maps = mapIndexer.getMapNames();
-    let mapCount = maps.length;
-    let exportingMaps = 1;
-  switch (saveAsType) {
-    case 'map':
-        for (const map of maps) {
-            progressBar.update(`Exporting.. (${exportingMaps}/${mapCount})`, (exportingMaps/mapCount) * 100);
-            fileManager.downloadFromBlob( await fileManager.zip(`/MapExport/${map}`), `${map}.${getMapFormat(targetFormat as string)}`);
-            exportingMaps++
-        }
-        break;
-    case 'zip':
-        fileManager.downloadFromBlob( await fileManager.zip("/MapExport", "rgc-export", true), `rgc-export.zip`);
-        break;
-  }
-  progressBar.update('Exporting.. done', 100);
-  progressBar.hide();
+export async function exportAllMaps() {
+    const blob = await FileManager.zip("/MapExport", "rgc-export", true);
+    await FileManager.downloadFromBlob(blob, "converted_maps.zip");
 }

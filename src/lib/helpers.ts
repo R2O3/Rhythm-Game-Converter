@@ -4,6 +4,8 @@ export function prefixList(list: any[], prefix: string) {
     return list.map(item => `${prefix}${item}`); 
 }
 
+export const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
+
 export function parseColor(colorString: string): { r: number; g: number; b: number; a?: number } {
     let match;
     let alpha = 1;
@@ -133,27 +135,4 @@ export function formatTime(milliseconds: number): string {
     } else {
         return `${(milliseconds / 60000).toFixed(1)} minutes`;
     }
-}
-
-export function getPageColor(href: string): number[] {
-    let rgb = [255, 255, 255];
-
-    switch (href) {
-        case "/":
-            rgb[0] = 212;
-            rgb[1] = 123;
-            rgb[2] = 175;
-            break;
-        case "/map":
-            rgb[0] = 26;
-            rgb[1] = 122;
-            rgb[2] = 140;
-            break;
-        case "/changelog":
-            rgb[0] = 197;
-            rgb[1] = 163;
-            rgb[2] = 59;
-            break;
-    }
-    return rgb;
 }

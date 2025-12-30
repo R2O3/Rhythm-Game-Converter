@@ -1,90 +1,123 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { replaceState } from '$app/navigation';
+  
   import AppForm from '$lib/components/Forms/AppForm.svelte';
   import AppFormTab from '$lib/components/Forms/AppFormTab.svelte';
   import TabButton from '$lib/components/Forms/TabButton.svelte';
   import FileSelector from '$lib/components/FileSelector.svelte';
   import Dropdown from '$lib/components/Dropdown.svelte';
   import Explorer from '$lib/components/Forms/Explorer.svelte';
-  import { onMount } from 'svelte';
   import FormButton from '$lib/components/Forms/FormButton.svelte';
-  import { SUPPORTED_MANIA_CHART_FORMATS, SUPPORTED_MANIA_MAPSET_FORMATS } from '$lib/stores';
-  import { prefixList } from '$lib/helpers';
+  
+  import { getMapsetExtension, SUPPORTED_MANIA_CHART_FORMATS, SUPPORTED_MANIA_MAPSET_FORMATS } from '$lib/stores';
+  import { prefixList, formatTime } from '$lib/helpers';
+  import { SaveAs } from '$core/structures/Files';
+  import type { FileTreeNode } from '$core/Managers/FileManager';
+  import { mapLibraries } from '$core/Map/libs';
+  import { FileManager } from '$core/Managers/FileManager';
+
+  import { processImportedFiles } from '$core/Map/parse';
+  import { convertMaps } from '$core/Map/convert';
+  import { saveEntry, exportAllMaps } from '$core/Map/export';
 
   let selectedTab = 'mania';
   let chartType = 'osu';
   let explorerRef: any;
   let convertButtonDisabled = true;
   let selectedFiles: File[] = [];
-  let explorerFiles: any[] = [];
+  let explorerFiles: FileTreeNode[] = [];
+  
+  let timings = { extract: 0, parse: 0, convert: 0 };
 
-  const chartOptions = [
-    { value: 'osu', label: '.osu (Osu)' },
-    { value: 'qua', label: '.qua (Quaver)' },
-    { value: 'fsc', label: '.fsc (fluXis)' },
-    { value: 'sm', label: '.sm (Stepmania)' }
-  ];
+  const readableNames: Record<string, string> = {
+    'osu': 'osu! (.osu)',
+    'qua': 'Quaver (.qua)',
+    'fsc': 'fluXis (.fsc)',
+    'sm': 'StepMania (.sm)'
+  };
+
+  $: chartOptions = SUPPORTED_MANIA_CHART_FORMATS.map(fmt => ({
+      value: fmt,
+      label: readableNames[fmt] || `.${fmt}`
+  }));
+
+  $: specificExportLabel = `.${getMapsetExtension(chartType)}`;
+
+  onMount(async () => {
+    try {
+        await mapLibraries.initialize();
+        await FileManager.initFs();
+        
+        const url = new URL(window.location.href);
+        url.searchParams.set("mode", "mania");
+        url.searchParams.set("type", "osu");
+        
+        replaceState(url, {}); 
+    } catch (e) {
+        console.error("Failed to initialize:", e);
+    }
+  });
 
   function handleTabChange(tabId: string) {
     selectedTab = tabId;
   }
 
-  function handleFilesSelected(event: CustomEvent) {
+  async function handleFilesSelected(event: CustomEvent) {
     selectedFiles = event.detail.files;
-    convertButtonDisabled = selectedFiles.length === 0;
-    console.log('Files selected:', selectedFiles);
+    if (selectedFiles.length === 0) return;
+
+    convertButtonDisabled = true;
+    timings = { extract: 0, parse: 0, convert: 0 };
+    updateTimingStats();
+
+    try {
+        const result = await processImportedFiles(selectedFiles);
+        timings.extract = result.extractTime;
+        timings.parse = result.parseTime;
+        updateTimingStats();
+        convertButtonDisabled = false;
+    } catch (error) {
+        console.error("Import failed:", error);
+    }
   }
 
-  function handleConvert() {
+  async function handleConvert() {
     if (selectedFiles.length === 0) return;
     
-    console.log('Converting files:', selectedFiles);
-    console.log('Target format:', chartType);
+    document.dispatchEvent(new CustomEvent('convert:start'));
     
-    document.dispatchEvent(new CustomEvent('convert:start', {
-      detail: {
-        files: selectedFiles,
-        targetFormat: chartType
-      }
-    }));
-    
-    // Mock conversion
-    setTimeout(() => {
-      const mockFiles = [
-        {
-          name: 'Converted Maps',
-          type: 'folder',
-          path: 'converted',
-          children: [
-            { name: 'map1.osu', type: 'file', path: 'converted/map1.osu' },
-            { name: 'map2.osu', type: 'file', path: 'converted/map2.osu' },
-            { name: 'audio.mp3', type: 'file', path: 'converted/audio.mp3' }
-          ]
-        }
-      ];
-      
-      explorerFiles = mockFiles;
-      explorerRef?.setTimingInfo('150 milliseconds', '320 milliseconds', '1.2 seconds');
-      document.dispatchEvent(new CustomEvent('convert:done'));
-    }, 1000);
+    try {
+        const result = await convertMaps(chartType);
+        explorerFiles = result?.fileTree ?? [];
+        timings.convert = result?.convertTime ?? 0;
+        updateTimingStats();
+        document.dispatchEvent(new CustomEvent('convert:done'));
+    } catch (error) {
+        console.error("Conversion failed:", error);
+    }
   }
 
   function handleSaveAs(event: CustomEvent) {
-    console.log('Save as:', event.detail);
-    // TODO: Implement save
+    const { node, exportType } = event.detail;
+    saveEntry(node, exportType, chartType);
   }
 
   function handleExport(event: CustomEvent) {
-    console.log('Export:', event.detail);
-    // TODO: Implement export
+    if (event.detail === SaveAs.zip) {
+        exportAllMaps();
+    }
   }
 
-  onMount(() => {
-    const params = new URLSearchParams();
-    params.append("mode", "mania");
-    params.append("type", "osu");
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.pushState({}, '', newUrl);
-  });
+  function updateTimingStats() {
+      if (explorerRef) {
+          explorerRef.setStats([
+              { label: 'Extract', value: timings.extract ? formatTime(timings.extract) : '' },
+              { label: 'Parse', value: timings.parse ? formatTime(timings.parse) : '' },
+              { label: 'Convert', value: timings.convert ? formatTime(timings.convert) : '' }
+          ].filter(s => s.value));
+      }
+  }
 </script>
 
 <svelte:head>
@@ -129,6 +162,7 @@
       <Explorer 
         bind:this={explorerRef}
         files={explorerFiles}
+        {specificExportLabel}
         on:saveAs={handleSaveAs}
         on:export={handleExport}
       >
@@ -159,7 +193,7 @@
 
         <svelte:fragment slot="convert-button">
           <FormButton 
-            icon="⚡"
+            icon="🔄"
             id="map-convert-btn" 
             disabled={convertButtonDisabled}
             on:click={handleConvert}

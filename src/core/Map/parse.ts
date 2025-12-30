@@ -1,150 +1,94 @@
-async function parseChart(path: string, mapName: string) {
-    const extension = fileManager.getFileExtension(path);
+import { FileManager } from '$core/Managers/FileManager';
+import { mapParseManager } from '$core/Map/MapParseManager';
+import { mapLibraries } from '$core/Map/libs';
+import { Progress } from '$lib/components/Progress/ProgressOverlay';
+import { debugLog, parseError, yieldToMain } from '$lib/helpers';
 
-    let parser: ((data: string) => any) | undefined;
+export async function processImportedFiles(files: File[]) {
+    await FileManager.clearDir("/MapImport");
+    mapParseManager.clear();
 
-    switch (extension) {
-        case 'sm':
-            parser = rgcChart?.parse_from_sm;
-            break;
-        case 'osu':
-            parser = rgcChart?.parse_from_osu;
-            break;
-        case 'qua':
-            parser = rgcChart?.parse_from_qua;
-            break;
-        case 'fsc':
-            parser = rgcChart?.parse_from_fsc;
-            break;
-        default:
-            return;
+    const extractStart = Date.now();
+    let extractedCount = 0;
+    Progress.show('Extracting...', 0);
+
+    for (const file of files) {
+        const ext = FileManager.getFileExtension(file.name);
+        
+        Progress.update(`Extracting ${file.name}...`, (extractedCount / files.length) * 50);
+        await yieldToMain();
+
+        if (['zip', 'rar', 'tar', '7z', 'qp', 'fms', 'osz'].includes(ext)) {
+            const isMapPackage = ['qp', 'fms', 'osz'].includes(ext);
+            const targetPath = isMapPackage 
+                ? `/MapImport/${FileManager.removeFileExtension(file.name)}` 
+                : `/MapImport/`;
+            
+            await FileManager.fs.promises.mkdir(targetPath, { recursive: true });
+            await FileManager.extractTo(file, targetPath);
+        } else {
+            const uuid = crypto.randomUUID().slice(0, 8);
+            const directory = `/MapImport/untitled-${uuid}`;
+            await FileManager.fs.promises.mkdir(directory, { recursive: true });
+            const buffer = await file.arrayBuffer();
+            await FileManager.fs.promises.writeFile(`${directory}/${file.name}`, new Uint8Array(buffer));
+        }
+        extractedCount++;
     }
 
-    let parsedData = null;
+    const parseStart = Date.now();
+    const mapDirectorys = await FileManager.getDirectoryNames("/MapImport");
+    let mapsetsProcessed = 0;
 
-    try {
-        const rawData = (await fileManager.fs.promises.readFile(path)).toString();
-        parsedData = parser?.(rawData);
-    } catch (e) {
-        parseError(`${path}:`, getErrorMessage(e));
+    for (const mapDirectory of mapDirectorys) {
+        const folderPath = `/MapImport/${mapDirectory}`;
+        const filesInMap = await FileManager.getFileNamesInDirectory(folderPath);
+        
+        for (const file of filesInMap) {
+            await parseSingleChart(`${folderPath}/${file}`, mapDirectory);
+        }
+
+        mapsetsProcessed++;
+        
+        Progress.update('Parsing Mapsets...', 50 + (mapsetsProcessed / mapDirectorys.length) * 50);
+        await yieldToMain();
     }
 
-    if (parsedData) {
-        mapIndexer.addEntry(mapName, path, parsedData);
-    }
+    Progress.update('Done', 100);
+    debugLog(`[Parse] Processed ${mapsetsProcessed} directories. Found ${mapParseManager.getKeys().length} valid maps.`);
+    
+    await new Promise(r => setTimeout(r, 200));
+    Progress.hide();
+
+    return {
+        extractTime: Date.now() - extractStart,
+        parseTime: Date.now() - parseStart
+    };
 }
 
-async function parseCharts(event: any) {
-    convertButton?.setAttribute('disabled', "true");
-    await fileManager.clearDir("/MapImport");
-    mapIndexer.clear();
-    untitledMapExist = false;
-
-    let MapParseTime = 0;
-    let MapExtractionTime = 0;
-
-    const extractInfoElement = document.getElementById("extraction-time");
-    const parseInfoElement = document.getElementById("parse-time");
-    const convertInfoElement = document.getElementById("convert-time");
-    if (convertInfoElement) {
-        convertInfoElement.textContent = "";
-        convertInfoElement.classList.add("empty-info-state");
-    }
-    if (parseInfoElement) {
-        parseInfoElement.textContent = "";
-        parseInfoElement.classList.add("empty-info-state");
-    }
-    if (extractInfoElement) {
-        extractInfoElement.textContent = "";
-        extractInfoElement.classList.add("empty-info-state");
-    }
+async function parseSingleChart(path: string, key: string) {
+    const { rgcChart } = mapLibraries.getSpecific(); 
+    const ext = FileManager.getFileExtension(path);
     
-    const files: File[] = await event.detail.files;
-    const fileCount = files.length;
-    let extractingCount = 1;
+    let parser;
+    switch (ext) {
+        case 'sm': parser = rgcChart?.parse_from_sm; break;
+        case 'osu': parser = rgcChart?.parse_from_osu; break;
+        case 'qua': parser = rgcChart?.parse_from_qua; break;
+        case 'fsc': parser = rgcChart?.parse_from_fsc; break;
+        default: return;
+    }
 
-    progressBar.show(`Extracting.. (0/${fileCount})`, 0);
-    let extractionStart = Date.now();
-    for (const file of files) {
-        const extension = fileManager.getFileExtension(file.name);
+    if (!parser) return;
 
-        progressBar.show(`Extracting.. (${extractingCount}/${fileCount})`, ((extractingCount - 1)/fileCount) * 50);
-        switch (extension) {
-            case 'zip':
-            case 'rar':
-            case 'tar':
-            case '7z':
-                await fileManager.fs.promises.mkdir("/MapImport/", { recursive: true });
-                await fileManager.extractTo(file, "/MapImport/");
-                break;
-            case 'qp':
-            case 'fms':
-            case 'osz':
-                const fullPath = `/MapImport/${fileManager.removeFileExtension(file.name)}`;
-                await fileManager.fs.promises.mkdir(fullPath, { recursive: true });
-                await fileManager.extractTo(file, fullPath);
-                break;
-            default:
-                if (!untitledMapExist) {
-                    await fileManager.fs.promises.mkdir(`/MapImport/untitled-${random_uuid}`);
-                    untitledMapExist = true;
-                }
-                const arrayBuffer = await file.arrayBuffer(); 
-                await fileManager.fs.promises.writeFile(
-                    `/MapImport/untitled-${random_uuid}/${file.name}`,
-                    new Uint8Array(arrayBuffer)
-                );
+    try {
+        const rawData = await FileManager.fs.promises.readFile(path);
+        const stringData = new TextDecoder().decode(rawData as Uint8Array);
+        const parsedData = parser(stringData);
+        if (parsedData) {
+            mapParseManager.addEntry(key, path, parsedData);
         }
-        extractingCount++;
+    } catch (e) {
+        parseError(`Failed to parse ${path}:`, e);
     }
-
-    MapExtractionTime = Date.now() - extractionStart;
-
-    
-    if (extractInfoElement) {
-        extractInfoElement.textContent = formatTime(MapExtractionTime);
-        extractInfoElement.classList.remove("empty-info-state");
-    }
-
-    progressBar.update("Waiting for FileSystem..", 50);
-    
-    // wait extra for filesystem
-    // todo: this is very hacky and quite frankly ugly, pls fix later
-    await sleep(500);
-
-    
-    let Maps = await fileManager.getDirectoryNames("/MapImport");
-    let MapCount = Maps.length;
-    let processingMaps = 1;
-    let ParsePromises = []
-
-    progressBar.update(`Parsing Maps.. (0/${MapCount})`, 50);
-    let parseStart = Date.now();
-    for (const Map of Maps) {
-        progressBar.update(`Parsing Maps.. (${processingMaps}/${MapCount})`, ((processingMaps - 1)/MapCount) + 50 * 50);
-        debugLog("\n\n\n");
-        debugLog(Map);
-        debugLog("-------------------------------------------------");
-        for (const file of await fileManager.getFileNamesInDirectory(`/MapImport/${Map}`)) {
-            const fullPath = `/MapImport/${Map}/${file}`;
-            debugLog(fullPath);
-            ParsePromises.push(parseChart(fullPath, Map));
-        }
-        processingMaps++;
-    }
-
-    await Promise.all(ParsePromises);
-    MapParseTime = Date.now() - parseStart;
-    
-    if (parseInfoElement) {
-        parseInfoElement.textContent = formatTime(MapParseTime);
-        parseInfoElement.classList.remove("empty-info-state");
-    }
-
-    document.dispatchEvent(new CustomEvent('parse:done'));
-    progressBar.update("Done Parsing!..", 100);
-    await sleep(100);
-    progressBar.hide()
-    convertButton?.removeAttribute('disabled');
-    debugLog("parsed entries: ", mapIndexer.getEntries());
 }

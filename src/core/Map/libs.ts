@@ -1,7 +1,11 @@
-import { createLibraries } from '$core/Libraries/libCreation';
+import { createLibraries } from '$core/Libraries/libInitilazation';
 
 export const mapLibraries = createLibraries(async () => {
   const rgcChart = await import('$static_libs/rgc-chart');
+  
+  if (typeof rgcChart.default === 'function') {
+      await rgcChart.default();
+  }
   
   return {
     rgcChart: rgcChart

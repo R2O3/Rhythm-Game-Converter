@@ -22,10 +22,6 @@
     }
 
     dispatch('tabChanged', { tabId });
-    
-    if (browser) {
-      document.dispatchEvent(new CustomEvent('tab:changed', { detail: { tabId } }));
-    }
   }
 
   onMount(() => {
@@ -46,13 +42,6 @@
 
     if (browser) {
       window.addEventListener('popstate', handlePopState);
-      
-      // document.addEventListener('convert:done', handleConvertDone);
-
-      // return () => {
-      //   window.removeEventListener('popstate', handlePopState);
-      //   document.removeEventListener('convert:done', handleConvertDone);
-      // };
     }
   });
 

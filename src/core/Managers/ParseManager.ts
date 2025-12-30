@@ -1,65 +1,38 @@
-import { type Chart } from '$core/Map/libs';
-
-export interface ChartEntry {
-    readonly chart: Chart;
+export interface ParseEntry<T> {
+    readonly data: T;
     readonly originalPath: string;
 }
 
-export class MapParseIndexer {
+export class ParseManager<T> {
     private root: string;
-    private entries: ChartEntry[] = [];
-    private entriesByName = new Map<string, ChartEntry[] | null>();
+    private entries: ParseEntry<T>[] = [];
+    private entriesByKey = new Map<string, ParseEntry<T>[]>();
 
     constructor(root: string) {
         this.root = root;
     }
 
-    addEntry(mapName: string, originalPath: string, chart: Chart): void {
-        const entry: ChartEntry = { chart, originalPath };
+    addEntry(key: string, originalPath: string, data: T): void {
+        const entry: ParseEntry<T> = { data, originalPath };
         this.entries.push(entry);
         
-        const entries = this.entriesByName.get(mapName) || [];
-        entries.push(entry);
-        this.entriesByName.set(mapName, entries);
+        const group = this.entriesByKey.get(key) || [];
+        group.push(entry);
+        this.entriesByKey.set(key, group);
     }
 
-    getEntries(mapName?: string): readonly ChartEntry[] {
-        if (mapName) {
-            return this.entriesByName.get(mapName) || [];
-        }
+    getEntries(key?: string): readonly ParseEntry<T>[] {
+        if (key) return this.entriesByKey.get(key) || [];
         return this.entries;
     }
 
-    findEntries(predicate: (entry: ChartEntry) => boolean): readonly ChartEntry[] {
-        return this.entries.filter(predicate);
+    getKeys(): readonly string[] {
+        return Array.from(this.entriesByKey.keys());
     }
 
     clear(): this {
-        this.entries.length = 0;
-        this.entriesByName.forEach((value, key) => {
-        this.entriesByName.set(key, null);
-    });
-    this.entriesByName.clear();
+        this.entries = [];
+        this.entriesByKey.clear();
         return this;
-    }
-
-    reset(newRoot?: string): this {
-        this.clear();
-        if (newRoot !== undefined) {
-            this.root = newRoot;
-        }
-        return this;
-    }
-
-    getRoot(): string {
-        return this.root;
-    }
-
-    getMapNames(): readonly string[] {
-        return Array.from(this.entriesByName.keys());
-    }
-
-    hasMap(mapName: string): boolean {
-        return this.entriesByName.has(mapName);
     }
 }

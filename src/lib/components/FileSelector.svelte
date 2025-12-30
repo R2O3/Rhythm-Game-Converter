@@ -89,7 +89,7 @@
     <div class="file-selector-content">
       <img class="file-icon" src={FileIcon} alt="File icon" loading="lazy" />
       
-      <p class="instruction-text">Drag & drop file here</p>
+      <p class="instruction-text">Drag & drop files here</p>
       <p class="or-text">or</p>
       <label class="browse-button">
         Browse Files

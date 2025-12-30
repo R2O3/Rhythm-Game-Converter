@@ -1,7 +1,7 @@
 import { createLibraryManager } from '$core/Managers/LibManager';
 import { baseLibraries, type BaseLibraries } from '$core/Libraries/baselibs';
 
-export function createLibraries<T>(loader: () => Promise<T>) {
+export function createLibraries<T extends Record<string, any>>(loader: () => Promise<T>) {
   const specificLibManager = createLibraryManager(loader);
   
   return {

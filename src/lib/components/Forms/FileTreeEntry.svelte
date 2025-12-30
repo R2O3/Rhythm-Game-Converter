@@ -1,9 +1,19 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { slide, fade } from 'svelte/transition';
-
+  import { FsEntryType, SaveAs } from '$core/structures/Files';
+  import { SUPPORTED_MANIA_CHART_FORMATS, SUPPORTED_MANIA_MAPSET_FORMATS, SUPPORTED_MANIA_SKIN_FORMATS } from '$lib/stores';
+  
   export let node: any;
   export let specificExportLabel: string = 'Map';
+
+  const supportedMaps = SUPPORTED_MANIA_CHART_FORMATS
+  .reduce((acc: Record<string, boolean>, format: string) => { acc[format] = true; return acc; }, {});
+
+  const supportedArchives = SUPPORTED_MANIA_MAPSET_FORMATS
+  .concat(SUPPORTED_MANIA_SKIN_FORMATS)
+  .concat(['zip', 'rar'])
+  .reduce((acc: Record<string, boolean>, format: string) => { acc[format] = true; return acc; }, {});
 
   const dispatch = createEventDispatcher();
   let isExpanded = false;
@@ -13,15 +23,16 @@
   function getFileIcon(filename: string): string {
     const extension = filename.split('.').pop()?.toLowerCase() || '';
     const iconMap: Record<string, string> = {
-      zip: '📚', rar: '📚', osz: '📚', mp4: '🎬', mp3: '💿', 
-      jpg: '🖼️', png: '🖼️', osu: '🗺️', qua: '🗺️'
+      mp4: '🎬', webm: '🎬',
+      mp3: '💿', ogg: '💿', wav: '💿',
+      jpg: '🖼️', jpeg: '🖼️', png: '🖼️'
     };
-    return iconMap[extension] || '📄';
+    return iconMap[extension] || supportedMaps[extension] ? '🗺️' : supportedArchives[extension] ? '📚' : '📄';
   }
 
-  const toggleFolder = () => node.type === 'folder' && (isExpanded = !isExpanded);
+  const toggleDirectory = () => node.type === FsEntryType.directory && (isExpanded = !isExpanded);
   
-  const handleDropdown = (e: Event, type: string) => {
+  const handleDropdown = (e: Event, type: SaveAs) => {
     e.stopPropagation();
     showDropdown = false;
     dispatch('saveAs', { node, exportType: type });
@@ -36,14 +47,14 @@
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      toggleFolder();
+      toggleDirectory();
     }
   }
 
   function handleButtonKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      node.type === 'folder' ? (showDropdown = !showDropdown) : dispatch('saveAs', { node, exportType: 'file' });
+      node.type === FsEntryType.directory ? (showDropdown = !showDropdown) : dispatch('saveAs', { node, exportType: SaveAs.file });
     }
     if (event.key === 'Escape' && showDropdown) {
       event.stopPropagation();
@@ -52,7 +63,7 @@
     }
   }
 
-  function handleMenuItemKeyDown(event: KeyboardEvent, exportType: string) {
+  function handleMenuItemKeyDown(event: KeyboardEvent, exportType: SaveAs) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       handleDropdown(event, exportType);
@@ -69,19 +80,19 @@
 
 <div class="entry-container">
   <div 
-    class={node.type === 'folder' ? 'folder-item' : 'file-item'} 
-    on:click={toggleFolder}
+    class={node.type === FsEntryType.directory ? 'directory-item' : 'file-item'} 
+    on:click={toggleDirectory}
     on:keydown={handleKeyDown}
     tabindex="0"
     role="button"
-    aria-label={node.type === 'folder' ? `Toggle ${node.name} folder` : `Open ${node.name} file`}
+    aria-label={node.type === FsEntryType.directory ? `Toggle ${node.name} directory` : `Open ${node.name} file`}
   >
-      {#if node.type === 'folder'}
+      {#if node.type === FsEntryType.directory}
           <span class="chevron">{isExpanded ? '▼' : '►'}</span>
       {/if}
 
       <span class="item-name">
-        <span class="item-icon">{node.type === 'folder' ? '📦' : getFileIcon(node.name)}</span>
+        <span class="item-icon">{node.type === FsEntryType.directory ? '📦' : getFileIcon(node.name)}</span>
         <span class="truncate">{node.name}</span>
       </span>
 
@@ -90,12 +101,12 @@
           <button 
             bind:this={dropdownButton}
             class="save-btn" 
-            on:click|stopPropagation={() => node.type === 'folder' ? (showDropdown = !showDropdown) : dispatch('saveAs', { node, exportType: 'file' })}
+            on:click|stopPropagation={() => node.type === FsEntryType.directory ? (showDropdown = !showDropdown) : dispatch('saveAs', { node, exportType: 'file' })}
             on:keydown|stopPropagation={(e) => handleButtonKeyDown(e)}
-            aria-haspopup={node.type === 'folder' ? 'menu' : undefined}
-            aria-expanded={node.type === 'folder' ? showDropdown : undefined}
+            aria-haspopup={node.type === FsEntryType.directory ? 'menu' : undefined}
+            aria-expanded={node.type === FsEntryType.directory ? showDropdown : undefined}
           >
-          {#if node.type === 'folder'}
+          {#if node.type === FsEntryType.directory}
             💾 Save ▾
           {:else}
             💾 Save
@@ -108,20 +119,20 @@
               transition:fade={{ duration: 100 }}
               role="menu"
             >
-              {#if node.type === 'folder'}
+              {#if node.type === FsEntryType.directory}
                 <li 
                   role="menuitem" 
                   tabindex="0"
-                  on:click={(e) => handleDropdown(e, 'zip')}
-                  on:keydown={(e) => handleMenuItemKeyDown(e, 'zip')}
+                  on:click={(e) => handleDropdown(e, SaveAs.zip)}
+                  on:keydown={(e) => handleMenuItemKeyDown(e, SaveAs.zip)}
                 >
                   Zip
                 </li>
                 <li 
                   role="menuitem" 
                   tabindex="0"
-                  on:click={(e) => handleDropdown(e, 'specifc')}
-                  on:keydown={(e) => handleMenuItemKeyDown(e, specificExportLabel)}
+                  on:click={(e) => handleDropdown(e, SaveAs.specific)}
+                  on:keydown={(e) => handleMenuItemKeyDown(e, SaveAs.specific)}
                 >
                   {specificExportLabel}
                 </li>
@@ -133,7 +144,7 @@
   </div>
 
   {#if isExpanded && node.children}
-    <div class="folder-contents" transition:slide={{ duration: 150 }}>
+    <div class="directory-contents" transition:slide={{ duration: 150 }}>
       {#each node.children as child}
         <svelte:self node={child} mapExportLabel={specificExportLabel} on:saveAs />
       {/each}
@@ -147,7 +158,7 @@
     overflow: visible;
   }
 
-  .file-item, .folder-item {
+  .file-item, .directory-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -164,7 +175,7 @@
     to { opacity: 1; transform: translateX(0); }
   }
 
-  .file-item:hover, .folder-item:hover {
+  .file-item:hover, .directory-item:hover {
     background: rgba(255, 255, 255, 0.08);
   }
 
@@ -194,7 +205,7 @@
   }
 
   .save-btn {
-    background: #ff69b4;
+    background: var(--navbar-color);
     color: white;
     border: none;
     padding: 2px 8px;
@@ -209,7 +220,7 @@
     position: absolute;
     top: calc(100% + 4px);
     right: 0;
-    background: #ff69b4;
+    background: var(--navbar-color);
     border-radius: 4px;
     list-style: none;
     padding: 4px 0;
@@ -231,7 +242,7 @@
     background: rgba(255, 255, 255, 0.2);
   }
 
-  .folder-contents {
+  .directory-contents {
     padding-left: 12px;
     margin-left: 8px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);

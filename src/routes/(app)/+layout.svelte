@@ -8,7 +8,6 @@
   import { cubicOut, cubicInOut } from 'svelte/easing';
   import { refreshNavbarColors } from '$lib/components/Navbar/Navbar_bg'; 
   import { startBackgroundAnimation } from '$lib/Mania_bg';
-  import { FileManager } from '$core/Managers/FileManager';
   import ProgressOverlay from '$lib/components/Progress/ProgressOverlay.svelte';
   
   export let data: { subtitle?: string } = {};
@@ -34,7 +33,6 @@
   
   onMount(() => {
     refreshNavbarColors();
-    FileManager.initFs()
     const stopAnimation = startBackgroundAnimation();
     
     return () => stopAnimation(); 

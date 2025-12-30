@@ -6,6 +6,16 @@ export const APP_VERSION = __APP_VERSION__;
 export const SUPPORTED_MANIA_CHART_FORMATS: string[] = ['osu', 'qua', 'fsc', 'sm'];
 export const SUPPORTED_MANIA_MAPSET_FORMATS: string[] = ['osz', 'qp', 'fms'];
 
+export function getMapsetExtension(chartFormat: string): string {
+    switch (chartFormat) {
+        case 'osu': return 'osz';
+        case 'qua': return 'qp';
+        case 'fsc': return 'fms';
+        case 'sm':  return 'zip';
+        default:    return 'zip';
+    }
+}
+
 export const SUPPORTED_MANIA_SKIN_FORMATS: string[] = ['osk', 'fsk'];
 
 export interface UserConfig {
