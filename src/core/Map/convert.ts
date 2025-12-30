@@ -1,6 +1,6 @@
 import { FileManager } from '$core/Managers/FileManager';
 import { mapParseManager } from '$core/Map/MapParseManager';
-import { mapLibraries, type Chart } from '$core/Map/libs';
+import { mapLibraries, type GenericManiaChart } from '$core/Map/libs';
 import { SUPPORTED_MANIA_CHART_FORMATS } from '$lib/stores';
 import { Progress } from '$lib/components/Progress/ProgressOverlay';
 import { convertError, yieldToMain } from '$lib/helpers';
@@ -62,12 +62,19 @@ export async function convertMaps(targetFormat: string) {
     return { convertTime, fileTree };
 }
 
-async function runConverter(chart: Chart, type: string, path: string) {
+async function runConverter(chart: GenericManiaChart, type: string, path: string) {
     if (!SUPPORTED_MANIA_CHART_FORMATS.includes(type)) return;
     
     const { rgcChart } = mapLibraries.getSpecific(); 
-    const methodName = `write_to_${type}`;
-    const converter = (rgcChart as any)?.[methodName];
+
+    let converter;
+    switch (type) {
+        case 'sm': converter = rgcChart?.writeToSmGeneric; break;
+        case 'osu': converter = rgcChart?.writeToOsuGeneric; break;
+        case 'qua': converter = rgcChart?.writeToQuaGeneric; break;
+        case 'fsc': converter = rgcChart?.writeToFscGeneric; break;
+        default: return;
+    }
 
     if (!converter) return;
 

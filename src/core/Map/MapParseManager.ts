@@ -1,4 +1,4 @@
 import { ParseManager } from "$core/Managers/ParseManager";
-import type { Chart } from '$core/Map/libs';
+import type { GenericManiaChart } from '$core/Map/libs';
 
-export const mapParseManager = new ParseManager<Chart>('/MapImport');
+export const mapParseManager = new ParseManager<GenericManiaChart>('/MapImport');

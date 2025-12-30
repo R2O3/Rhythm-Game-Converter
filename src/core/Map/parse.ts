@@ -72,10 +72,10 @@ async function parseSingleChart(path: string, key: string) {
     
     let parser;
     switch (ext) {
-        case 'sm': parser = rgcChart?.parse_from_sm; break;
-        case 'osu': parser = rgcChart?.parse_from_osu; break;
-        case 'qua': parser = rgcChart?.parse_from_qua; break;
-        case 'fsc': parser = rgcChart?.parse_from_fsc; break;
+        case 'sm': parser = rgcChart?.parseFromSmGeneric; break;
+        case 'osu': parser = rgcChart?.parseFromOsuGeneric; break;
+        case 'qua': parser = rgcChart?.parseFromQuaGeneric; break;
+        case 'fsc': parser = rgcChart?.parseFromFscGeneric; break;
         default: return;
     }
 

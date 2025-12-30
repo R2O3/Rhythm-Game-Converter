@@ -21,6 +21,7 @@
 <h1>Changelog</h1>
 
 <ItemRevealContainer>
+  <ItemReveal title="0.0.11 - Full Rewrite" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.11' />
   <ItemReveal title="0.0.10 - Minor Update" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.10' />
   <ItemReveal title="0.0.9 - fluXis support" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.9' />
   <ItemReveal title="0.0.8 - Hotfix" url='https://raw.githubusercontent.com/menvae/RGC-Web/refs/heads/master/changelogs/0.0.8' />

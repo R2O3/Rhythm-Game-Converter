@@ -87,113 +87,6 @@ function getDataViewMemory0() {
     return cachedDataViewMemory0;
 }
 
-function _assertClass(instance, klass) {
-    if (!(instance instanceof klass)) {
-        throw new Error(`expected instance of ${klass.name}`);
-    }
-}
-
-function takeFromExternrefTable0(idx) {
-    const value = wasm.__wbindgen_export_0.get(idx);
-    wasm.__externref_table_dealloc(idx);
-    return value;
-}
-/**
- * @param {Chart} chart
- * @returns {string}
- */
-export function write_to_osu(chart) {
-    let deferred2_0;
-    let deferred2_1;
-    try {
-        _assertClass(chart, Chart);
-        const ret = wasm.write_to_osu(chart.__wbg_ptr);
-        var ptr1 = ret[0];
-        var len1 = ret[1];
-        if (ret[3]) {
-            ptr1 = 0; len1 = 0;
-            throw takeFromExternrefTable0(ret[2]);
-        }
-        deferred2_0 = ptr1;
-        deferred2_1 = len1;
-        return getStringFromWasm0(ptr1, len1);
-    } finally {
-        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
-    }
-}
-
-/**
- * @param {Chart} chart
- * @returns {string}
- */
-export function write_to_sm(chart) {
-    let deferred2_0;
-    let deferred2_1;
-    try {
-        _assertClass(chart, Chart);
-        const ret = wasm.write_to_sm(chart.__wbg_ptr);
-        var ptr1 = ret[0];
-        var len1 = ret[1];
-        if (ret[3]) {
-            ptr1 = 0; len1 = 0;
-            throw takeFromExternrefTable0(ret[2]);
-        }
-        deferred2_0 = ptr1;
-        deferred2_1 = len1;
-        return getStringFromWasm0(ptr1, len1);
-    } finally {
-        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
-    }
-}
-
-/**
- * @param {Chart} chart
- * @returns {string}
- */
-export function write_to_qua(chart) {
-    let deferred2_0;
-    let deferred2_1;
-    try {
-        _assertClass(chart, Chart);
-        const ret = wasm.write_to_qua(chart.__wbg_ptr);
-        var ptr1 = ret[0];
-        var len1 = ret[1];
-        if (ret[3]) {
-            ptr1 = 0; len1 = 0;
-            throw takeFromExternrefTable0(ret[2]);
-        }
-        deferred2_0 = ptr1;
-        deferred2_1 = len1;
-        return getStringFromWasm0(ptr1, len1);
-    } finally {
-        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
-    }
-}
-
-/**
- * @param {Chart} chart
- * @returns {string}
- */
-export function write_to_fsc(chart) {
-    let deferred2_0;
-    let deferred2_1;
-    try {
-        _assertClass(chart, Chart);
-        const ret = wasm.write_to_fsc(chart.__wbg_ptr);
-        var ptr1 = ret[0];
-        var len1 = ret[1];
-        if (ret[3]) {
-            ptr1 = 0; len1 = 0;
-            throw takeFromExternrefTable0(ret[2]);
-        }
-        deferred2_0 = ptr1;
-        deferred2_1 = len1;
-        return getStringFromWasm0(ptr1, len1);
-    } finally {
-        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
-    }
-}
-
 function getArrayJsValueFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     const mem = getDataViewMemory0();
@@ -220,60 +113,168 @@ function passArrayJsValueToWasm0(array, malloc) {
     WASM_VECTOR_LEN = array.length;
     return ptr;
 }
-/**
- * @param {string} raw_chart
- * @returns {Chart}
- */
-export function parse_from_osu(raw_chart) {
-    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.parse_from_osu(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
+
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
     }
-    return Chart.__wrap(ret[0]);
+}
+
+function takeFromExternrefTable0(idx) {
+    const value = wasm.__wbindgen_export_0.get(idx);
+    wasm.__externref_table_dealloc(idx);
+    return value;
+}
+/**
+ * @param {GenericManiaChart} chart
+ * @returns {string}
+ */
+export function writeToOsuGeneric(chart) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        _assertClass(chart, GenericManiaChart);
+        const ret = wasm.writeToOsuGeneric(chart.__wbg_ptr);
+        var ptr1 = ret[0];
+        var len1 = ret[1];
+        if (ret[3]) {
+            ptr1 = 0; len1 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred2_0 = ptr1;
+        deferred2_1 = len1;
+        return getStringFromWasm0(ptr1, len1);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
+ * @param {GenericManiaChart} chart
+ * @returns {string}
+ */
+export function writeToSmGeneric(chart) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        _assertClass(chart, GenericManiaChart);
+        const ret = wasm.writeToSmGeneric(chart.__wbg_ptr);
+        var ptr1 = ret[0];
+        var len1 = ret[1];
+        if (ret[3]) {
+            ptr1 = 0; len1 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred2_0 = ptr1;
+        deferred2_1 = len1;
+        return getStringFromWasm0(ptr1, len1);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
+ * @param {GenericManiaChart} chart
+ * @returns {string}
+ */
+export function writeToQuaGeneric(chart) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        _assertClass(chart, GenericManiaChart);
+        const ret = wasm.writeToQuaGeneric(chart.__wbg_ptr);
+        var ptr1 = ret[0];
+        var len1 = ret[1];
+        if (ret[3]) {
+            ptr1 = 0; len1 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred2_0 = ptr1;
+        deferred2_1 = len1;
+        return getStringFromWasm0(ptr1, len1);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
+ * @param {GenericManiaChart} chart
+ * @returns {string}
+ */
+export function writeToFscGeneric(chart) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        _assertClass(chart, GenericManiaChart);
+        const ret = wasm.writeToFscGeneric(chart.__wbg_ptr);
+        var ptr1 = ret[0];
+        var len1 = ret[1];
+        if (ret[3]) {
+            ptr1 = 0; len1 = 0;
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        deferred2_0 = ptr1;
+        deferred2_1 = len1;
+        return getStringFromWasm0(ptr1, len1);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
 }
 
 /**
  * @param {string} raw_chart
- * @returns {Chart}
+ * @returns {GenericManiaChart}
  */
-export function parse_from_sm(raw_chart) {
+export function parseFromOsuGeneric(raw_chart) {
     const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.parse_from_sm(ptr0, len0);
+    const ret = wasm.parseFromOsuGeneric(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
-    return Chart.__wrap(ret[0]);
+    return GenericManiaChart.__wrap(ret[0]);
 }
 
 /**
  * @param {string} raw_chart
- * @returns {Chart}
+ * @returns {GenericManiaChart}
  */
-export function parse_from_qua(raw_chart) {
+export function parseFromSmGeneric(raw_chart) {
     const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.parse_from_qua(ptr0, len0);
+    const ret = wasm.parseFromSmGeneric(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
-    return Chart.__wrap(ret[0]);
+    return GenericManiaChart.__wrap(ret[0]);
 }
 
 /**
  * @param {string} raw_chart
- * @returns {Chart}
+ * @returns {GenericManiaChart}
  */
-export function parse_from_fsc(raw_chart) {
+export function parseFromQuaGeneric(raw_chart) {
     const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.parse_from_fsc(ptr0, len0);
+    const ret = wasm.parseFromQuaGeneric(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
-    return Chart.__wrap(ret[0]);
+    return GenericManiaChart.__wrap(ret[0]);
+}
+
+/**
+ * @param {string} raw_chart
+ * @returns {GenericManiaChart}
+ */
+export function parseFromFscGeneric(raw_chart) {
+    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.parseFromFscGeneric(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return GenericManiaChart.__wrap(ret[0]);
 }
 
 /**
@@ -478,111 +479,6 @@ export class CatchHitobject {
     is_hyperdash() {
         const ret = wasm.catchhitobject_is_hyperdash(this.__wbg_ptr);
         return ret !== 0;
-    }
-}
-
-const ChartFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_chart_free(ptr >>> 0, 1));
-
-export class Chart {
-
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(Chart.prototype);
-        obj.__wbg_ptr = ptr;
-        ChartFinalization.register(obj, obj.__wbg_ptr, obj);
-        return obj;
-    }
-
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        ChartFinalization.unregister(this);
-        return ptr;
-    }
-
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_chart_free(ptr, 0);
-    }
-    /**
-     * @returns {Metadata}
-     */
-    get metadata() {
-        const ret = wasm.__wbg_get_chart_metadata(this.__wbg_ptr);
-        return Metadata.__wrap(ret);
-    }
-    /**
-     * @param {Metadata} arg0
-     */
-    set metadata(arg0) {
-        _assertClass(arg0, Metadata);
-        var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_chart_metadata(this.__wbg_ptr, ptr0);
-    }
-    /**
-     * @returns {ChartInfo}
-     */
-    get chartinfo() {
-        const ret = wasm.__wbg_get_chart_chartinfo(this.__wbg_ptr);
-        return ChartInfo.__wrap(ret);
-    }
-    /**
-     * @param {ChartInfo} arg0
-     */
-    set chartinfo(arg0) {
-        _assertClass(arg0, ChartInfo);
-        var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_chart_chartinfo(this.__wbg_ptr, ptr0);
-    }
-    /**
-     * @returns {TimingPoints}
-     */
-    get timing_points() {
-        const ret = wasm.__wbg_get_chart_timing_points(this.__wbg_ptr);
-        return TimingPoints.__wrap(ret);
-    }
-    /**
-     * @param {TimingPoints} arg0
-     */
-    set timing_points(arg0) {
-        _assertClass(arg0, TimingPoints);
-        var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_chart_timing_points(this.__wbg_ptr, ptr0);
-    }
-    /**
-     * @returns {HitObjects}
-     */
-    get hitobjects() {
-        const ret = wasm.__wbg_get_chart_hitobjects(this.__wbg_ptr);
-        return HitObjects.__wrap(ret);
-    }
-    /**
-     * @param {HitObjects} arg0
-     */
-    set hitobjects(arg0) {
-        _assertClass(arg0, HitObjects);
-        var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_chart_hitobjects(this.__wbg_ptr, ptr0);
-    }
-    /**
-     * @returns {SoundBank | undefined}
-     */
-    get soundbank() {
-        const ret = wasm.__wbg_get_chart_soundbank(this.__wbg_ptr);
-        return ret === 0 ? undefined : SoundBank.__wrap(ret);
-    }
-    /**
-     * @param {SoundBank | null} [arg0]
-     */
-    set soundbank(arg0) {
-        let ptr0 = 0;
-        if (!isLikeNone(arg0)) {
-            _assertClass(arg0, SoundBank);
-            ptr0 = arg0.__destroy_into_raw();
-        }
-        wasm.__wbg_set_chart_soundbank(this.__wbg_ptr, ptr0);
     }
 }
 
@@ -798,6 +694,111 @@ export class ChartInfo {
     static empty() {
         const ret = wasm.chartinfo_empty();
         return ChartInfo.__wrap(ret);
+    }
+}
+
+const GenericManiaChartFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_genericmaniachart_free(ptr >>> 0, 1));
+
+export class GenericManiaChart {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(GenericManiaChart.prototype);
+        obj.__wbg_ptr = ptr;
+        GenericManiaChartFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        GenericManiaChartFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_genericmaniachart_free(ptr, 0);
+    }
+    /**
+     * @returns {Metadata}
+     */
+    get metadata() {
+        const ret = wasm.__wbg_get_genericmaniachart_metadata(this.__wbg_ptr);
+        return Metadata.__wrap(ret);
+    }
+    /**
+     * @param {Metadata} arg0
+     */
+    set metadata(arg0) {
+        _assertClass(arg0, Metadata);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_genericmaniachart_metadata(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {ChartInfo}
+     */
+    get chartinfo() {
+        const ret = wasm.__wbg_get_genericmaniachart_chartinfo(this.__wbg_ptr);
+        return ChartInfo.__wrap(ret);
+    }
+    /**
+     * @param {ChartInfo} arg0
+     */
+    set chartinfo(arg0) {
+        _assertClass(arg0, ChartInfo);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_genericmaniachart_chartinfo(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {TimingPoints}
+     */
+    get timing_points() {
+        const ret = wasm.__wbg_get_genericmaniachart_timing_points(this.__wbg_ptr);
+        return TimingPoints.__wrap(ret);
+    }
+    /**
+     * @param {TimingPoints} arg0
+     */
+    set timing_points(arg0) {
+        _assertClass(arg0, TimingPoints);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_genericmaniachart_timing_points(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {HitObjects}
+     */
+    get hitobjects() {
+        const ret = wasm.__wbg_get_genericmaniachart_hitobjects(this.__wbg_ptr);
+        return HitObjects.__wrap(ret);
+    }
+    /**
+     * @param {HitObjects} arg0
+     */
+    set hitobjects(arg0) {
+        _assertClass(arg0, HitObjects);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_genericmaniachart_hitobjects(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {SoundBank | undefined}
+     */
+    get soundbank() {
+        const ret = wasm.__wbg_get_genericmaniachart_soundbank(this.__wbg_ptr);
+        return ret === 0 ? undefined : SoundBank.__wrap(ret);
+    }
+    /**
+     * @param {SoundBank | null} [arg0]
+     */
+    set soundbank(arg0) {
+        let ptr0 = 0;
+        if (!isLikeNone(arg0)) {
+            _assertClass(arg0, SoundBank);
+            ptr0 = arg0.__destroy_into_raw();
+        }
+        wasm.__wbg_set_genericmaniachart_soundbank(this.__wbg_ptr, ptr0);
     }
 }
 
