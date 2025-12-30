@@ -1,38 +1,42 @@
-# sv
+![rgc logo](https://github.com/user-attachments/assets/a4fef299-f762-4b7b-a1a3-77dae08b4830)
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+# RGC (Rhythm Game Converter)
+RGC is a web-based tool designed to make converting rhythm game maps more convenient. While most existing converters require downloading software, RGC tries to make conversion simple and accessible directly in the browser.
 
-## Creating a project
+## Dependencies
+[RGC-Chart](https://github.com/menvae/RGC-Chart) | Map Conversion
 
-If you're seeing this, you've probably already done this step. Congrats!
+[ZenFS](https://github.com/zen-fs/core) | File System
 
-```sh
-# create a new project in the current directory
-npx sv create
+[fflate](https://github.com/101arrowz/fflate) | Archive Compression & Decompression
 
-# create a new project in my-app
-npx sv create my-app
+
+
+## Building
+To build RGC-Web you'll first have to clone this repo
 ```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
+git clone https://github.com/menvae/RGC-Web.git
+```
+then install the necessary dependencies (you need to have [npm and node.js](https://nodejs.org/en/download) installed)
+```
+npm install
+```
+And Finally you can build.
+```
+npm run build
+npm run preview
+```
+or run the dev server
+```
 npm run dev -- --open
 ```
 
-## Building
+## Bug Reporting
+Use GitHub's [issue tracker](https://github.com/menvae/RGC-Web/issues) for reporting bugs.
 
-To create a production version of your app:
+## Contributing
+You're free contribute code or documentation however, this project is still very early in developement so expect a lot of changes.
 
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## License
+RGC uses the MIT License for all its sibiling projects.
+See [LICENSE](https://github.com/menvae/RGC-Web/blob/master/LICENSE) for more information
