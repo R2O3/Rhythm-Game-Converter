@@ -6,7 +6,9 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({
+      outDir: 'dist' 
+    }),
 		alias: {
       "$core": "./src/core",
 			"$static_libs": "./src/static_libs",
