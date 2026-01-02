@@ -6,8 +6,8 @@
         <h3 class="section-title">Github</h3>
         <div class="title-separator"></div>
         <ul class="section-links">
-          <li><a rel="noopener" target="_blank" href="https://github.com/menvae/RGC-Web" class="footer-link">Web Client</a></li>
-          <li><a rel="noopener" target="_blank" href="https://github.com/menvae/RGC-Chart" class="footer-link">Chart Conversion</a></li>
+          <li><a rel="noopener" target="_blank" href="https://github.com/R2O3/Rhythm-Game-Converter" class="footer-link">Web Client</a></li>
+          <li><a rel="noopener" target="_blank" href="https://github.com/R2O3/rgchart" class="footer-link">Chart Conversion</a></li>
         </ul>
       </div>
       

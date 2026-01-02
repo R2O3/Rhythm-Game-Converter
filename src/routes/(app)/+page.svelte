@@ -50,8 +50,8 @@
     <ItemReveal title="How do I report a bug?">
       <p>
         Submit your issue on Github using the issue tracker: <br />
-        Web Client: <a href="https://github.com/menvae/RGC-Web/issues">https://github.com/menvae/RGC-Web/issues</a> <br />
-        Chart Conversion: <a href="https://github.com/menvae/RGC-Chart/issues">https://github.com/menvae/RGC-Chart/issues</a> <br />
+        Web Client: <a href="https://github.com/R2O3/Rhythm-Game-Converter/issues">https://github.com/R2O3/Rhythm-Game-Converter/issues</a> <br />
+        Chart Conversion: <a href="https://github.com/R2O3/rgchart/issues">https://github.com/R2O3/rgchart/issues</a> <br />
         
         if it's an issue with converting then: <br />
         Open the console (ctrl + shift + i) and type <br />
@@ -71,16 +71,16 @@
     <ItemReveal title="How do I request a feature?">
       <p>
         That's great! Go to Github and open an issue with the feature request label. <br />
-        Chart Conversion: <a rel="noopener" target="_blank" href="https://github.com/menvae/RGC-Chart/issues">https://github.com/menvae/RGC-Chart/issues</a> <br />
-        Web Client: <a rel="noopener" target="_blank" href="https://github.com/menvae/RGC-Web/issues">https://github.com/menvae/RGC-Web/issues</a> <br />
+        Chart Conversion: <a rel="noopener" target="_blank" href="https://github.com/R2O3/rgchart/issues">https://github.com/R2O3/rgchart/issues</a> <br />
+        Web Client: <a rel="noopener" target="_blank" href="https://github.com/R2O3/Rhythm-Game-Converter/issues">https://github.com/R2O3/Rhythm-Game-Converter/issues</a> <br />
       </p>
     </ItemReveal>
     
     <ItemReveal title="I can't find my question here.">
       <p>
         You can go on Github and open an issue with the question label. <br />
-        Web Client: <a href="https://github.com/menvae/RGC-Web/issues">https://github.com/menvae/RGC-Web/issues</a> <br />
-        Chart conversion: <a href="https://github.com/menvae/RGC-Chart/issues">https://github.com/menvae/RGC-Chart/issues</a> <br />
+        Web Client: <a href="https://github.com/R2O3/Rhythm-Game-Converter/issues">https://github.com/R2O3/Rhythm-Game-Converter/issues</a> <br />
+        Chart conversion: <a href="https://github.com/R2O3/rgchart/issues">https://github.com/R2O3/rgchart/issues</a> <br />
         or ask me directly: <br />
         Discord: <a rel="noopener" target="_blank" href="https://discord.com/users/695720659988250765">@_theguy2</a> <br />
         Github: <a rel="noopener" target="_blank" href="https://github.com/menvae">@menvae</a> <br />
