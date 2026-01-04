@@ -1,7 +1,7 @@
 <script lang="ts">
   import { parseColor } from '$lib/helpers';
   import { onMount, onDestroy } from 'svelte';
-  import { getSharedGPU } from '$core/Managers/GPUManager';
+  import { getSharedGPU } from '$core/Managers/GpuManager';
 
   export let baseColor: [number, number, number] = [255, 255, 255];
   export let spawnInterval: number = 400;
