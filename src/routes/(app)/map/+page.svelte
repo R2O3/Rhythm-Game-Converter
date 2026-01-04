@@ -124,6 +124,7 @@
   <style>
     :root {
       --navbar-color: #2d4b5e;
+      --cursor-color: #329c96;
       --accent-color: #3b1b33;
       --content-color: #1f2e30;
       --accent-highlight: #2e707c1e;

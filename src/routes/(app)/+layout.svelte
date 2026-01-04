@@ -8,6 +8,7 @@
   import { cubicOut, cubicInOut } from 'svelte/easing';
   import { startBackgroundAnimation } from '$lib/Mania_bg';
   import ProgressOverlay from '$lib/components/Progress/ProgressOverlay.svelte';
+  import OsuCursor from '$lib/components/OsuCursor.svelte';
   
   export let data: { subtitle?: string } = {};
   let navbarComponent: any = null;
@@ -72,6 +73,10 @@
 </main>
 
 <Footer />
+<OsuCursor 
+  cursorScale={1.2}
+  cursorRotate={true}
+/>
 
 <style>
   :global(body) {

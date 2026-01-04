@@ -7,6 +7,7 @@
   <style>
     :root {
       --navbar-color: #6e6030;
+      --cursor-color: #e8d633;
       --accent-color: #a08123;
       --content-color: #373123;
       --accent-highlight: #977f3621;
