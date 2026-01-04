@@ -2,6 +2,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { page } from '$app/stores';
   import FileIcon from '$lib/assets/file-icon.webp';
+    import LazerButton from './LazerButton.svelte';
 
   export let accept: string = '';
   export let multiple: boolean = false;
@@ -91,7 +92,7 @@
       
       <p class="instruction-text">Drag & drop files here</p>
       <p class="or-text">or</p>
-      <label class="browse-button">
+      <LazerButton color="#c92222" id="browse-button">
         Browse Files
         <input 
           type="file"
@@ -101,7 +102,7 @@
           bind:this={fileInput}
           on:change={handleFileInputChange}
         />
-      </label>
+      </LazerButton>
     </div>
   </div>
 </div>
@@ -167,21 +168,6 @@
     margin: 0.5rem 0;
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.9rem;
-  }
-
-  .browse-button {
-    padding: 0.5rem 1rem;
-    background-color: transparent;
-    color: white;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .browse-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
   }
 
   .file-input {
