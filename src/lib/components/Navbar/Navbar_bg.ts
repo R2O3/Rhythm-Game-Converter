@@ -1,4 +1,4 @@
-import { OsuParticles } from "../../OsuParticles";
+import { OsuParticles } from "../Particles/LagacyOsuParticles";
 
 let particleSystem: OsuParticles | null = null;
 

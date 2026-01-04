@@ -6,14 +6,6 @@ export function prefixList(list: any[], prefix: string) {
 
 export const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
 
-Object.defineProperty(String.prototype, 'capitalize', {
-  value: function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-  },
-  enumerable: false
-});
-
-
 export function parseColor(colorString: string): { r: number; g: number; b: number; a?: number } {
     let match;
     let alpha = 1;

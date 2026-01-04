@@ -1,4 +1,4 @@
-import { parseColor } from "./helpers";
+import { parseColor } from "../../helpers";
 
 interface Particle {
     x: number;

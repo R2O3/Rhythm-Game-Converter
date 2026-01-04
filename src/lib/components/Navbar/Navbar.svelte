@@ -1,14 +1,21 @@
-<script>
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { browser } from '$app/environment';
   import NavButton from './NavButton.svelte';
   import MobileMenu from './NavMobileMenu.svelte';
-  import { initNavbarBg, destroyNavbarBg } from './Navbar_bg.ts';
+  import OsuParticles from '$lib/components/Particles/OsuParticles.svelte';
   
   import logoImage from '$lib/assets/logo.webp';
   
-  export let navItems = [
+  type NavItem = {
+    href: string;
+    label: string;
+    bgColor: string;
+    hoverTextColor: string;
+  };
+  
+  export let navItems: NavItem[] = [
     { href: '/', label: 'Overview', bgColor: 'rgb(179, 84, 130)', hoverTextColor: '#b8004d' },
     { href: '/map', label: 'Convert Map', bgColor: 'rgb(10, 150, 205)', hoverTextColor: '#003f66' },
     { href: '/changelog', label: 'Changelog', bgColor: 'rgb(235, 160, 30)', hoverTextColor: '#663300' }
@@ -16,20 +23,25 @@
 
   let isMobile = writable(false);
   let isMenuOpen = writable(false);
-  let particlesInitialized = false;
+  let particlesComponent: any = null;
+  let showParticles = false;
+  let particlesMounted = false;
 
   function checkMobile() {
     if (!browser) return;
     
     const mobile = window.innerWidth < 768;
     isMobile.set(mobile);
+    const shouldShowParticles = !mobile;
     
-    if (mobile && particlesInitialized) {
-      destroyNavbarBg();
-      particlesInitialized = false;
-    } else if (!mobile && !particlesInitialized) {
-      initNavbarBg();
-      particlesInitialized = true;
+    if (shouldShowParticles !== showParticles) {
+      showParticles = shouldShowParticles;
+      
+      if (shouldShowParticles && particlesMounted) {
+        setTimeout(() => {
+          particlesComponent?.refreshColorFromCss();
+        }, 100);
+      }
     }
     
     if (!mobile) {
@@ -41,21 +53,30 @@
     isMenuOpen.update(open => !open);
   }
 
+  export function refreshNavbarColors() {
+    if (particlesMounted && particlesComponent && showParticles) {
+      setTimeout(() => {
+        particlesComponent?.refreshColorFromCss();
+      }, 20);
+    }
+  }
+
   onMount(() => {
     checkMobile();
     
     if (!$isMobile) {
-      initNavbarBg();
-      particlesInitialized = true;
+      setTimeout(() => {
+        particlesMounted = true;
+        if (particlesComponent) {
+          particlesComponent.refreshColorFromCss();
+        }
+      }, 150);
     }
     
     window.addEventListener('resize', checkMobile);
   });
 
   onDestroy(() => {
-    if (browser && particlesInitialized) {
-      destroyNavbarBg();
-    }
     if (browser) {
       window.removeEventListener('resize', checkMobile);
     }
@@ -63,8 +84,22 @@
 </script>
 
 <nav id="main-nav">
-  {#if !$isMobile}
-    <canvas id="navbar_bg"></canvas>
+  {#if showParticles}
+    <div class="particles-container">
+      <OsuParticles 
+        bind:this={particlesComponent}
+        baseColor={[255, 255, 255]}
+        spawnInterval={700}
+        sizeOffset={40}
+        sizeMultiplier={50}
+        speedOffset={0.4}
+        speedMultiplier={0.8}
+        maxParticles={100}
+        starterParticles={30}
+        triangleThickness={2}
+        lightnessVariations={[0, -10]}
+      />
+    </div>
   {/if}
 
   <div id="navbar-gradient"></div>
@@ -92,15 +127,17 @@
       <span></span>
     </button>
   {:else}
-    {#each navItems as item}
-      <NavButton 
-        href={item.href} 
-        bgColor={item.bgColor} 
-        class="nav-link"
-      >
-        {item.label}
-      </NavButton>
-    {/each}
+    <div class="nav-links-container">
+      {#each navItems as item}
+        <NavButton 
+          href={item.href} 
+          bgColor={item.bgColor} 
+          class="nav-link"
+        >
+          {item.label}
+        </NavButton>
+      {/each}
+    </div>
   {/if}
   
   <div class="underline"></div>
@@ -129,6 +166,14 @@
     will-change: background-color;
     z-index: 2;
     min-height: 60px;
+    align-items: center;
+  }
+
+  .nav-links-container {
+    display: flex;
+    position: relative;
+    z-index: 3;
+    height: 100%;
   }
 
   @media (max-width: 1056px) {
@@ -148,22 +193,22 @@
   }
 
   @media (max-width: 768px) {
-      nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        width: 100vw;
-        margin-left: 0;
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        height: 60px;
-        z-index: 9999;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-      }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100vw;
+      margin-left: 0;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      height: 60px;
+      z-index: 9999;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
+  }
 
-  #navbar_bg {
+  .particles-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -171,7 +216,11 @@
     height: 100%;
     z-index: 0;
     mix-blend-mode: screen;
-    opacity: 0.2;
+    filter:
+      brightness(1.75)
+      opacity(0.6)
+      saturate(2)
+      contrast(1);
     pointer-events: none;
   }
 
@@ -184,21 +233,20 @@
     z-index: 1;
     pointer-events: none;
     background: linear-gradient(
-      to top,
+      to bottom,
       transparent 0%,
-      rgba(0, 0, 0, 0.1) 40%,
-      rgba(0, 0, 0, 0.4) 100%
+      color-mix(in srgb, var(--navbar-color) 50%, transparent) 40%,
+      var(--navbar-color) 100%
     );
-    mix-blend-mode: multiply;
   }
 
   @media (max-width: 767px) {
     #navbar-gradient {
       background: linear-gradient(
-        to top,
+        to bottom,
         transparent 0%,
-        rgba(0, 0, 0, 0.05) 40%,
-        rgba(0, 0, 0, 0.2) 100%
+        color-mix(in srgb, var(--navbar-color) 30%, transparent) 40%,
+        color-mix(in srgb, var(--navbar-color) 80%, transparent) 100%
       );
     }
   }
@@ -318,12 +366,12 @@
 
   :global(.nav-button:first-child) {
     position: relative;
-    z-index: 1;
+    z-index: 3;
   }
 
   :global(.nav-button) {
     position: relative;
-    z-index: 1;
+    z-index: 3;
   }
 
   @media (max-width: 767px) {

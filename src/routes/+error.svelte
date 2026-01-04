@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { page } from '$app/stores';
-  import { OsuParticles } from '$lib/OsuParticles';
+  import { OsuParticles } from '$lib/components/Particles/LagacyOsuParticles';
   import { browser } from '$app/environment';
   
   onMount(() => {

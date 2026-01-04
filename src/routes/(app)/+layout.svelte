@@ -6,12 +6,11 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { cubicOut, cubicInOut } from 'svelte/easing';
-  import { refreshNavbarColors } from '$lib/components/Navbar/Navbar_bg'; 
   import { startBackgroundAnimation } from '$lib/Mania_bg';
   import ProgressOverlay from '$lib/components/Progress/ProgressOverlay.svelte';
-  import Bg from '$lib/assets/rgc-background.webp'
   
   export let data: { subtitle?: string } = {};
+  let navbarComponent: any = null;
   
   let isNavigating = false;
   
@@ -25,7 +24,7 @@
   afterNavigate(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    refreshNavbarColors();
+    navbarComponent?.refreshNavbarColors();
 
     setTimeout(() => {
       isNavigating = false;
@@ -33,7 +32,7 @@
   });
   
   onMount(() => {
-    refreshNavbarColors();
+    navbarComponent?.refreshNavbarColors();
     const stopAnimation = startBackgroundAnimation();
     
     return () => stopAnimation(); 
@@ -55,7 +54,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300..700&display=swap" rel="stylesheet">
 </svelte:head>
 
-<Navbar />
+<Navbar bind:this={navbarComponent} />
 <ProgressOverlay />
 
 <main class:navigating={isNavigating}>
