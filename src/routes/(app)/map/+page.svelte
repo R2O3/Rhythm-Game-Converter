@@ -8,7 +8,7 @@
   import FileSelector from '$lib/components/FileSelector.svelte';
   import Dropdown from '$lib/components/Dropdown.svelte';
   import Explorer from '$lib/components/Forms/Explorer.svelte';
-  import FormButton from '$lib/components/Forms/FormButton.svelte';
+  import LazerButton from '$lib/components/LazerButton.svelte';
   
   import { getMapsetExtension, SUPPORTED_MANIA_CHART_FORMATS, SUPPORTED_MANIA_MAPSET_FORMATS } from '$lib/stores';
   import { prefixList, formatTime } from '$lib/helpers';
@@ -192,14 +192,14 @@
         </svelte:fragment>
 
         <svelte:fragment slot="convert-button">
-          <FormButton 
-            icon="🔄"
+          <LazerButton 
             id="map-convert-btn" 
+            color="#5932cd"
             disabled={convertButtonDisabled}
             on:click={handleConvert}
           >
             Convert
-          </FormButton>
+          </LazerButton>
         </svelte:fragment>
       </Explorer>
     </AppFormTab>

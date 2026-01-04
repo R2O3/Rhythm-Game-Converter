@@ -2,8 +2,8 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import FileTreeEntry from './FileTreeEntry.svelte';
-  import FormButton from './FormButton.svelte';
   import { SaveAs } from '$core/structures/Files';
+  import LazerButton from '../LazerButton.svelte';
 
   export let files: any[] = [];
   export let specificExportLabel: string = 'Map';
@@ -59,14 +59,14 @@
       <slot name="convert-button" />
       
       <div class="export-dropdown-wrapper" bind:this={exportDropdownWrapper}>
-        <FormButton
-          icon="💾"
+        <LazerButton
           id="export-btn" 
+          color="#cc3278"
           disabled={exportDisabled}
           on:click={toggleExportDropdown}
         >
           Export ▾
-        </FormButton>
+        </LazerButton>
 
         {#if showExportDropdown}
           <ul class="dropdown" transition:fade={{ duration: 100 }} role="menu">
