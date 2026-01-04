@@ -11,6 +11,7 @@ const config = {
     }),
 		alias: {
       "$core": "./src/core",
+			"$shaders": "./src/shaders",
 			"$static_libs": "./src/static_libs",
     }
 	},
