@@ -11,13 +11,12 @@
   import ProgressOverlay from '$lib/components/Progress/ProgressOverlay.svelte';
   import OsuCursor from '$lib/components/OsuCursor.svelte';
   
-  export let data: { subtitle?: string } = {};
   let navbarComponent: any = null;
   let settingsOpen = false;
   
   let isNavigating = false;
   
-  $: subtitle = data?.subtitle || '';
+  $: subtitle = $page.data?.subtitle || '';
   $: title = subtitle ? `RGC - ${subtitle}` : 'Rhythm Game Converter';
   
   beforeNavigate(({ from, to }) => {
