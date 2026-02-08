@@ -1,16 +1,16 @@
 import { createLibraries } from '$core/Libraries/libInitilazation';
 
 export const mapLibraries = createLibraries(async () => {
-  const rgcChart = await import('$static_libs/rgc-chart');
+  const rgchart = await import('$static_libs/rgchart');
   
-  if (typeof rgcChart.default === 'function') {
-      await rgcChart.default();
+  if (typeof rgchart.default === 'function') {
+      await rgchart.default();
   }
   
   return {
-    rgcChart: rgcChart
+    rgchart: rgchart
   };
 });
 
 export type MapLibraries = Awaited<ReturnType<typeof mapLibraries.getAll>>;
-export type * from '$static_libs/rgc-chart';
+export type * from '$static_libs/rgchart';

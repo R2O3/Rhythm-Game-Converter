@@ -67,15 +67,15 @@ export async function processImportedFiles(files: File[]) {
 }
 
 async function parseSingleChart(path: string, key: string) {
-    const { rgcChart } = mapLibraries.getSpecific(); 
+    const { rgchart } = mapLibraries.getSpecific(); 
     const ext = FileManager.getFileExtension(path);
     
     let parser;
     switch (ext) {
-        case 'sm': parser = rgcChart?.parseFromSmGeneric; break;
-        case 'osu': parser = rgcChart?.parseFromOsuGeneric; break;
-        case 'qua': parser = rgcChart?.parseFromQuaGeneric; break;
-        case 'fsc': parser = rgcChart?.parseFromFscGeneric; break;
+        case 'sm': parser = rgchart?.parseFromSmGeneric; break;
+        case 'osu': parser = rgchart?.parseFromOsuGeneric; break;
+        case 'qua': parser = rgchart?.parseFromQuaGeneric; break;
+        case 'fsc': parser = rgchart?.parseFromFscGeneric; break;
         default: return;
     }
 

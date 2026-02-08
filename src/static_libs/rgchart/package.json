@@ -1,23 +1,23 @@
 {
-  "name": "rgc-chart-browser",
+  "name": "@r2o3/rgchart-browser",
   "type": "module",
   "collaborators": [
-    "menvae"
+    "menvae <menvaedev@gmail.com>"
   ],
   "description": "A library for parsing and writing rhythm game charts.",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/menvae/RGC-Chart"
+    "url": "https://github.com/R2O3/rgchart"
   },
   "files": [
-    "rgc_chart_bg.wasm",
-    "rgc_chart.js",
-    "rgc_chart.d.ts"
+    "rgchart_bg.wasm",
+    "rgchart.js",
+    "rgchart.d.ts"
   ],
-  "main": "rgc_chart.js",
-  "types": "rgc_chart.d.ts",
+  "main": "rgchart.js",
+  "types": "rgchart.d.ts",
   "sideEffects": [
     "./snippets/*"
   ],

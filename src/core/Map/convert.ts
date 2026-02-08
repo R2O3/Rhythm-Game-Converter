@@ -65,14 +65,14 @@ export async function convertMaps(targetFormat: string) {
 async function runConverter(chart: GenericManiaChart, type: string, path: string) {
     if (!SUPPORTED_MANIA_CHART_FORMATS.includes(type)) return;
     
-    const { rgcChart } = mapLibraries.getSpecific(); 
+    const { rgchart } = mapLibraries.getSpecific(); 
 
     let converter;
     switch (type) {
-        case 'sm': converter = rgcChart?.writeToSmGeneric; break;
-        case 'osu': converter = rgcChart?.writeToOsuGeneric; break;
-        case 'qua': converter = rgcChart?.writeToQuaGeneric; break;
-        case 'fsc': converter = rgcChart?.writeToFscGeneric; break;
+        case 'sm': converter = rgchart?.writeToSmGeneric; break;
+        case 'osu': converter = rgchart?.writeToOsuGeneric; break;
+        case 'qua': converter = rgchart?.writeToQuaGeneric; break;
+        case 'fsc': converter = rgchart?.writeToFscGeneric; break;
         default: return;
     }
 
