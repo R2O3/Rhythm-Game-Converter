@@ -22,6 +22,7 @@
 <h1>Changelog</h1>
 
 <ItemRevealContainer>
+  <ItemReveal title="0.0.12 - Skin Conversion Support" url='https://raw.githubusercontent.com/R2O3/Rhythm-Game-Converter/refs/heads/master/changelogs/0.0.12' />
   <ItemReveal title="0.0.11 - Full Rewrite" url='https://raw.githubusercontent.com/R2O3/Rhythm-Game-Converter/refs/heads/master/changelogs/0.0.11' />
   <ItemReveal title="0.0.10 - Minor Update" url='https://raw.githubusercontent.com/R2O3/Rhythm-Game-Converter/refs/heads/master/changelogs/0.0.10' />
   <ItemReveal title="0.0.9 - fluXis support" url='https://raw.githubusercontent.com/R2O3/Rhythm-Game-Converter/refs/heads/master/changelogs/0.0.9' />
