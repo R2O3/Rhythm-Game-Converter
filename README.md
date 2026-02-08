@@ -1,7 +1,9 @@
 ![rgc logo](https://github.com/user-attachments/assets/a4fef299-f762-4b7b-a1a3-77dae08b4830)
 
 # Rhythm Game Converter (RGC)
-RGC is a web-based tool designed to make converting rhythm game maps more convenient. While most existing converters require downloading software, RGC tries to make conversion simple and accessible directly in the browser.
+RGC is a web-based tool designed to make converting rhythm game maps and skins more convenient. While most existing map converters require downloading software, RGC tries to make conversion simple and accessible directly in the browser.
+
+As far I know RGC is the only converter capable of converting skins.
 
 ## Dependencies
 [rgchart](https://github.com/R2O3/rgchart) | Map Conversion

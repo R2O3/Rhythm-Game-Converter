@@ -22,7 +22,7 @@ export async function convertSkins(targetFormat: string) {
 
     for (const key of keys) {
         const currentProgress = (convertedCount / keys.length) * 100;
-        Progress.update(`Converting ${key}...`, currentProgress);
+        Progress.update(`Converting ${key} (this may take a while)...`, currentProgress);
         
         await yieldToMain();
 
