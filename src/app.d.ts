@@ -3,6 +3,14 @@
 declare global {
 	const __APP_VERSION__: string;
 
+	export interface SettingsDefinition {
+		id: string;
+		label: string;
+		description: string;
+		store: Writable<any>;
+		key?: string; 
+	}
+
 	namespace App {
 		// interface Error {}
 		// interface Locals {}

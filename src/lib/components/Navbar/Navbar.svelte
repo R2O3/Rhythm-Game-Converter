@@ -3,6 +3,7 @@
   import { writable } from 'svelte/store';
   import { browser } from '$app/environment';
   import NavButton from './NavButton.svelte';
+  import NavSettingsButton from './NavSettingsButton.svelte';
   import MobileMenu from './NavMobileMenu.svelte';
   import OsuParticles from '$lib/components/Particles/OsuParticles.svelte';
   
@@ -21,6 +22,8 @@
     { href: '/skin', label: 'Convert Skin', bgColor: 'rgb(45, 175, 85)', hoverTextColor: '#006633' },
     { href: '/changelog', label: 'Changelog', bgColor: 'rgb(235, 160, 30)', hoverTextColor: '#663300' },
   ];
+
+  export let onSettingsClick: () => void = () => {};
 
   let isMobile = writable(false);
   let isMenuOpen = writable(false);
@@ -127,8 +130,10 @@
       <span></span>
       <span></span>
     </button>
+    <NavSettingsButton onClick={onSettingsClick} class="mobile-settings" />
   {:else}
     <div class="nav-links-container">
+      <NavSettingsButton onClick={onSettingsClick} />
       {#each navItems as item}
         <NavButton 
           href={item.href} 
@@ -206,6 +211,13 @@
       height: 60px;
       z-index: 9999;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    :global(.mobile-settings) {
+      position: absolute;
+      right: 4.5rem;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 

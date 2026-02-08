@@ -1,3 +1,4 @@
+import { get } from "svelte/store";
 import { Debug } from "./stores";
 
 export function prefixList(list: any[], prefix: string) {
@@ -99,7 +100,7 @@ export async function sleep(ms: number): Promise<void>  {
 }
 
 export function debugLog(...args: any[]) {
-  if (typeof Debug !== 'undefined' && Debug) {
+  if (typeof Debug !== 'undefined' && get(Debug)) {
     console.log('%c[DEBUG]', 'color:rgb(72, 180, 76); font-weight: bold;', ...args);
   }
 }

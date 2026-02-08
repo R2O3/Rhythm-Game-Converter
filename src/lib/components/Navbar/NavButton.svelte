@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { parseColor } from '$lib/helpers';
   import { page } from '$app/stores';
   
@@ -10,12 +10,7 @@
 
   $: isCurrent = $page.url.pathname === href;
 
-  /**
-     * @param {string} color
-     * @param {number} lightness
-     * @param {number} opacity
-     */
-  function adjustColor(color, lightness, opacity) {
+  function adjustColor(color: string, lightness: number, opacity: number) {
     try {
       const parsed = parseColor(color);
       return `rgba(${parsed.r + lightness}, ${parsed.g + lightness}, ${parsed.b + lightness}, ${opacity})`;

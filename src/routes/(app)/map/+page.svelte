@@ -12,7 +12,6 @@
   
   import { getMapsetExtension, SUPPORTED_MANIA_CHART_FORMATS, SUPPORTED_MANIA_MAPSET_FORMATS } from '$lib/stores';
   import { prefixList, formatTime } from '$lib/helpers';
-  import { SaveAs } from '$core/structures/Files';
   import type { FileTreeNode } from '$core/Managers/FileManager';
   import { mapLibraries } from '$core/Map/libs';
   import { FileManager } from '$core/Managers/FileManager';

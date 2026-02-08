@@ -1,5 +1,6 @@
 <script lang="ts">
   import Navbar from '$lib/components/Navbar/Navbar.svelte';
+  import SettingsSidebar from '$lib/components/Settings/SettingsSidebar.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import { page } from '$app/stores';
   import { beforeNavigate, afterNavigate } from '$app/navigation';
@@ -12,6 +13,7 @@
   
   export let data: { subtitle?: string } = {};
   let navbarComponent: any = null;
+  let settingsOpen = false;
   
   let isNavigating = false;
   
@@ -55,7 +57,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300..700&display=swap" rel="stylesheet">
 </svelte:head>
 
-<Navbar bind:this={navbarComponent} />
+<Navbar bind:this={navbarComponent} onSettingsClick={() => settingsOpen = true} />
+<SettingsSidebar isOpen={settingsOpen} onClose={() => settingsOpen = false} />
 <ProgressOverlay />
 
 <main class:navigating={isNavigating}>

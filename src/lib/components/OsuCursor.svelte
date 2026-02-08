@@ -3,6 +3,7 @@
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
   import cursorImage from '$lib/assets/cursor/menu-cursor.png';
+  import { userConfig } from '$lib/stores';
   
   interface Point {
     x: number;
@@ -23,7 +24,9 @@
   let isVisible: boolean = true;
   let lastInputWasMouse: boolean = true;
   let isMobile: boolean = false;
-  let rafId: number; 
+  let rafId: number;
+  let cursorImageLoaded: boolean = false;
+  let imgElement: HTMLImageElement;
   
   let scale = tweened(1, { duration: 200, easing: cubicOut });
   let rotation = tweened(0, { duration: 120, easing: cubicOut });
@@ -36,6 +39,20 @@
   let isMouseDown: boolean = false;
   
   $: finalScale = cursorScale * $scale * 0.08;
+  $: customCursorEnabled = $userConfig?.customCursor ?? true;
+  $: shouldHideNativeCursor = customCursorEnabled && cursorImageLoaded;
+  
+  $: if (typeof document !== 'undefined') {
+    if (shouldHideNativeCursor) {
+      document.body.classList.add('custom-cursor-active');
+    } else {
+      document.body.classList.remove('custom-cursor-active');
+    }
+  }
+  
+  function handleImageLoad(): void {
+    cursorImageLoaded = true;
+  }
   
   function updateLoop(): void {
     currentX = targetX;
@@ -151,6 +168,10 @@
 
     if (isMobile) return;
 
+    if (imgElement && imgElement.complete) {
+      cursorImageLoaded = true;
+    }
+
     rafId = requestAnimationFrame(updateLoop);
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -163,18 +184,22 @@
 
   onDestroy(() => {
     if (typeof window !== 'undefined') {
-        cancelAnimationFrame(rafId);
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mousedown', handleMouseDown);
-        window.removeEventListener('mouseup', handleMouseUp);
-        window.removeEventListener('dragover', handleMouseMove);
-        window.removeEventListener('dragend', handleMouseUp);
-        window.removeEventListener('keydown', handleKeyDown);
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('dragover', handleMouseMove);
+      window.removeEventListener('dragend', handleMouseUp);
+      window.removeEventListener('keydown', handleKeyDown);
+    }
+    
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('custom-cursor-active');
     }
   });
 </script>
 
-{#if !isMobile}
+{#if !isMobile && customCursorEnabled}
   <div 
     class="menu-cursor"
     style="
@@ -184,7 +209,13 @@
   >
     <div class="cursor-container">
       <div class="cursor-base">
-        <img src={cursorImage} alt="cursor" draggable="false" />
+        <img 
+          bind:this={imgElement}
+          src={cursorImage} 
+          alt="cursor" 
+          draggable="false"
+          on:load={handleImageLoad}
+        />
       </div>
       <div class="cursor-additive" style="opacity: {$additiveOpacity};">
         <div class="cursor-tint"></div>
@@ -194,10 +225,9 @@
 {/if}
 
 <style>
-  @media (pointer: fine) {
-    :global(body), :global(*) {
-      cursor: none !important;
-    }
+  :global(body.custom-cursor-active),
+  :global(body.custom-cursor-active *) {
+    cursor: none !important;
   }
   
   .menu-cursor {
