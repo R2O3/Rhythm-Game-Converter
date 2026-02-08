@@ -45,6 +45,8 @@
     }
   }
 
+  let cleanup: (() => void) | null = null;
+
   onMount(async () => {
     const gpu = await getSharedGPU(triangleThickness);
     if (!gpu) return;
@@ -55,7 +57,8 @@
     if (!ctx) return;
     ctx.configure({ device, format, alphaMode: 'premultiplied' });
 
-    const resizeCanvas = () => {
+     const resizeCanvas = () => {
+      if (!canvas) return;
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
     };
@@ -194,12 +197,16 @@
     };
 
     animate();
+
+    cleanup = () => {
+      window.removeEventListener('resize', resizeCanvas);
+      if (animationId) cancelAnimationFrame(animationId);
+      if (spawnIntervalId) clearInterval(spawnIntervalId);
+    };
   });
 
   onDestroy(() => {
-    if (typeof window !== 'undefined') window.removeEventListener('resize', () => {});
-    if (animationId) cancelAnimationFrame(animationId);
-    if (spawnIntervalId) clearInterval(spawnIntervalId);
+    cleanup?.();
   });
 </script>
 
