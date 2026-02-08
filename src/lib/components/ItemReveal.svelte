@@ -151,7 +151,7 @@
   }
   
   .reveal-header:hover .title {
-    color: var(--navbar-color);
+    color: var(--cursor-color);
   }
   
   .reveal-content {
