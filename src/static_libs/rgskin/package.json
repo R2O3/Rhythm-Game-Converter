@@ -1,0 +1,32 @@
+{
+  "name": "@r2o3/rgskin-browser",
+  "type": "module",
+  "collaborators": [
+    "menvae"
+  ],
+  "description": "A library for converting, loading and creating skins for various rhythm games.",
+  "version": "0.0.3",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/r2o3/rgskin"
+  },
+  "files": [
+    "rgskin_bg.wasm",
+    "rgskin.js",
+    "rgskin.d.ts"
+  ],
+  "main": "rgskin.js",
+  "types": "rgskin.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ],
+  "keywords": [
+    "wasm",
+    "rust",
+    "rhythm-game",
+    "parser",
+    "converter",
+    "skin"
+  ]
+}

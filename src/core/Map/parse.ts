@@ -3,6 +3,7 @@ import { mapParseManager } from '$core/Map/MapParseManager';
 import { mapLibraries } from '$core/Map/libs';
 import { Progress } from '$lib/components/Progress/ProgressOverlay';
 import { debugLog, parseError, yieldToMain } from '$lib/helpers';
+import { SUPPORTED_MANIA_MAPSET_FORMATS } from '$lib/stores';
 
 export async function processImportedFiles(files: File[]) {
     await FileManager.clearDir("/MapImport");
@@ -18,8 +19,8 @@ export async function processImportedFiles(files: File[]) {
         Progress.update(`Extracting ${file.name}...`, (extractedCount / files.length) * 50);
         await yieldToMain();
 
-        if (['zip', 'rar', 'tar', '7z', 'qp', 'fms', 'osz'].includes(ext)) {
-            const isMapPackage = ['qp', 'fms', 'osz'].includes(ext);
+        if (['zip', 'rar', 'tar', '7z'].concat(SUPPORTED_MANIA_MAPSET_FORMATS).includes(ext)) {
+            const isMapPackage = SUPPORTED_MANIA_MAPSET_FORMATS.includes(ext);
             const targetPath = isMapPackage 
                 ? `/MapImport/${FileManager.removeFileExtension(file.name)}` 
                 : `/MapImport/`;
@@ -55,7 +56,7 @@ export async function processImportedFiles(files: File[]) {
     }
 
     Progress.update('Done', 100);
-    debugLog(`[Parse] Processed ${mapsetsProcessed} directories. Found ${mapParseManager.getKeys().length} valid maps.`);
+    debugLog(`[Map Parse] Processed ${mapsetsProcessed} directories. Found ${mapParseManager.getKeys().length} valid maps.`);
     
     await new Promise(r => setTimeout(r, 200));
     Progress.hide();

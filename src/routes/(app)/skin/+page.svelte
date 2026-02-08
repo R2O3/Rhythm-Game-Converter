@@ -10,48 +10,46 @@
   import Explorer from '$lib/components/Forms/Explorer.svelte';
   import LazerButton from '$lib/components/LazerButton.svelte';
   
-  import { getMapsetExtension, SUPPORTED_MANIA_CHART_FORMATS, SUPPORTED_MANIA_MAPSET_FORMATS } from '$lib/stores';
+  import { SUPPORTED_MANIA_SKIN_FORMATS } from '$lib/stores';
   import { prefixList, formatTime } from '$lib/helpers';
   import { SaveAs } from '$core/structures/Files';
   import type { FileTreeNode } from '$core/Managers/FileManager';
-  import { mapLibraries } from '$core/Map/libs';
+  import { skinLibraries } from '$core/Skin/libs';
   import { FileManager } from '$core/Managers/FileManager';
 
-  import { processImportedFiles } from '$core/Map/parse';
-  import { convertMaps } from '$core/Map/convert';
-  import { saveEntry, exportAllMaps } from '$core/Map/export';
+  import { processImportedFiles } from '$core/Skin/import';
+  import { convertSkins } from '$core/Skin/convert';
+  import { saveEntry, exportAllSkins } from '$core/Skin/export';
 
   let selectedTab = 'mania';
-  let chartType = 'osu';
+  let skinType = 'osk';
   let explorerRef: any;
   let convertButtonDisabled = true;
   let selectedFiles: File[] = [];
   let explorerFiles: FileTreeNode[] = [];
   
-  let timings = { extract: 0, parse: 0, convert: 0 };
+  let timings = { extract: 0, load: 0, convert: 0 };
 
   const readableNames: Record<string, string> = {
-    'osu': 'osu! (.osu)',
-    'qua': 'Quaver (.qua)',
-    'fsc': 'fluXis (.fsc)',
-    'sm': 'StepMania (.sm)'
+    'osk': 'osu! (.osk)',
+    'fsk': 'fluXis (.fsk)',
   };
 
-  $: chartOptions = SUPPORTED_MANIA_CHART_FORMATS.map(fmt => ({
+  $: chartOptions = SUPPORTED_MANIA_SKIN_FORMATS.map(fmt => ({
       value: fmt,
       label: readableNames[fmt] || `.${fmt}`
   }));
 
-  $: specificExportLabel = `.${getMapsetExtension(chartType)}`;
+  $: specificExportLabel = `.${skinType}`;
 
   onMount(async () => {
     try {
-        await mapLibraries.initialize();
+        await skinLibraries.initialize();
         await FileManager.initFs();
         
         const url = new URL(window.location.href);
         url.searchParams.set("mode", "mania");
-        url.searchParams.set("type", "osu");
+        url.searchParams.set("type", "osk");
         
         replaceState(url, {}); 
     } catch (e) {
@@ -68,13 +66,13 @@
     if (selectedFiles.length === 0) return;
 
     convertButtonDisabled = true;
-    timings = { extract: 0, parse: 0, convert: 0 };
+    timings = { extract: 0, load: 0, convert: 0 };
     updateTimingStats();
 
     try {
         const result = await processImportedFiles(selectedFiles);
         timings.extract = result.extractTime;
-        timings.parse = result.parseTime;
+        timings.load = result.loadTime;
         updateTimingStats();
         convertButtonDisabled = false;
     } catch (error) {
@@ -88,7 +86,7 @@
     document.dispatchEvent(new CustomEvent('convert:start'));
     
     try {
-        const result = await convertMaps(chartType);
+        const result = await convertSkins(skinType);
         explorerFiles = result?.fileTree ?? [];
         timings.convert = result?.convertTime ?? 0;
         updateTimingStats();
@@ -100,18 +98,18 @@
 
   function handleSaveAs(event: CustomEvent) {
     const { node, exportType } = event.detail;
-    saveEntry(node, exportType, chartType);
+    saveEntry(node, exportType, skinType);
   }
 
   function handleExport(event: CustomEvent) {
-      exportAllMaps(event.detail, chartType);
+      exportAllSkins(event.detail, skinType);
   }
 
   function updateTimingStats() {
       if (explorerRef) {
           explorerRef.setStats([
               { label: 'Extract', value: timings.extract ? formatTime(timings.extract) : '' },
-              { label: 'Parse', value: timings.parse ? formatTime(timings.parse) : '' },
+              { label: 'Load', value: timings.load ? formatTime(timings.load) : '' },
               { label: 'Convert', value: timings.convert ? formatTime(timings.convert) : '' }
           ].filter(s => s.value));
       }
@@ -121,23 +119,28 @@
 <svelte:head>
   <style>
     :root {
-      --navbar-color: #2d4b5e;
-      --cursor-color: #329c96;
-      --accent-color: #3b1b33;
-      --content-color: #1f2e30;
-      --accent-highlight: #2e707c1e;
-      --navbutton-separator-color: #3dc5e0;
-      --footer-accent-color: #222b2b;
-      --footer-accent-color-lighter: #313d3d;
-      --background-color: #1f2727;
+      --navbar-color: #2d5e4b;
+      --cursor-color: #32966c;
+      --accent-color: #3b331b;
+      --content-color: #1f3028;
+      --accent-highlight: #2e7c511e;
+      --navbutton-separator-color: #3de074;
+      --footer-accent-color: #222b26;
+      --footer-accent-color-lighter: #313d38;
+      --background-color: #1f271f;
     }
   </style>
 </svelte:head>
 
 <section>
-  <h1>Map Conversion</h1>
-  <p>Convert your maps or charts here.</p>
+  <h1>Skin Conversion</h1>
+  <p>Convert your skins here.</p>
   <p>You can find supported formats below.</p>
+
+  <div class="warning">
+    <strong>Disclaimer:</strong> This is made to ease the hassle of porting skins so don't expect perfect conversion, but still open an issue on Github
+    if you have suggestions or something isn't working or converted as expected.
+  </div>
 </section>
 
 <hr />
@@ -167,8 +170,8 @@
       >
         <svelte:fragment slot="form">
           <FileSelector
-            accept={prefixList(SUPPORTED_MANIA_CHART_FORMATS.concat(SUPPORTED_MANIA_MAPSET_FORMATS), '.').join(", ")+", .zip, .rar, .tar, .7z"}
-            multiple={true}
+            accept={prefixList(SUPPORTED_MANIA_SKIN_FORMATS, '.').join(", ")}
+            multiple={false}
             on:filesSelected={handleFilesSelected}
           />
           
@@ -179,10 +182,10 @@
               <p style="margin: 0; white-space: nowrap;">Convert to</p>
               
               <Dropdown 
-                id="ChartType" 
+                id="SkinType" 
                 name="type" 
                 items={chartOptions} 
-                bind:value={chartType} 
+                bind:value={skinType} 
               />
               
             </div>
@@ -192,7 +195,7 @@
 
         <svelte:fragment slot="convert-button">
           <LazerButton 
-            id="map-convert-btn" 
+            id="skin-convert-btn" 
             color="#5932cd"
             disabled={convertButtonDisabled}
             on:click={handleConvert}
@@ -210,10 +213,15 @@
 <section>
   <h2>Supported Formats</h2>
   <ul>
-  {#each prefixList(SUPPORTED_MANIA_CHART_FORMATS.concat(SUPPORTED_MANIA_MAPSET_FORMATS), '.') as f }
+  {#each prefixList(SUPPORTED_MANIA_SKIN_FORMATS, '.') as f }
     <li>{f}</li>
   {/each}
-    <li>Most archives also work.</li>
+
+  &nbsp;
+
+  <div class="info">
+    <strong>Something to know:</strong> Your skin file has to end in one of these extensions, zip or any other archive won't work.
+  </div>
   </ul>
 </section>
 

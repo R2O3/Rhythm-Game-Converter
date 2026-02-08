@@ -18,7 +18,8 @@
   export let navItems: NavItem[] = [
     { href: '/', label: 'Overview', bgColor: 'rgb(179, 84, 130)', hoverTextColor: '#b8004d' },
     { href: '/map', label: 'Convert Map', bgColor: 'rgb(10, 150, 205)', hoverTextColor: '#003f66' },
-    { href: '/changelog', label: 'Changelog', bgColor: 'rgb(235, 160, 30)', hoverTextColor: '#663300' }
+    { href: '/skin', label: 'Convert Skin', bgColor: 'rgb(45, 175, 85)', hoverTextColor: '#006633' },
+    { href: '/changelog', label: 'Changelog', bgColor: 'rgb(235, 160, 30)', hoverTextColor: '#663300' },
   ];
 
   let isMobile = writable(false);

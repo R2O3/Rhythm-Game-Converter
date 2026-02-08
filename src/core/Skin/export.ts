@@ -1,6 +1,5 @@
 import { FileManager, type FileTreeNode } from '$core/Managers/FileManager';
 import { FsEntryType, SaveAs } from '$core/structures/Files';
-import { getMapsetExtension } from '$lib/stores';
 
 export async function saveEntry(node: FileTreeNode, exportType: SaveAs, targetFormat: string) {
     const isDirectory = node.type === FsEntryType.directory;
@@ -16,27 +15,27 @@ export async function saveEntry(node: FileTreeNode, exportType: SaveAs, targetFo
         await FileManager.downloadFromBlob(blob, `${node.name}.zip`);
     } 
     else if (exportType === SaveAs.specific) {
-        const ext = getMapsetExtension(targetFormat);
+        const ext = targetFormat;
         await FileManager.downloadFromBlob(blob, `${node.name}.${ext}`);
     }
 }
 
-export async function exportAllMaps(exportType: SaveAs, targetFormat: string) {
-    const directories = await FileManager.getDirectoryNames("/MapExport");
+export async function exportAllSkins(exportType: SaveAs, targetFormat: string) {
+    const directories = await FileManager.getDirectoryNames("/SkinExport");
     
     if (exportType === SaveAs.zip) {
         const baseName = directories.length === 1 
             ? directories[0]
-            : "converted_maps";
+            : "converted_skins";
         
-        const blob = await FileManager.zip("/MapExport", "rgc-export", false);
+        const blob = await FileManager.zip("/SkinExport", "rgc-export", false);
         await FileManager.downloadFromBlob(blob, `${baseName}.zip`);
     } 
     else if (exportType === SaveAs.specific) {
-        const ext = getMapsetExtension(targetFormat);
+        const ext = targetFormat;
         
         for (const directory of directories) {
-            const blob = await FileManager.zip(`/MapExport/${directory}`, "", false);
+            const blob = await FileManager.zip(`/SkinExport/${directory}`, "", false);
             await FileManager.downloadFromBlob(blob, `${directory}.${ext}`);
         }
     }

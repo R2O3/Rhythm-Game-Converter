@@ -13,6 +13,8 @@ export interface FileTreeNode {
 const FsStructure = {
     "MapImport": {},
     "MapExport": {},
+    "SkinImport": {},
+    "SkinExport": {},
     "MapCompressed": {},
 };
 
