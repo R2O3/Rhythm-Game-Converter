@@ -2,7 +2,7 @@
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import SettingItem from './SettingsItem.svelte';
-  import { Debug, userConfig } from '$lib/stores';
+  import { Debug, initialConfig, userConfig } from '$lib/stores';
 
   export let isOpen = false;
   export let onClose = () => {};
@@ -16,12 +16,22 @@
       label: 'Custom Cursor',
       description: 'Whether or not to use an osu!lazer style cursor.',
       store: userConfig,
+      defaultVal: initialConfig.customCursor,
       key: 'customCursor' 
+    },
+    {
+      id: 'disable-particles',
+      label: 'Disable Particles',
+      description: 'Whether or not to render particle in navbar and on buttons (Disable particles if website is laggy).',
+      store: userConfig,
+      defaultVal: initialConfig.disableParticles,
+      key: 'disableParticles' 
     },
     {
       id: 'debug',
       label: 'Debug',
       description: 'Shows debug info inside the dev tools console.',
+      defaultVal: false,
       store: Debug,
     },
   ];

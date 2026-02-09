@@ -7,6 +7,7 @@ declare global {
 		id: string;
 		label: string;
 		description: string;
+		defaultVal: any;
 		store: Writable<any>;
 		key?: string; 
 	}

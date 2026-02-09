@@ -11,9 +11,9 @@
       unsubscribe();
     }
 
-    const { store, key } = setting;
+    const { defaultVal: default_val, store, key } = setting;
     unsubscribe = store.subscribe((value: any) => {
-      isChecked = key ? (value?.[key] ?? false) : (value ?? false);
+      isChecked = key ? (value?.[key] ?? default_val) : (value ?? default_val);
     });
   }
 

@@ -43,9 +43,9 @@
 
 <svelte:head>
   <title>{title}</title>
-  <meta name="description" content="RGC (Rhythm Game Converter) is a web-based tool that allows for easily converting rhythm game charts and maps." />
+  <meta name="description" content="RGC (Rhythm Game Converter) is a web-based tool that allows for easily converting rhythm game skins and charts/maps." />
   <meta property="og:title" content={title} />
-  <meta property="og:description" content="RGC (Rhythm Game Converter) is a web-based tool that allows for easily converting rhythm game charts and maps." />
+  <meta property="og:description" content="RGC (Rhythm Game Converter) is a web-based tool that allows for easily converting rhythm game skins and charts/maps." />
   <meta property="og:image" content="https://o8zeinaus1.ufs.sh/f/ZAifdK74nX6lEQZbmM4Nmpyw2SHUIBCq6xJgo8XshZdkl1P5" />
   <meta property="og:image:width" content="512" />
   <meta property="og:image:height" content="512" />

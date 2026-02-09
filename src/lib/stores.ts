@@ -21,6 +21,7 @@ export const SUPPORTED_MANIA_SKIN_FORMATS: string[] = ['osk', 'fsk'];
 export interface UserConfig {
     lightTheme: boolean;
     customCursor: boolean;
+    disableParticles: boolean;
 }
 
 let hasNewVersion = false;
@@ -36,11 +37,12 @@ if (browser) {
 export const newVersionAvailable = writable<boolean>(hasNewVersion);
 
 const storedConfig = browser ? localStorage.getItem('user-config') : null;
-const initialConfig: UserConfig = storedConfig 
+export const initialConfig: UserConfig = storedConfig 
     ? JSON.parse(storedConfig) 
     : {
         lightTheme: false,
         customCursor: true,
+        disableParticles: false
     };
 
 export const userConfig = writable<UserConfig>(initialConfig);

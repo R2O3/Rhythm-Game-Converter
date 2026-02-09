@@ -2,6 +2,7 @@
   import { parseColor } from '$lib/helpers';
   import { onMount, onDestroy } from 'svelte';
   import { getSharedGPU } from '$core/Managers/GpuManager';
+  import { userConfig } from '$lib/stores';
 
   export let baseColor: [number, number, number] = [255, 255, 255];
   export let spawnInterval: number = 400;
@@ -19,16 +20,21 @@
   let animationId: number;
   let spawnIntervalId: number;
   let updateColorFn: ((r: number, g: number, b: number) => void) | null = null;
+  let cleanup: (() => void) | null = null;
+  let isInitialized: boolean = false;
+  let isMounted: boolean = false;
+
+  let disableParticles = $userConfig.disableParticles;
 
   export function updateBaseColor(r: number, g: number, b: number): void {
-    if (instanceState.device && updateColorFn) {
+    if (instanceState.device && updateColorFn && !disableParticles) {
       instanceState.baseColor = [r / 255, g / 255, b / 255];
       updateColorFn(r / 255, g / 255, b / 255);
     }
   }
 
   export function triggerColorFlash(r: number, g: number, b: number): void {
-    if (instanceState.device && updateColorFn) {
+    if (instanceState.device && updateColorFn && !disableParticles) {
       instanceState.baseColor = [r / 255, g / 255, b / 255];
       instanceState.flashTime = performance.now();
       updateColorFn(r / 255, g / 255, b / 255);
@@ -36,7 +42,7 @@
   }
 
   export function refreshColorFromCss(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || disableParticles) return;
     const style = getComputedStyle(document.documentElement);
     const colorString = style.getPropertyValue('--navbar-color').trim();
     if (colorString) {
@@ -45,9 +51,29 @@
     }
   }
 
-  let cleanup: (() => void) | null = null;
+  function clearCanvas() {
+    if (!canvas) return;
+    const ctx = canvas.getContext('webgpu');
+    if (!ctx || !instanceState.device) return;
+    
+    try {
+      const encoder = instanceState.device.createCommandEncoder();
+      const renderPass = encoder.beginRenderPass({
+        colorAttachments: [{
+          view: ctx.getCurrentTexture().createView(),
+          loadOp: 'clear',
+          clearValue: { r: 0, g: 0, b: 0, a: 0 },
+          storeOp: 'store'
+        }]
+      });
+      renderPass.end();
+      instanceState.device.queue.submit([encoder.finish()]);
+    } catch (e) { }
+  }
 
-  onMount(async () => {
+  async function initializeParticles() {
+    if (isInitialized || !canvas || disableParticles) return;
+    
     const gpu = await getSharedGPU(triangleThickness);
     if (!gpu) return;
     
@@ -57,7 +83,7 @@
     if (!ctx) return;
     ctx.configure({ device, format, alphaMode: 'premultiplied' });
 
-     const resizeCanvas = () => {
+    const resizeCanvas = () => {
       if (!canvas) return;
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
@@ -140,6 +166,7 @@
     refreshColorFromCss();
 
     spawnIntervalId = setInterval(() => {
+      if (disableParticles) return;
       if (instanceState.particleCount < maxParticlesCount) {
         const offset = instanceState.particleCount * particleStride;
         const newParticle = new Float32Array([
@@ -158,6 +185,11 @@
     }, spawnInterval);
 
     const animate = () => {
+      if (disableParticles) {
+        clearCanvas();
+        return;
+      }
+      
       const now = performance.now();
       const flashStrength = Math.max(0, 1 - (now - instanceState.flashTime) / 500);
 
@@ -202,10 +234,36 @@
       window.removeEventListener('resize', resizeCanvas);
       if (animationId) cancelAnimationFrame(animationId);
       if (spawnIntervalId) clearInterval(spawnIntervalId);
+      clearCanvas();
+      isInitialized = false;
+      instanceState = {};
+      updateColorFn = null;
     };
+
+    isInitialized = true;
+  }
+
+  $: if (isMounted) {
+    if (disableParticles && isInitialized) {
+      cleanup?.();
+      cleanup = null;
+    } else if (!disableParticles && !isInitialized) {
+      initializeParticles();
+    }
+  }
+
+  $: disableParticles = $userConfig.disableParticles;
+
+  onMount(async () => {
+    isMounted = true;
+    
+    if (!disableParticles) {
+      await initializeParticles();
+    }
   });
 
   onDestroy(() => {
+    isMounted = false;
     cleanup?.();
   });
 </script>
