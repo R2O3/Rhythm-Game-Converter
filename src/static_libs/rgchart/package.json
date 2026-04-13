@@ -5,7 +5,7 @@
     "menvae <menvaedev@gmail.com>"
   ],
   "description": "A library for parsing and writing rhythm game charts.",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "license": "MIT",
   "repository": {
     "type": "git",

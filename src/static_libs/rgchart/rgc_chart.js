@@ -665,19 +665,6 @@ export class ChartInfo {
         wasm.__wbg_set_chartinfo_key_count(this.__wbg_ptr, arg0);
     }
     /**
-     * @returns {boolean}
-     */
-    get bpm_affects_sv() {
-        const ret = wasm.__wbg_get_chartinfo_bpm_affects_sv(this.__wbg_ptr);
-        return ret !== 0;
-    }
-    /**
-     * @param {boolean} arg0
-     */
-    set bpm_affects_sv(arg0) {
-        wasm.__wbg_set_chartinfo_bpm_affects_sv(this.__wbg_ptr, arg0);
-    }
-    /**
      * @param {string} difficulty_name
      * @param {number} hp
      * @param {number} od
@@ -687,10 +674,9 @@ export class ChartInfo {
      * @param {number} audio_offset
      * @param {number} preview_time
      * @param {number} key_count
-     * @param {boolean} bpm_affects_sv
      * @returns {ChartInfo}
      */
-    static new(difficulty_name, hp, od, bg_path, video_path, song_path, audio_offset, preview_time, key_count, bpm_affects_sv) {
+    static new(difficulty_name, hp, od, bg_path, video_path, song_path, audio_offset, preview_time, key_count) {
         const ptr0 = passStringToWasm0(difficulty_name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         const ptr1 = passStringToWasm0(bg_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -699,7 +685,7 @@ export class ChartInfo {
         const len2 = WASM_VECTOR_LEN;
         const ptr3 = passStringToWasm0(song_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len3 = WASM_VECTOR_LEN;
-        const ret = wasm.chartinfo_new(ptr0, len0, hp, od, ptr1, len1, ptr2, len2, ptr3, len3, audio_offset, preview_time, key_count, bpm_affects_sv);
+        const ret = wasm.chartinfo_new(ptr0, len0, hp, od, ptr1, len1, ptr2, len2, ptr3, len3, audio_offset, preview_time, key_count);
         return ChartInfo.__wrap(ret);
     }
     /**
@@ -1959,7 +1945,7 @@ async function __wbg_init(module_or_path) {
     }
 
     if (typeof module_or_path === 'undefined') {
-        module_or_path = new URL('rgchart_bg.wasm', import.meta.url);
+        module_or_path = new URL('rgc_chart_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
