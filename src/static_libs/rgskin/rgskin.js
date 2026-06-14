@@ -1,3 +1,5 @@
+import { startWorkers } from './snippets/wasm-bindgen-rayon-38edf6e439f6d70d/src/workerHelpers.js';
+
 let wasm;
 
 function addToExternrefTable0(obj) {
@@ -73,6 +75,15 @@ function getUint8ArrayMemory0() {
         cachedUint8ArrayMemory0 = new Uint8Array(wasm.memory.buffer);
     }
     return cachedUint8ArrayMemory0;
+}
+
+function handleError(f, args) {
+    try {
+        return f.apply(this, args);
+    } catch (e) {
+        const idx = addToExternrefTable0(e);
+        wasm.__wbindgen_exn_store(idx);
+    }
 }
 
 function isLikeNone(x) {
@@ -182,8 +193,8 @@ if (!('encodeInto' in cachedTextEncoder)) {
 
 let WASM_VECTOR_LEN = 0;
 
-function wasm_bindgen__convert__closures_____invoke__h9a6e61dda56dfb1d(arg0, arg1, arg2, arg3) {
-    wasm.wasm_bindgen__convert__closures_____invoke__h9a6e61dda56dfb1d(arg0, arg1, arg2, arg3);
+function wasm_bindgen_aaa77acde99fbdb___convert__closures_____invoke___wasm_bindgen_aaa77acde99fbdb___JsValue__wasm_bindgen_aaa77acde99fbdb___JsValue_____(arg0, arg1, arg2, arg3) {
+    wasm.wasm_bindgen_aaa77acde99fbdb___convert__closures_____invoke___wasm_bindgen_aaa77acde99fbdb___JsValue__wasm_bindgen_aaa77acde99fbdb___JsValue_____(arg0, arg1, arg2, arg3);
 }
 
 const BinaryStoreFinalization = (typeof FinalizationRegistry === 'undefined')
@@ -222,6 +233,14 @@ const KeymodeFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_keymode_free(ptr >>> 0, 1));
 
+const MainMenuFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_mainmenu_free(ptr >>> 0, 1));
+
+const MenuBorderFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_menuborder_free(ptr >>> 0, 1));
+
 const OsuKeymodeFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_osukeymode_free(ptr >>> 0, 1));
@@ -234,13 +253,37 @@ const OsuSkinIniFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_osuskinini_free(ptr >>> 0, 1));
 
+const QuaGeneralFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_quageneral_free(ptr >>> 0, 1));
+
+const QuaKeymodeFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_quakeymode_free(ptr >>> 0, 1));
+
+const QuaSkinFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_quaskin_free(ptr >>> 0, 1));
+
+const QuaSkinIniFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_quaskinini_free(ptr >>> 0, 1));
+
 const RawBytesFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_rawbytes_free(ptr >>> 0, 1));
 
+const ResultsFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_results_free(ptr >>> 0, 1));
+
 const SkinJsonFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_skinjson_free(ptr >>> 0, 1));
+
+const SongSelectFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_songselect_free(ptr >>> 0, 1));
 
 const TextureFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
@@ -249,6 +292,10 @@ const TextureFinalization = (typeof FinalizationRegistry === 'undefined')
 const TextureStoreFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_texturestore_free(ptr >>> 0, 1));
+
+const wbg_rayon_PoolBuilderFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_wbg_rayon_poolbuilder_free(ptr >>> 0, 1));
 
 export class BinaryStore {
     static __wrap(ptr) {
@@ -268,19 +315,22 @@ export class BinaryStore {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_binarystore_free(ptr, 0);
     }
-    constructor() {
-        const ret = wasm.binarystore_new_wasm();
-        this.__wbg_ptr = ret >>> 0;
-        BinaryStoreFinalization.register(this, this.__wbg_ptr, this);
-        return this;
+    /**
+     * @returns {boolean}
+     */
+    allLoaded() {
+        const ret = wasm.binarystore_allLoaded(this.__wbg_ptr);
+        return ret !== 0;
     }
     /**
-     * @param {RawBytes} binary
+     * @param {string} path
+     * @returns {boolean}
      */
-    insertBinary(binary) {
-        _assertClass(binary, RawBytes);
-        var ptr0 = binary.__destroy_into_raw();
-        wasm.binarystore_insertBinary(this.__wbg_ptr, ptr0);
+    hasBinary(path) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.binarystore_contains(this.__wbg_ptr, ptr0, len0);
+        return ret !== 0;
     }
     /**
      * @param {string} new_path
@@ -304,37 +354,6 @@ export class BinaryStore {
         }
     }
     /**
-     * @param {string} path
-     * @param {ArrayBuffer} buffer
-     */
-    loadFromArrayBuffer(path, buffer) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.binarystore_loadFromArrayBuffer(this.__wbg_ptr, ptr0, len0, buffer);
-        if (ret[1]) {
-            throw takeFromExternrefTable0(ret[0]);
-        }
-    }
-    /**
-     * @param {string} path
-     * @param {Uint8Array} array
-     */
-    loadFromUint8Array(path, array) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.binarystore_loadFromUint8Array(this.__wbg_ptr, ptr0, len0, array);
-        if (ret[1]) {
-            throw takeFromExternrefTable0(ret[0]);
-        }
-    }
-    /**
-     * @returns {boolean}
-     */
-    allLoaded() {
-        const ret = wasm.binarystore_allLoaded(this.__wbg_ptr);
-        return ret !== 0;
-    }
-    /**
      * @returns {number}
      */
     loadedCount() {
@@ -342,36 +361,19 @@ export class BinaryStore {
         return ret >>> 0;
     }
     /**
+     * @param {RawBytes} binary
+     */
+    insertBinary(binary) {
+        _assertClass(binary, RawBytes);
+        var ptr0 = binary.__destroy_into_raw();
+        wasm.binarystore_insertBinary(this.__wbg_ptr, ptr0);
+    }
+    /**
      * @returns {Array<any>}
      */
     unloadedPaths() {
         const ret = wasm.binarystore_unloadedPaths(this.__wbg_ptr);
         return ret;
-    }
-    /**
-     * @param {string} path
-     * @returns {boolean}
-     */
-    hasBinary(path) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.binarystore_contains(this.__wbg_ptr, ptr0, len0);
-        return ret !== 0;
-    }
-    /**
-     * @param {string} path
-     * @returns {string | undefined}
-     */
-    getBinaryPath(path) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.binarystore_getBinaryPath(this.__wbg_ptr, ptr0, len0);
-        let v2;
-        if (ret[0] !== 0) {
-            v2 = getStringFromWasm0(ret[0], ret[1]).slice();
-            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-        }
-        return v2;
     }
     /**
      * @param {string} path
@@ -395,13 +397,65 @@ export class BinaryStore {
     }
     /**
      * @param {string} path
-     * @returns {boolean}
+     * @returns {string | undefined}
      */
-    contains(path) {
+    getBinaryPath(path) {
         const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.binarystore_contains(this.__wbg_ptr, ptr0, len0);
-        return ret !== 0;
+        const ret = wasm.binarystore_getBinaryPath(this.__wbg_ptr, ptr0, len0);
+        let v2;
+        if (ret[0] !== 0) {
+            v2 = getStringFromWasm0(ret[0], ret[1]).slice();
+            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        }
+        return v2;
+    }
+    /**
+     * @param {string} path
+     * @param {Uint8Array} array
+     */
+    loadFromUint8Array(path, array) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.binarystore_loadFromUint8Array(this.__wbg_ptr, ptr0, len0, array);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * @param {string} path
+     * @param {ArrayBuffer} buffer
+     */
+    loadFromArrayBuffer(path, buffer) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.binarystore_loadFromArrayBuffer(this.__wbg_ptr, ptr0, len0, buffer);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    constructor() {
+        const ret = wasm.binarystore_new_wasm();
+        this.__wbg_ptr = ret >>> 0;
+        BinaryStoreFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+    clear() {
+        wasm.binarystore_clear(this.__wbg_ptr);
+    }
+    /**
+     * @returns {number}
+     */
+    getLength() {
+        const ret = wasm.binarystore_getLength(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {BinaryStore} other
+     */
+    extend(other) {
+        _assertClass(other, BinaryStore);
+        wasm.binarystore_extend(this.__wbg_ptr, other.__wbg_ptr);
     }
     /**
      * @param {string} path
@@ -414,11 +468,14 @@ export class BinaryStore {
         return ret !== 0;
     }
     /**
-     * @returns {number}
+     * @param {string} path
+     * @returns {boolean}
      */
-    getLength() {
-        const ret = wasm.binarystore_getLength(this.__wbg_ptr);
-        return ret >>> 0;
+    contains(path) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.binarystore_contains(this.__wbg_ptr, ptr0, len0);
+        return ret !== 0;
     }
     /**
      * @returns {boolean}
@@ -433,27 +490,6 @@ export class BinaryStore {
     getPaths() {
         const ret = wasm.binarystore_getPaths(this.__wbg_ptr);
         return ret;
-    }
-    clear() {
-        wasm.binarystore_clear(this.__wbg_ptr);
-    }
-    /**
-     * @param {string} original_path
-     * @param {string} new_path
-     * @returns {string | undefined}
-     */
-    copy(original_path, new_path) {
-        const ptr0 = passStringToWasm0(original_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ptr1 = passStringToWasm0(new_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len1 = WASM_VECTOR_LEN;
-        const ret = wasm.binarystore_copy(this.__wbg_ptr, ptr0, len0, ptr1, len1);
-        let v3;
-        if (ret[0] !== 0) {
-            v3 = getStringFromWasm0(ret[0], ret[1]).slice();
-            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-        }
-        return v3;
     }
     /**
      * @param {string} original_path
@@ -474,14 +510,34 @@ export class BinaryStore {
         return v3;
     }
     /**
-     * @param {BinaryStore} other
+     * @param {string} original_path
+     * @param {string} new_path
+     * @returns {string | undefined}
      */
-    extend(other) {
-        _assertClass(other, BinaryStore);
-        wasm.binarystore_extend(this.__wbg_ptr, other.__wbg_ptr);
+    copy(original_path, new_path) {
+        const ptr0 = passStringToWasm0(original_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(new_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.binarystore_copy(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+        let v3;
+        if (ret[0] !== 0) {
+            v3 = getStringFromWasm0(ret[0], ret[1]).slice();
+            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        }
+        return v3;
     }
 }
 if (Symbol.dispose) BinaryStore.prototype[Symbol.dispose] = BinaryStore.prototype.free;
+
+/**
+ * @enum {0 | 1 | 2}
+ */
+export const DefaultSkin = Object.freeze({
+    Arrow: 0, "0": "Arrow",
+    Bar: 1, "1": "Bar",
+    Circle: 2, "2": "Circle",
+});
 
 export class FluXisKeymode {
     static __wrap(ptr) {
@@ -785,22 +841,18 @@ export class FluXisSkin {
         return this;
     }
     /**
+     * @param {number} keymode
+     * @returns {FluXisKeymode | undefined}
+     */
+    getKeymode(keymode) {
+        const ret = wasm.fluxisskin_getKeymode(this.__wbg_ptr, keymode);
+        return ret === 0 ? undefined : FluXisKeymode.__wrap(ret);
+    }
+    /**
      * @returns {GenericManiaSkin}
      */
     toGenericMania() {
         const ret = wasm.fluxisskin_toGenericMania(this.__wbg_ptr);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return GenericManiaSkin.__wrap(ret[0]);
-    }
-    /**
-     * @param {FluXisLayout} layout
-     * @returns {GenericManiaSkin}
-     */
-    toGenericManiaWithLayout(layout) {
-        _assertClass(layout, FluXisLayout);
-        const ret = wasm.fluxisskin_toGenericManiaWithLayout(this.__wbg_ptr, layout.__wbg_ptr);
         if (ret[2]) {
             throw takeFromExternrefTable0(ret[1]);
         }
@@ -819,12 +871,13 @@ export class FluXisSkin {
         return FluXisSkinWithLayout.__wrap(ret[0]);
     }
     /**
-     * @param {number} keymode
-     * @returns {FluXisKeymode | undefined}
+     * @returns {string[]}
      */
-    getKeymode(keymode) {
-        const ret = wasm.fluxisskin_getKeymode(this.__wbg_ptr, keymode);
-        return ret === 0 ? undefined : FluXisKeymode.__wrap(ret);
+    getRequiredSamplePaths() {
+        const ret = wasm.fluxisskin_getRequiredSamplePaths(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
     }
     /**
      * @returns {string[]}
@@ -836,13 +889,16 @@ export class FluXisSkin {
         return v1;
     }
     /**
-     * @returns {string[]}
+     * @param {FluXisLayout} layout
+     * @returns {GenericManiaSkin}
      */
-    getRequiredSamplePaths() {
-        const ret = wasm.fluxisskin_getRequiredSamplePaths(this.__wbg_ptr);
-        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
-        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-        return v1;
+    toGenericManiaWithLayout(layout) {
+        _assertClass(layout, FluXisLayout);
+        const ret = wasm.fluxisskin_toGenericManiaWithLayout(this.__wbg_ptr, layout.__wbg_ptr);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return GenericManiaSkin.__wrap(ret[0]);
     }
 }
 if (Symbol.dispose) FluXisSkin.prototype[Symbol.dispose] = FluXisSkin.prototype.free;
@@ -1251,6 +1307,14 @@ export class GenericManiaSkin {
         wasm.__wbg_set_genericmaniaskin_samples(this.__wbg_ptr, ptr0);
     }
     /**
+     * @param {number} keymode
+     * @returns {Keymode | undefined}
+     */
+    getKeymode(keymode) {
+        const ret = wasm.genericmaniaskin_getKeymode(this.__wbg_ptr, keymode);
+        return ret === 0 ? undefined : Keymode.__wrap(ret);
+    }
+    /**
      * @returns {GenericManiaSkin}
      */
     toGenericMania() {
@@ -1273,12 +1337,13 @@ export class GenericManiaSkin {
         return GenericManiaSkin.__wrap(ret[0]);
     }
     /**
-     * @param {number} keymode
-     * @returns {Keymode | undefined}
+     * @returns {string[]}
      */
-    getKeymode(keymode) {
-        const ret = wasm.genericmaniaskin_getKeymode(this.__wbg_ptr, keymode);
-        return ret === 0 ? undefined : Keymode.__wrap(ret);
+    getRequiredSamplePaths() {
+        const ret = wasm.genericmaniaskin_getRequiredSamplePaths(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
     }
     /**
      * @returns {string[]}
@@ -1289,17 +1354,44 @@ export class GenericManiaSkin {
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
     }
-    /**
-     * @returns {string[]}
-     */
-    getRequiredSamplePaths() {
-        const ret = wasm.genericmaniaskin_getRequiredSamplePaths(this.__wbg_ptr);
-        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
-        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-        return v1;
-    }
 }
 if (Symbol.dispose) GenericManiaSkin.prototype[Symbol.dispose] = GenericManiaSkin.prototype.free;
+
+/**
+ * @enum {0 | 1 | 2}
+ */
+export const HealthBarKeysAlignment = Object.freeze({
+    LeftStage: 0, "0": "LeftStage",
+    RightStage: 1, "1": "RightStage",
+    TopLeft: 2, "2": "TopLeft",
+});
+
+/**
+ * @enum {0 | 1}
+ */
+export const HealthBarType = Object.freeze({
+    Horizontal: 0, "0": "Horizontal",
+    Vertical: 1, "1": "Vertical",
+});
+
+/**
+ * @enum {0 | 1 | 2}
+ */
+export const HitBubblesAlignment = Object.freeze({
+    LeftStage: 0, "0": "LeftStage",
+    RightStage: 1, "1": "RightStage",
+    BelowStage: 2, "2": "BelowStage",
+});
+
+/**
+ * @enum {0 | 1 | 2 | 3}
+ */
+export const HitBubblesType = Object.freeze({
+    FallDown: 0, "0": "FallDown",
+    FallUp: 1, "1": "FallUp",
+    FallLeft: 2, "2": "FallLeft",
+    FallRight: 3, "3": "FallRight",
+});
 
 export class Info {
     static __wrap(ptr) {
@@ -1410,19 +1502,6 @@ export class Keymode {
         wasm.__wbg_keymode_free(ptr, 0);
     }
     /**
-     * @param {string} content
-     * @returns {OsuKeymode}
-     */
-    static fromStr(content) {
-        const ptr0 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.keymode_fromStr(ptr0, len0);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return OsuKeymode.__wrap(ret[0]);
-    }
-    /**
      * @returns {string}
      */
     toStr() {
@@ -1436,6 +1515,19 @@ export class Keymode {
         } finally {
             wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
         }
+    }
+    /**
+     * @param {string} content
+     * @returns {OsuKeymode}
+     */
+    static fromStr(content) {
+        const ptr0 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.keymode_fromStr(ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return OsuKeymode.__wrap(ret[0]);
     }
     /**
      * @returns {string[]}
@@ -1461,6 +1553,143 @@ export class Keymode {
     }
 }
 if (Symbol.dispose) Keymode.prototype[Symbol.dispose] = Keymode.prototype.free;
+
+export class MainMenu {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(MainMenu.prototype);
+        obj.__wbg_ptr = ptr;
+        MainMenuFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        MainMenuFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_mainmenu_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    get navigation_button_hovered_alpha() {
+        const ret = wasm.__wbg_get_mainmenu_navigation_button_hovered_alpha(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set navigation_button_hovered_alpha(arg0) {
+        wasm.__wbg_set_mainmenu_navigation_button_hovered_alpha(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get audio_visualizer_opacity() {
+        const ret = wasm.__wbg_get_mainmenu_audio_visualizer_opacity(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set audio_visualizer_opacity(arg0) {
+        wasm.__wbg_set_mainmenu_audio_visualizer_opacity(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get note_visualizer_opacity() {
+        const ret = wasm.__wbg_get_mainmenu_note_visualizer_opacity(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set note_visualizer_opacity(arg0) {
+        wasm.__wbg_set_mainmenu_note_visualizer_opacity(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @param {string} content
+     * @returns {MainMenu}
+     */
+    static fromStr(content) {
+        const ptr0 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.mainmenu_fromStr(ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return MainMenu.__wrap(ret[0]);
+    }
+    /**
+     * @returns {string}
+     */
+    toString() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.mainmenu_toString(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+}
+if (Symbol.dispose) MainMenu.prototype[Symbol.dispose] = MainMenu.prototype.free;
+
+export class MenuBorder {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(MenuBorder.prototype);
+        obj.__wbg_ptr = ptr;
+        MenuBorderFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        MenuBorderFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_menuborder_free(ptr, 0);
+    }
+    /**
+     * @param {string} content
+     * @returns {MenuBorder}
+     */
+    static fromStr(content) {
+        const ptr0 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.menuborder_fromStr(ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return MenuBorder.__wrap(ret[0]);
+    }
+    /**
+     * @returns {string}
+     */
+    toString() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.menuborder_toString(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+}
+if (Symbol.dispose) MenuBorder.prototype[Symbol.dispose] = MenuBorder.prototype.free;
 
 export class OsuKeymode {
     static __wrap(ptr) {
@@ -2312,7 +2541,7 @@ export class OsuSkin {
      * @returns {TextureStore}
      */
     get textures() {
-        const ret = wasm.__wbg_get_osuskin_textures(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_genericmaniaskin_textures(this.__wbg_ptr);
         return TextureStore.__wrap(ret);
     }
     /**
@@ -2321,13 +2550,13 @@ export class OsuSkin {
     set textures(arg0) {
         _assertClass(arg0, TextureStore);
         var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_osuskin_textures(this.__wbg_ptr, ptr0);
+        wasm.__wbg_set_genericmaniaskin_textures(this.__wbg_ptr, ptr0);
     }
     /**
      * @returns {BinaryStore}
      */
     get samples() {
-        const ret = wasm.__wbg_get_osuskin_samples(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_genericmaniaskin_samples(this.__wbg_ptr);
         return BinaryStore.__wrap(ret);
     }
     /**
@@ -2336,7 +2565,7 @@ export class OsuSkin {
     set samples(arg0) {
         _assertClass(arg0, BinaryStore);
         var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_osuskin_samples(this.__wbg_ptr, ptr0);
+        wasm.__wbg_set_genericmaniaskin_samples(this.__wbg_ptr, ptr0);
     }
     /**
      * @param {OsuSkinIni} skin_ini
@@ -2362,6 +2591,14 @@ export class OsuSkin {
         return this;
     }
     /**
+     * @param {number} keymode
+     * @returns {OsuKeymode | undefined}
+     */
+    getKeymode(keymode) {
+        const ret = wasm.osuskin_getKeymode(this.__wbg_ptr, keymode);
+        return ret === 0 ? undefined : OsuKeymode.__wrap(ret);
+    }
+    /**
      * @returns {GenericManiaSkin}
      */
     toGenericMania() {
@@ -2384,18 +2621,10 @@ export class OsuSkin {
         return OsuSkin.__wrap(ret[0]);
     }
     /**
-     * @param {number} keymode
-     * @returns {OsuKeymode | undefined}
-     */
-    getKeymode(keymode) {
-        const ret = wasm.osuskin_getKeymode(this.__wbg_ptr, keymode);
-        return ret === 0 ? undefined : OsuKeymode.__wrap(ret);
-    }
-    /**
      * @returns {string[]}
      */
-    getRequiredTexturePaths() {
-        const ret = wasm.osuskin_getRequiredTexturePaths(this.__wbg_ptr);
+    getRequiredSamplePaths() {
+        const ret = wasm.osuskin_getRequiredSamplePaths(this.__wbg_ptr);
         var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
@@ -2403,8 +2632,8 @@ export class OsuSkin {
     /**
      * @returns {string[]}
      */
-    getRequiredSamplePaths() {
-        const ret = wasm.osuskin_getRequiredSamplePaths(this.__wbg_ptr);
+    getRequiredTexturePaths() {
+        const ret = wasm.osuskin_getRequiredTexturePaths(this.__wbg_ptr);
         var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
@@ -2462,12 +2691,6 @@ export class OsuSkinIni {
         const len0 = WASM_VECTOR_LEN;
         wasm.__wbg_set_osuskinini_keymodes(this.__wbg_ptr, ptr0, len0);
     }
-    constructor() {
-        const ret = wasm.osuskinini_new();
-        this.__wbg_ptr = ret >>> 0;
-        OsuSkinIniFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
     /**
      * @param {string} json_str
      * @returns {OsuSkinIni}
@@ -2497,13 +2720,12 @@ export class OsuSkinIni {
         }
     }
     /**
-     * @returns {string[]}
+     * @param {number} keymode
+     * @returns {OsuKeymode | undefined}
      */
-    getRequiredTexturePaths() {
-        const ret = wasm.osuskinini_getRequiredTexturePaths(this.__wbg_ptr);
-        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
-        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-        return v1;
+    getKeymode(keymode) {
+        const ret = wasm.osuskinini_getKeymode(this.__wbg_ptr, keymode);
+        return ret === 0 ? undefined : OsuKeymode.__wrap(ret);
     }
     /**
      * @returns {string[]}
@@ -2515,15 +2737,1701 @@ export class OsuSkinIni {
         return v1;
     }
     /**
-     * @param {number} keymode
-     * @returns {OsuKeymode | undefined}
+     * @returns {string[]}
      */
-    getKeymode(keymode) {
-        const ret = wasm.osuskinini_getKeymode(this.__wbg_ptr, keymode);
-        return ret === 0 ? undefined : OsuKeymode.__wrap(ret);
+    getRequiredTexturePaths() {
+        const ret = wasm.osuskinini_getRequiredTexturePaths(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    constructor() {
+        const ret = wasm.osuskinini_new();
+        this.__wbg_ptr = ret >>> 0;
+        OsuSkinIniFinalization.register(this, this.__wbg_ptr, this);
+        return this;
     }
 }
 if (Symbol.dispose) OsuSkinIni.prototype[Symbol.dispose] = OsuSkinIni.prototype.free;
+
+export class QuaGeneral {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(QuaGeneral.prototype);
+        obj.__wbg_ptr = ptr;
+        QuaGeneralFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        QuaGeneralFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_quageneral_free(ptr, 0);
+    }
+    /**
+     * @returns {string}
+     */
+    get name() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.__wbg_get_quageneral_name(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+    /**
+     * @param {string} arg0
+     */
+    set name(arg0) {
+        const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_general_name(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @returns {string}
+     */
+    get author() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.__wbg_get_quageneral_author(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+    /**
+     * @param {string} arg0
+     */
+    set author(arg0) {
+        const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_general_author(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @returns {string}
+     */
+    get version() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.__wbg_get_quageneral_version(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+    /**
+     * @param {string} arg0
+     */
+    set version(arg0) {
+        const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_general_version(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get center_cursor() {
+        const ret = wasm.__wbg_get_quageneral_center_cursor(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set center_cursor(arg0) {
+        wasm.__wbg_set_quageneral_center_cursor(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get use_skin_backgrounds() {
+        const ret = wasm.__wbg_get_quageneral_use_skin_backgrounds(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set use_skin_backgrounds(arg0) {
+        wasm.__wbg_set_quageneral_use_skin_backgrounds(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @param {string} content
+     * @returns {QuaGeneral}
+     */
+    static fromStr(content) {
+        const ptr0 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.quageneral_fromStr(ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return QuaGeneral.__wrap(ret[0]);
+    }
+    /**
+     * @returns {string}
+     */
+    toString() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.quageneral_toString(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+}
+if (Symbol.dispose) QuaGeneral.prototype[Symbol.dispose] = QuaGeneral.prototype.free;
+
+export class QuaKeymode {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(QuaKeymode.prototype);
+        obj.__wbg_ptr = ptr;
+        QuaKeymodeFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    static __unwrap(jsValue) {
+        if (!(jsValue instanceof QuaKeymode)) {
+            return 0;
+        }
+        return jsValue.__destroy_into_raw();
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        QuaKeymodeFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_quakeymode_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    get keymode() {
+        const ret = wasm.__wbg_get_quakeymode_keymode(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set keymode(arg0) {
+        wasm.__wbg_set_quakeymode_keymode(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {DefaultSkin}
+     */
+    get default_skin() {
+        const ret = wasm.__wbg_get_quakeymode_default_skin(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {DefaultSkin} arg0
+     */
+    set default_skin(arg0) {
+        wasm.__wbg_set_quakeymode_default_skin(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get color_objects_by_snap_distance() {
+        const ret = wasm.__wbg_get_quakeymode_color_objects_by_snap_distance(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set color_objects_by_snap_distance(arg0) {
+        wasm.__wbg_set_quakeymode_color_objects_by_snap_distance(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get use_hit_object_sheet() {
+        const ret = wasm.__wbg_get_quakeymode_use_hit_object_sheet(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set use_hit_object_sheet(arg0) {
+        wasm.__wbg_set_quakeymode_use_hit_object_sheet(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get rotate_hit_objects_by_column() {
+        const ret = wasm.__wbg_get_quakeymode_rotate_hit_objects_by_column(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set rotate_hit_objects_by_column(arg0) {
+        wasm.__wbg_set_quakeymode_rotate_hit_objects_by_column(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get flip_note_images_on_upscroll() {
+        const ret = wasm.__wbg_get_quakeymode_flip_note_images_on_upscroll(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set flip_note_images_on_upscroll(arg0) {
+        wasm.__wbg_set_quakeymode_flip_note_images_on_upscroll(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get flip_note_end_images_on_upscroll() {
+        const ret = wasm.__wbg_get_quakeymode_flip_note_end_images_on_upscroll(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set flip_note_end_images_on_upscroll(arg0) {
+        wasm.__wbg_set_quakeymode_flip_note_end_images_on_upscroll(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get draw_long_note_end() {
+        const ret = wasm.__wbg_get_quakeymode_draw_long_note_end(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set draw_long_note_end(arg0) {
+        wasm.__wbg_set_quakeymode_draw_long_note_end(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get note_padding() {
+        const ret = wasm.__wbg_get_quakeymode_note_padding(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set note_padding(arg0) {
+        wasm.__wbg_set_quakeymode_note_padding(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get width_for_note_height_scale() {
+        const ret = wasm.__wbg_get_quakeymode_width_for_note_height_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set width_for_note_height_scale(arg0) {
+        wasm.__wbg_set_quakeymode_width_for_note_height_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get bg_mask_alpha() {
+        const ret = wasm.__wbg_get_quakeymode_bg_mask_alpha(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set bg_mask_alpha(arg0) {
+        wasm.__wbg_set_quakeymode_bg_mask_alpha(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get bg_mask_padding() {
+        const ret = wasm.__wbg_get_quakeymode_bg_mask_padding(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set bg_mask_padding(arg0) {
+        wasm.__wbg_set_quakeymode_bg_mask_padding(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get column_alignment() {
+        const ret = wasm.__wbg_get_quakeymode_column_alignment(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set column_alignment(arg0) {
+        wasm.__wbg_set_quakeymode_column_alignment(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get column_size() {
+        const ret = wasm.__wbg_get_quakeymode_column_size(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set column_size(arg0) {
+        wasm.__wbg_set_quakeymode_column_size(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get column_lighting_offset_y() {
+        const ret = wasm.__wbg_get_quakeymode_column_lighting_offset_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set column_lighting_offset_y(arg0) {
+        wasm.__wbg_set_quakeymode_column_lighting_offset_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get column_lighting_scale() {
+        const ret = wasm.__wbg_get_quakeymode_column_lighting_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set column_lighting_scale(arg0) {
+        wasm.__wbg_set_quakeymode_column_lighting_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_pos_offset_y() {
+        const ret = wasm.__wbg_get_quakeymode_hit_pos_offset_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_pos_offset_y(arg0) {
+        wasm.__wbg_set_quakeymode_hit_pos_offset_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get receptor_pos_offset_y() {
+        const ret = wasm.__wbg_get_quakeymode_receptor_pos_offset_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set receptor_pos_offset_y(arg0) {
+        wasm.__wbg_set_quakeymode_receptor_pos_offset_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get receptors_over_hit_objects() {
+        const ret = wasm.__wbg_get_quakeymode_receptors_over_hit_objects(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set receptors_over_hit_objects(arg0) {
+        wasm.__wbg_set_quakeymode_receptors_over_hit_objects(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get stage_receptor_padding() {
+        const ret = wasm.__wbg_get_quakeymode_stage_receptor_padding(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set stage_receptor_padding(arg0) {
+        wasm.__wbg_set_quakeymode_stage_receptor_padding(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get coop_playfield_padding() {
+        const ret = wasm.__wbg_get_quakeymode_coop_playfield_padding(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set coop_playfield_padding(arg0) {
+        wasm.__wbg_set_quakeymode_coop_playfield_padding(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_error_chevron_size() {
+        const ret = wasm.__wbg_get_quakeymode_hit_error_chevron_size(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_error_chevron_size(arg0) {
+        wasm.__wbg_set_quakeymode_hit_error_chevron_size(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_error_height() {
+        const ret = wasm.__wbg_get_quakeymode_hit_error_height(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_error_height(arg0) {
+        wasm.__wbg_set_quakeymode_hit_error_height(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_error_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_hit_error_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_error_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_hit_error_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_error_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_hit_error_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_error_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_hit_error_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_error_alpha() {
+        const ret = wasm.__wbg_get_quakeymode_hit_error_alpha(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_error_alpha(arg0) {
+        wasm.__wbg_set_quakeymode_hit_error_alpha(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_hit_burst_fps() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_hit_burst_fps(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_hit_burst_fps(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_hit_burst_fps(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_burst_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_burst_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_burst_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_burst_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_hit_burst_bump_y() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_hit_burst_bump_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_hit_burst_bump_y(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_hit_burst_bump_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_hit_burst_bump_time() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_hit_burst_bump_time(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_hit_burst_bump_time(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_hit_burst_bump_time(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_hit_burst_scale() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_hit_burst_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_hit_burst_scale(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_hit_burst_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_lighting_x() {
+        const ret = wasm.__wbg_get_quakeymode_hit_lighting_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_lighting_x(arg0) {
+        wasm.__wbg_set_quakeymode_hit_lighting_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_lighting_y() {
+        const ret = wasm.__wbg_get_quakeymode_hit_lighting_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_lighting_y(arg0) {
+        wasm.__wbg_set_quakeymode_hit_lighting_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_lighting_fps() {
+        const ret = wasm.__wbg_get_quakeymode_hit_lighting_fps(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_lighting_fps(arg0) {
+        wasm.__wbg_set_quakeymode_hit_lighting_fps(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_lighting_scale() {
+        const ret = wasm.__wbg_get_quakeymode_hit_lighting_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_lighting_scale(arg0) {
+        wasm.__wbg_set_quakeymode_hit_lighting_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get hit_lighting_column_rotation() {
+        const ret = wasm.__wbg_get_quakeymode_hit_lighting_column_rotation(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set hit_lighting_column_rotation(arg0) {
+        wasm.__wbg_set_quakeymode_hit_lighting_column_rotation(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hold_lighting_fps() {
+        const ret = wasm.__wbg_get_quakeymode_hold_lighting_fps(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hold_lighting_fps(arg0) {
+        wasm.__wbg_set_quakeymode_hold_lighting_fps(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hold_lighting_scale() {
+        const ret = wasm.__wbg_get_quakeymode_hold_lighting_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hold_lighting_scale(arg0) {
+        wasm.__wbg_set_quakeymode_hold_lighting_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get hold_lighting_column_rotation() {
+        const ret = wasm.__wbg_get_quakeymode_hold_lighting_column_rotation(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set hold_lighting_column_rotation(arg0) {
+        wasm.__wbg_set_quakeymode_hold_lighting_column_rotation(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {HealthBarKeysAlignment}
+     */
+    get health_bar_keys_alignment() {
+        const ret = wasm.__wbg_get_quakeymode_health_bar_keys_alignment(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {HealthBarKeysAlignment} arg0
+     */
+    set health_bar_keys_alignment(arg0) {
+        wasm.__wbg_set_quakeymode_health_bar_keys_alignment(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {HealthBarType}
+     */
+    get health_bar_type() {
+        const ret = wasm.__wbg_get_quakeymode_health_bar_type(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {HealthBarType} arg0
+     */
+    set health_bar_type(arg0) {
+        wasm.__wbg_set_quakeymode_health_bar_type(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get health_bar_pos_offset_x() {
+        const ret = wasm.__wbg_get_quakeymode_health_bar_pos_offset_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set health_bar_pos_offset_x(arg0) {
+        wasm.__wbg_set_quakeymode_health_bar_pos_offset_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get health_bar_pos_offset_y() {
+        const ret = wasm.__wbg_get_quakeymode_health_bar_pos_offset_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set health_bar_pos_offset_y(arg0) {
+        wasm.__wbg_set_quakeymode_health_bar_pos_offset_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get health_bar_scale() {
+        const ret = wasm.__wbg_get_quakeymode_health_bar_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set health_bar_scale(arg0) {
+        wasm.__wbg_set_quakeymode_health_bar_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {HitBubblesAlignment}
+     */
+    get hit_bubbles_alignment() {
+        const ret = wasm.__wbg_get_quakeymode_hit_bubbles_alignment(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {HitBubblesAlignment} arg0
+     */
+    set hit_bubbles_alignment(arg0) {
+        wasm.__wbg_set_quakeymode_hit_bubbles_alignment(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {HitBubblesType}
+     */
+    get hit_bubbles_type() {
+        const ret = wasm.__wbg_get_quakeymode_hit_bubbles_type(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {HitBubblesType} arg0
+     */
+    set hit_bubbles_type(arg0) {
+        wasm.__wbg_set_quakeymode_hit_bubbles_type(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_bubbles_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_hit_bubbles_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_bubbles_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_hit_bubbles_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_bubbles_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_hit_bubbles_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_bubbles_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_hit_bubbles_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_bubbles_scale() {
+        const ret = wasm.__wbg_get_quakeymode_hit_bubbles_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_bubbles_scale(arg0) {
+        wasm.__wbg_set_quakeymode_hit_bubbles_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_bubble_scale() {
+        const ret = wasm.__wbg_get_quakeymode_hit_bubble_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_bubble_scale(arg0) {
+        wasm.__wbg_set_quakeymode_hit_bubble_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_bubble_border_padding() {
+        const ret = wasm.__wbg_get_quakeymode_hit_bubble_border_padding(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_bubble_border_padding(arg0) {
+        wasm.__wbg_set_quakeymode_hit_bubble_border_padding(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get hit_bubble_padding() {
+        const ret = wasm.__wbg_get_quakeymode_hit_bubble_padding(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set hit_bubble_padding(arg0) {
+        wasm.__wbg_set_quakeymode_hit_bubble_padding(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get combo_display_scale() {
+        const ret = wasm.__wbg_get_quakeymode_combo_display_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set combo_display_scale(arg0) {
+        wasm.__wbg_set_quakeymode_combo_display_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get combo_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_combo_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set combo_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_combo_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get combo_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_combo_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set combo_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_combo_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get combo_display_bump_y() {
+        const ret = wasm.__wbg_get_quakeymode_combo_display_bump_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set combo_display_bump_y(arg0) {
+        wasm.__wbg_set_quakeymode_combo_display_bump_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get combo_display_bump_time() {
+        const ret = wasm.__wbg_get_quakeymode_combo_display_bump_time(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set combo_display_bump_time(arg0) {
+        wasm.__wbg_set_quakeymode_combo_display_bump_time(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get rating_display_scale() {
+        const ret = wasm.__wbg_get_quakeymode_rating_display_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set rating_display_scale(arg0) {
+        wasm.__wbg_set_quakeymode_rating_display_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get rating_display_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_rating_display_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set rating_display_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_rating_display_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get rating_display_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_rating_display_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set rating_display_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_rating_display_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get accuracy_display_scale() {
+        const ret = wasm.__wbg_get_quakeymode_accuracy_display_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set accuracy_display_scale(arg0) {
+        wasm.__wbg_set_quakeymode_accuracy_display_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get accuracy_display_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_accuracy_display_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set accuracy_display_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_accuracy_display_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get accuracy_display_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_accuracy_display_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set accuracy_display_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_accuracy_display_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get kps_display_scale() {
+        const ret = wasm.__wbg_get_quakeymode_kps_display_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set kps_display_scale(arg0) {
+        wasm.__wbg_set_quakeymode_kps_display_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get kps_display_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_kps_display_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set kps_display_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_kps_display_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get kps_display_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_kps_display_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set kps_display_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_kps_display_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get score_display_scale() {
+        const ret = wasm.__wbg_get_quakeymode_score_display_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set score_display_scale(arg0) {
+        wasm.__wbg_set_quakeymode_score_display_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get score_display_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_score_display_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set score_display_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_score_display_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get score_display_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_score_display_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set score_display_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_score_display_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get battle_royale_alert_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_battle_royale_alert_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set battle_royale_alert_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_battle_royale_alert_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get battle_royale_alert_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_battle_royale_alert_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set battle_royale_alert_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_battle_royale_alert_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get battle_royale_alert_scale() {
+        const ret = wasm.__wbg_get_quakeymode_battle_royale_alert_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set battle_royale_alert_scale(arg0) {
+        wasm.__wbg_set_quakeymode_battle_royale_alert_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get battle_royale_eliminated_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_battle_royale_eliminated_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set battle_royale_eliminated_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_battle_royale_eliminated_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get battle_royale_eliminated_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_battle_royale_eliminated_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set battle_royale_eliminated_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_battle_royale_eliminated_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_counter_alpha() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_counter_alpha(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_counter_alpha(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_counter_alpha(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_counter_size() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_counter_size(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_counter_size(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_counter_size(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_counter_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_counter_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_counter_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_counter_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_counter_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_counter_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_counter_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_counter_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get judgement_counter_padding() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_counter_padding(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set judgement_counter_padding(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_counter_padding(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get judgement_counter_horizontal() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_counter_horizontal(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set judgement_counter_horizontal(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_counter_horizontal(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get judgement_counter_fade_to_alpha() {
+        const ret = wasm.__wbg_get_quakeymode_judgement_counter_fade_to_alpha(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set judgement_counter_fade_to_alpha(arg0) {
+        wasm.__wbg_set_quakeymode_judgement_counter_fade_to_alpha(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get use_judgement_color_for_numbers() {
+        const ret = wasm.__wbg_get_quakeymode_use_judgement_color_for_numbers(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set use_judgement_color_for_numbers(arg0) {
+        wasm.__wbg_set_quakeymode_use_judgement_color_for_numbers(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get song_time_progress_scale() {
+        const ret = wasm.__wbg_get_quakeymode_song_time_progress_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set song_time_progress_scale(arg0) {
+        wasm.__wbg_set_quakeymode_song_time_progress_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get song_time_progress_position_at_top() {
+        const ret = wasm.__wbg_get_quakeymode_song_time_progress_position_at_top(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set song_time_progress_position_at_top(arg0) {
+        wasm.__wbg_set_quakeymode_song_time_progress_position_at_top(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get show_mini_song_bar() {
+        const ret = wasm.__wbg_get_quakeymode_show_mini_song_bar(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set show_mini_song_bar(arg0) {
+        wasm.__wbg_set_quakeymode_show_mini_song_bar(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get mini_song_bar_display_pos_x() {
+        const ret = wasm.__wbg_get_quakeymode_mini_song_bar_display_pos_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set mini_song_bar_display_pos_x(arg0) {
+        wasm.__wbg_set_quakeymode_mini_song_bar_display_pos_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get mini_song_bar_display_pos_y() {
+        const ret = wasm.__wbg_get_quakeymode_mini_song_bar_display_pos_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set mini_song_bar_display_pos_y(arg0) {
+        wasm.__wbg_set_quakeymode_mini_song_bar_display_pos_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get mini_song_bar_display_width_factor() {
+        const ret = wasm.__wbg_get_quakeymode_mini_song_bar_display_width_factor(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set mini_song_bar_display_width_factor(arg0) {
+        wasm.__wbg_set_quakeymode_mini_song_bar_display_width_factor(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get mini_song_bar_display_height() {
+        const ret = wasm.__wbg_get_quakeymode_mini_song_bar_display_height(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set mini_song_bar_display_height(arg0) {
+        wasm.__wbg_set_quakeymode_mini_song_bar_display_height(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get use_fallback() {
+        const ret = wasm.__wbg_get_quakeymode_use_fallback(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set use_fallback(arg0) {
+        wasm.__wbg_set_quakeymode_use_fallback(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {string}
+     */
+    toStr() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.quakeymode_toStr(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+    /**
+     * @param {string} content
+     * @returns {QuaKeymode}
+     */
+    static fromStr(content) {
+        const ptr0 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.quakeymode_fromStr(ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return QuaKeymode.__wrap(ret[0]);
+    }
+}
+if (Symbol.dispose) QuaKeymode.prototype[Symbol.dispose] = QuaKeymode.prototype.free;
+
+export class QuaSkin {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(QuaSkin.prototype);
+        obj.__wbg_ptr = ptr;
+        QuaSkinFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        QuaSkinFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_quaskin_free(ptr, 0);
+    }
+    /**
+     * @returns {QuaSkinIni}
+     */
+    get skin_ini() {
+        const ret = wasm.__wbg_get_quaskin_skin_ini(this.__wbg_ptr);
+        return QuaSkinIni.__wrap(ret);
+    }
+    /**
+     * @param {QuaSkinIni} arg0
+     */
+    set skin_ini(arg0) {
+        _assertClass(arg0, QuaSkinIni);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_quaskin_skin_ini(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {TextureStore}
+     */
+    get textures() {
+        const ret = wasm.__wbg_get_genericmaniaskin_textures(this.__wbg_ptr);
+        return TextureStore.__wrap(ret);
+    }
+    /**
+     * @param {TextureStore} arg0
+     */
+    set textures(arg0) {
+        _assertClass(arg0, TextureStore);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_genericmaniaskin_textures(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {BinaryStore}
+     */
+    get samples() {
+        const ret = wasm.__wbg_get_genericmaniaskin_samples(this.__wbg_ptr);
+        return BinaryStore.__wrap(ret);
+    }
+    /**
+     * @param {BinaryStore} arg0
+     */
+    set samples(arg0) {
+        _assertClass(arg0, BinaryStore);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_genericmaniaskin_samples(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @param {QuaSkinIni} skin_ini
+     * @param {TextureStore | null} [textures]
+     * @param {BinaryStore | null} [samples]
+     */
+    constructor(skin_ini, textures, samples) {
+        _assertClass(skin_ini, QuaSkinIni);
+        var ptr0 = skin_ini.__destroy_into_raw();
+        let ptr1 = 0;
+        if (!isLikeNone(textures)) {
+            _assertClass(textures, TextureStore);
+            ptr1 = textures.__destroy_into_raw();
+        }
+        let ptr2 = 0;
+        if (!isLikeNone(samples)) {
+            _assertClass(samples, BinaryStore);
+            ptr2 = samples.__destroy_into_raw();
+        }
+        const ret = wasm.quaskin_new(ptr0, ptr1, ptr2);
+        this.__wbg_ptr = ret >>> 0;
+        QuaSkinFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+    /**
+     * @param {number} keymode
+     * @returns {QuaKeymode | undefined}
+     */
+    getKeymode(keymode) {
+        const ret = wasm.quaskin_getKeymode(this.__wbg_ptr, keymode);
+        return ret === 0 ? undefined : QuaKeymode.__wrap(ret);
+    }
+    /**
+     * @returns {GenericManiaSkin}
+     */
+    toGenericMania() {
+        const ret = wasm.quaskin_toGenericMania(this.__wbg_ptr);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return GenericManiaSkin.__wrap(ret[0]);
+    }
+    /**
+     * @param {GenericManiaSkin} skin
+     * @returns {QuaSkin}
+     */
+    static fromGenericMania(skin) {
+        _assertClass(skin, GenericManiaSkin);
+        const ret = wasm.quaskin_fromGenericMania(skin.__wbg_ptr);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return QuaSkin.__wrap(ret[0]);
+    }
+    /**
+     * @returns {string[]}
+     */
+    getRequiredSamplePaths() {
+        const ret = wasm.quaskin_getRequiredSamplePaths(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {string[]}
+     */
+    getRequiredTexturePaths() {
+        const ret = wasm.quaskin_getRequiredTexturePaths(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+}
+if (Symbol.dispose) QuaSkin.prototype[Symbol.dispose] = QuaSkin.prototype.free;
+
+export class QuaSkinIni {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(QuaSkinIni.prototype);
+        obj.__wbg_ptr = ptr;
+        QuaSkinIniFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        QuaSkinIniFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_quaskinini_free(ptr, 0);
+    }
+    /**
+     * @returns {QuaGeneral}
+     */
+    get general() {
+        const ret = wasm.__wbg_get_quaskinini_general(this.__wbg_ptr);
+        return QuaGeneral.__wrap(ret);
+    }
+    /**
+     * @param {QuaGeneral} arg0
+     */
+    set general(arg0) {
+        _assertClass(arg0, QuaGeneral);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_quaskinini_general(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {MainMenu}
+     */
+    get main_menu() {
+        const ret = wasm.__wbg_get_quaskinini_main_menu(this.__wbg_ptr);
+        return MainMenu.__wrap(ret);
+    }
+    /**
+     * @param {MainMenu} arg0
+     */
+    set main_menu(arg0) {
+        _assertClass(arg0, MainMenu);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_quaskinini_main_menu(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {MenuBorder}
+     */
+    get menu_border() {
+        const ret = wasm.__wbg_get_quaskinini_menu_border(this.__wbg_ptr);
+        return MenuBorder.__wrap(ret);
+    }
+    /**
+     * @param {MenuBorder} arg0
+     */
+    set menu_border(arg0) {
+        _assertClass(arg0, MenuBorder);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_quaskinini_menu_border(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {SongSelect}
+     */
+    get song_select() {
+        const ret = wasm.__wbg_get_quaskinini_song_select(this.__wbg_ptr);
+        return SongSelect.__wrap(ret);
+    }
+    /**
+     * @param {SongSelect} arg0
+     */
+    set song_select(arg0) {
+        _assertClass(arg0, SongSelect);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_quaskinini_song_select(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {Results}
+     */
+    get results() {
+        const ret = wasm.__wbg_get_quaskinini_results(this.__wbg_ptr);
+        return Results.__wrap(ret);
+    }
+    /**
+     * @param {Results} arg0
+     */
+    set results(arg0) {
+        _assertClass(arg0, Results);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_quaskinini_results(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {QuaKeymode[]}
+     */
+    get keymodes() {
+        const ret = wasm.__wbg_get_quaskinini_keymodes(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @param {QuaKeymode[]} arg0
+     */
+    set keymodes(arg0) {
+        const ptr0 = passArrayJsValueToWasm0(arg0, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_quaskinini_keymodes(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @returns {QuaKeymode | undefined}
+     */
+    get shared_keymode() {
+        const ret = wasm.__wbg_get_quaskinini_shared_keymode(this.__wbg_ptr);
+        return ret === 0 ? undefined : QuaKeymode.__wrap(ret);
+    }
+    /**
+     * @param {QuaKeymode | null} [arg0]
+     */
+    set shared_keymode(arg0) {
+        let ptr0 = 0;
+        if (!isLikeNone(arg0)) {
+            _assertClass(arg0, QuaKeymode);
+            ptr0 = arg0.__destroy_into_raw();
+        }
+        wasm.__wbg_set_quaskinini_shared_keymode(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @param {string} ini_str
+     * @returns {QuaSkinIni}
+     */
+    static fromStr(ini_str) {
+        const ptr0 = passStringToWasm0(ini_str, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.quaskinini_fromStr(ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return QuaSkinIni.__wrap(ret[0]);
+    }
+    /**
+     * @returns {string}
+     */
+    toString() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.quaskinini_toString(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+    /**
+     * @param {number} keymode
+     * @returns {QuaKeymode | undefined}
+     */
+    getKeymode(keymode) {
+        const ret = wasm.quaskinini_getKeymode(this.__wbg_ptr, keymode);
+        return ret === 0 ? undefined : QuaKeymode.__wrap(ret);
+    }
+    constructor() {
+        const ret = wasm.quaskinini_new();
+        this.__wbg_ptr = ret >>> 0;
+        QuaSkinIniFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+}
+if (Symbol.dispose) QuaSkinIni.prototype[Symbol.dispose] = QuaSkinIni.prototype.free;
 
 export class RawBytes {
     static __wrap(ptr) {
@@ -2564,18 +4472,21 @@ export class RawBytes {
     set path(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_rawbytes_path(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_fluxislayout_name(this.__wbg_ptr, ptr0, len0);
     }
     /**
-     * @param {string} path
+     * @returns {Uint8Array | undefined}
      */
-    constructor(path) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.rawbytes_new(ptr0, len0);
-        this.__wbg_ptr = ret >>> 0;
-        RawBytesFinalization.register(this, this.__wbg_ptr, this);
-        return this;
+    getData() {
+        const ret = wasm.rawbytes_getData(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @returns {bigint | undefined}
+     */
+    getHash() {
+        const ret = wasm.rawbytes_getHash(this.__wbg_ptr);
+        return ret[0] === 0 ? undefined : BigInt.asUintN(64, ret[1]);
     }
     /**
      * @param {string} path
@@ -2591,67 +4502,21 @@ export class RawBytes {
         return RawBytes.__wrap(ret);
     }
     /**
-     * @returns {Uint8Array | undefined}
-     */
-    getData() {
-        const ret = wasm.rawbytes_getData(this.__wbg_ptr);
-        return ret;
-    }
-    /**
      * @param {string} path
-     * @param {ArrayBuffer} buffer
-     * @returns {RawBytes}
      */
-    static fromArrayBuffer(path, buffer) {
+    constructor(path) {
         const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.rawbytes_fromArrayBuffer(ptr0, len0, buffer);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return RawBytes.__wrap(ret[0]);
+        const ret = wasm.rawbytes_new(ptr0, len0);
+        this.__wbg_ptr = ret >>> 0;
+        RawBytesFinalization.register(this, this.__wbg_ptr, this);
+        return this;
     }
-    /**
-     * @param {string} path
-     * @param {ArrayBuffer} buffer
-     * @returns {RawBytes}
-     */
-    static fromArrayBufferUnloaded(path, buffer) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.rawbytes_fromArrayBufferUnloaded(ptr0, len0, buffer);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
+    unload() {
+        const ret = wasm.rawbytes_unload(this.__wbg_ptr);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
         }
-        return RawBytes.__wrap(ret[0]);
-    }
-    /**
-     * @param {string} path
-     * @param {Uint8Array} array
-     * @returns {RawBytes}
-     */
-    static fromUint8Array(path, array) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.rawbytes_fromUint8Array(ptr0, len0, array);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return RawBytes.__wrap(ret[0]);
-    }
-    /**
-     * @param {string} path
-     * @param {Uint8Array} array
-     * @returns {RawBytes}
-     */
-    static fromUint8ArrayUnloaded(path, array) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.rawbytes_fromUint8ArrayUnloaded(ptr0, len0, array);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return RawBytes.__wrap(ret[0]);
     }
     /**
      * @returns {string}
@@ -2678,6 +4543,13 @@ export class RawBytes {
     /**
      * @returns {boolean}
      */
+    isEmpty() {
+        const ret = wasm.rawbytes_isEmpty(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @returns {boolean}
+     */
     isLoaded() {
         const ret = wasm.rawbytes_isLoaded(this.__wbg_ptr);
         return ret !== 0;
@@ -2690,11 +4562,60 @@ export class RawBytes {
         return ret !== 0;
     }
     /**
-     * @returns {boolean}
+     * @param {string} path
+     * @param {Uint8Array} array
+     * @returns {RawBytes}
      */
-    isEmpty() {
-        const ret = wasm.rawbytes_isEmpty(this.__wbg_ptr);
-        return ret !== 0;
+    static fromUint8Array(path, array) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.rawbytes_fromUint8Array(ptr0, len0, array);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return RawBytes.__wrap(ret[0]);
+    }
+    /**
+     * @param {string} path
+     * @param {ArrayBuffer} buffer
+     * @returns {RawBytes}
+     */
+    static fromArrayBuffer(path, buffer) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.rawbytes_fromArrayBuffer(ptr0, len0, buffer);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return RawBytes.__wrap(ret[0]);
+    }
+    /**
+     * @param {string} path
+     * @param {Uint8Array} array
+     * @returns {RawBytes}
+     */
+    static fromUint8ArrayUnloaded(path, array) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.rawbytes_fromUint8ArrayUnloaded(ptr0, len0, array);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return RawBytes.__wrap(ret[0]);
+    }
+    /**
+     * @param {string} path
+     * @param {ArrayBuffer} buffer
+     * @returns {RawBytes}
+     */
+    static fromArrayBufferUnloaded(path, buffer) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.rawbytes_fromArrayBufferUnloaded(ptr0, len0, buffer);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return RawBytes.__wrap(ret[0]);
     }
     load() {
         const ret = wasm.rawbytes_load(this.__wbg_ptr);
@@ -2702,14 +4623,92 @@ export class RawBytes {
             throw takeFromExternrefTable0(ret[0]);
         }
     }
-    unload() {
-        const ret = wasm.rawbytes_unload(this.__wbg_ptr);
-        if (ret[1]) {
-            throw takeFromExternrefTable0(ret[0]);
+}
+if (Symbol.dispose) RawBytes.prototype[Symbol.dispose] = RawBytes.prototype.free;
+
+export class Results {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(Results.prototype);
+        obj.__wbg_ptr = ptr;
+        ResultsFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        ResultsFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_results_free(ptr, 0);
+    }
+    /**
+     * @returns {ResultsBackgroundType}
+     */
+    get results_background_type() {
+        const ret = wasm.__wbg_get_results_results_background_type(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {ResultsBackgroundType} arg0
+     */
+    set results_background_type(arg0) {
+        wasm.__wbg_set_results_results_background_type(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get results_background_filter_alpha() {
+        const ret = wasm.__wbg_get_results_results_background_filter_alpha(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set results_background_filter_alpha(arg0) {
+        wasm.__wbg_set_results_results_background_filter_alpha(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @param {string} content
+     * @returns {Results}
+     */
+    static fromStr(content) {
+        const ptr0 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.results_fromStr(ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return Results.__wrap(ret[0]);
+    }
+    /**
+     * @returns {string}
+     */
+    toString() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.results_toString(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
         }
     }
 }
-if (Symbol.dispose) RawBytes.prototype[Symbol.dispose] = RawBytes.prototype.free;
+if (Symbol.dispose) Results.prototype[Symbol.dispose] = Results.prototype.free;
+
+/**
+ * @enum {0 | 1 | 2}
+ */
+export const ResultsBackgroundType = Object.freeze({
+    Header: 0, "0": "Header",
+    Background: 1, "1": "Background",
+    None: 2, "2": "None",
+});
 
 export class SkinJson {
     static __wrap(ptr) {
@@ -2761,12 +4760,6 @@ export class SkinJson {
         const len0 = WASM_VECTOR_LEN;
         wasm.__wbg_set_skinjson_keymodes(this.__wbg_ptr, ptr0, len0);
     }
-    constructor() {
-        const ret = wasm.skinjson_new();
-        this.__wbg_ptr = ret >>> 0;
-        SkinJsonFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
     /**
      * @param {string} json_str
      * @returns {SkinJson}
@@ -2795,8 +4788,102 @@ export class SkinJson {
             wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
         }
     }
+    constructor() {
+        const ret = wasm.skinjson_new();
+        this.__wbg_ptr = ret >>> 0;
+        SkinJsonFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
 }
 if (Symbol.dispose) SkinJson.prototype[Symbol.dispose] = SkinJson.prototype.free;
+
+export class SongSelect {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(SongSelect.prototype);
+        obj.__wbg_ptr = ptr;
+        SongSelectFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        SongSelectFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_songselect_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    get mapset_panel_hovering_alpha() {
+        const ret = wasm.__wbg_get_songselect_mapset_panel_hovering_alpha(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set mapset_panel_hovering_alpha(arg0) {
+        wasm.__wbg_set_songselect_mapset_panel_hovering_alpha(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get map_background_brightness() {
+        const ret = wasm.__wbg_get_songselect_map_background_brightness(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set map_background_brightness(arg0) {
+        wasm.__wbg_set_songselect_map_background_brightness(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {boolean}
+     */
+    get display_map_background() {
+        const ret = wasm.__wbg_get_songselect_display_map_background(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set display_map_background(arg0) {
+        wasm.__wbg_set_songselect_display_map_background(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @param {string} content
+     * @returns {SongSelect}
+     */
+    static fromStr(content) {
+        const ptr0 = passStringToWasm0(content, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.songselect_fromStr(ptr0, len0);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return SongSelect.__wrap(ret[0]);
+    }
+    /**
+     * @returns {string}
+     */
+    toString() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.songselect_toString(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+}
+if (Symbol.dispose) SongSelect.prototype[Symbol.dispose] = SongSelect.prototype.free;
 
 export class Texture {
     static __wrap(ptr) {
@@ -2841,17 +4928,6 @@ export class Texture {
     }
     /**
      * @param {string} path
-     */
-    constructor(path) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texture_new(ptr0, len0);
-        this.__wbg_ptr = ret >>> 0;
-        TextureFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-    /**
-     * @param {string} path
      * @returns {Texture}
      */
     static fromBlank(path) {
@@ -2861,60 +4937,28 @@ export class Texture {
         return Texture.__wrap(ret);
     }
     /**
-     * @param {string} path
-     * @param {ArrayBuffer} buffer
-     * @returns {Texture}
+     * @returns {bigint | undefined}
      */
-    static fromArrayBuffer(path, buffer) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texture_fromArrayBuffer(ptr0, len0, buffer);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return Texture.__wrap(ret[0]);
+    getHash() {
+        const ret = wasm.texture_getHash(this.__wbg_ptr);
+        return ret[0] === 0 ? undefined : BigInt.asUintN(64, ret[1]);
     }
     /**
      * @param {string} path
-     * @param {ArrayBuffer} buffer
-     * @returns {Texture}
      */
-    static fromArrayBufferUnloaded(path, buffer) {
+    constructor(path) {
         const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texture_fromArrayBufferUnloaded(ptr0, len0, buffer);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return Texture.__wrap(ret[0]);
+        const ret = wasm.texture_new(ptr0, len0);
+        this.__wbg_ptr = ret >>> 0;
+        TextureFinalization.register(this, this.__wbg_ptr, this);
+        return this;
     }
-    /**
-     * @param {string} path
-     * @param {Uint8Array} array
-     * @returns {Texture}
-     */
-    static fromUint8Array(path, array) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texture_fromUint8Array(ptr0, len0, array);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
+    unload() {
+        const ret = wasm.texture_unload(this.__wbg_ptr);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
         }
-        return Texture.__wrap(ret[0]);
-    }
-    /**
-     * @param {string} path
-     * @param {Uint8Array} array
-     * @returns {Texture}
-     */
-    static fromUint8ArrayUnloaded(path, array) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texture_fromUint8ArrayUnloaded(ptr0, len0, array);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return Texture.__wrap(ret[0]);
     }
     /**
      * @returns {string}
@@ -2941,6 +4985,13 @@ export class Texture {
     /**
      * @returns {boolean}
      */
+    isEmpty() {
+        const ret = wasm.texture_isEmpty(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @returns {boolean}
+     */
     isLoaded() {
         const ret = wasm.texture_isLoaded(this.__wbg_ptr);
         return ret !== 0;
@@ -2953,20 +5004,63 @@ export class Texture {
         return ret !== 0;
     }
     /**
-     * @returns {boolean}
+     * @param {string} path
+     * @param {Uint8Array} array
+     * @returns {Texture}
      */
-    isEmpty() {
-        const ret = wasm.texture_isEmpty(this.__wbg_ptr);
-        return ret !== 0;
+    static fromUint8Array(path, array) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.texture_fromUint8Array(ptr0, len0, array);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return Texture.__wrap(ret[0]);
+    }
+    /**
+     * @param {string} path
+     * @param {ArrayBuffer} buffer
+     * @returns {Texture}
+     */
+    static fromArrayBuffer(path, buffer) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.texture_fromArrayBuffer(ptr0, len0, buffer);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return Texture.__wrap(ret[0]);
+    }
+    /**
+     * @param {string} path
+     * @param {Uint8Array} array
+     * @returns {Texture}
+     */
+    static fromUint8ArrayUnloaded(path, array) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.texture_fromUint8ArrayUnloaded(ptr0, len0, array);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return Texture.__wrap(ret[0]);
+    }
+    /**
+     * @param {string} path
+     * @param {ArrayBuffer} buffer
+     * @returns {Texture}
+     */
+    static fromArrayBufferUnloaded(path, buffer) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.texture_fromArrayBufferUnloaded(ptr0, len0, buffer);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return Texture.__wrap(ret[0]);
     }
     load() {
         const ret = wasm.texture_load(this.__wbg_ptr);
-        if (ret[1]) {
-            throw takeFromExternrefTable0(ret[0]);
-        }
-    }
-    unload() {
-        const ret = wasm.texture_unload(this.__wbg_ptr);
         if (ret[1]) {
             throw takeFromExternrefTable0(ret[0]);
         }
@@ -2992,19 +5086,22 @@ export class TextureStore {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_texturestore_free(ptr, 0);
     }
-    constructor() {
-        const ret = wasm.texturestore_new_wasm();
-        this.__wbg_ptr = ret >>> 0;
-        TextureStoreFinalization.register(this, this.__wbg_ptr, this);
-        return this;
+    /**
+     * @returns {boolean}
+     */
+    allLoaded() {
+        const ret = wasm.texturestore_allLoaded(this.__wbg_ptr);
+        return ret !== 0;
     }
     /**
-     * @param {Texture} texture
+     * @param {string} path
+     * @returns {boolean}
      */
-    insertTexture(texture) {
-        _assertClass(texture, Texture);
-        var ptr0 = texture.__destroy_into_raw();
-        wasm.texturestore_insertTexture(this.__wbg_ptr, ptr0);
+    hasTexture(path) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.texturestore_contains(this.__wbg_ptr, ptr0, len0);
+        return ret !== 0;
     }
     /**
      * @param {string} new_path
@@ -3028,37 +5125,6 @@ export class TextureStore {
         }
     }
     /**
-     * @param {string} path
-     * @param {ArrayBuffer} buffer
-     */
-    loadFromArrayBuffer(path, buffer) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texturestore_loadFromArrayBuffer(this.__wbg_ptr, ptr0, len0, buffer);
-        if (ret[1]) {
-            throw takeFromExternrefTable0(ret[0]);
-        }
-    }
-    /**
-     * @param {string} path
-     * @param {Uint8Array} array
-     */
-    loadFromUint8Array(path, array) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texturestore_loadFromUint8Array(this.__wbg_ptr, ptr0, len0, array);
-        if (ret[1]) {
-            throw takeFromExternrefTable0(ret[0]);
-        }
-    }
-    /**
-     * @returns {boolean}
-     */
-    allLoaded() {
-        const ret = wasm.texturestore_allLoaded(this.__wbg_ptr);
-        return ret !== 0;
-    }
-    /**
      * @returns {number}
      */
     loadedCount() {
@@ -3066,21 +5132,19 @@ export class TextureStore {
         return ret >>> 0;
     }
     /**
+     * @param {Texture} texture
+     */
+    insertTexture(texture) {
+        _assertClass(texture, Texture);
+        var ptr0 = texture.__destroy_into_raw();
+        wasm.texturestore_insertTexture(this.__wbg_ptr, ptr0);
+    }
+    /**
      * @returns {Array<any>}
      */
     unloadedPaths() {
         const ret = wasm.texturestore_unloadedPaths(this.__wbg_ptr);
         return ret;
-    }
-    /**
-     * @param {string} path
-     * @returns {boolean}
-     */
-    hasTexture(path) {
-        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texturestore_contains(this.__wbg_ptr, ptr0, len0);
-        return ret !== 0;
     }
     /**
      * @param {string} path
@@ -3109,13 +5173,50 @@ export class TextureStore {
     }
     /**
      * @param {string} path
-     * @returns {boolean}
+     * @param {Uint8Array} array
      */
-    contains(path) {
+    loadFromUint8Array(path, array) {
         const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.texturestore_contains(this.__wbg_ptr, ptr0, len0);
-        return ret !== 0;
+        const ret = wasm.texturestore_loadFromUint8Array(this.__wbg_ptr, ptr0, len0, array);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * @param {string} path
+     * @param {ArrayBuffer} buffer
+     */
+    loadFromArrayBuffer(path, buffer) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.texturestore_loadFromArrayBuffer(this.__wbg_ptr, ptr0, len0, buffer);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    constructor() {
+        const ret = wasm.texturestore_new_wasm();
+        this.__wbg_ptr = ret >>> 0;
+        TextureStoreFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+    clear() {
+        wasm.texturestore_clear(this.__wbg_ptr);
+    }
+    /**
+     * @returns {number}
+     */
+    getLength() {
+        const ret = wasm.texturestore_getLength(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {TextureStore} other
+     */
+    extend(other) {
+        _assertClass(other, TextureStore);
+        wasm.texturestore_extend(this.__wbg_ptr, other.__wbg_ptr);
     }
     /**
      * @param {string} path
@@ -3128,11 +5229,14 @@ export class TextureStore {
         return ret !== 0;
     }
     /**
-     * @returns {number}
+     * @param {string} path
+     * @returns {boolean}
      */
-    getLength() {
-        const ret = wasm.texturestore_getLength(this.__wbg_ptr);
-        return ret >>> 0;
+    contains(path) {
+        const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.texturestore_contains(this.__wbg_ptr, ptr0, len0);
+        return ret !== 0;
     }
     /**
      * @returns {boolean}
@@ -3147,27 +5251,6 @@ export class TextureStore {
     getPaths() {
         const ret = wasm.texturestore_getPaths(this.__wbg_ptr);
         return ret;
-    }
-    clear() {
-        wasm.texturestore_clear(this.__wbg_ptr);
-    }
-    /**
-     * @param {string} original_path
-     * @param {string} new_path
-     * @returns {string | undefined}
-     */
-    copy(original_path, new_path) {
-        const ptr0 = passStringToWasm0(original_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ptr1 = passStringToWasm0(new_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len1 = WASM_VECTOR_LEN;
-        const ret = wasm.texturestore_copy(this.__wbg_ptr, ptr0, len0, ptr1, len1);
-        let v3;
-        if (ret[0] !== 0) {
-            v3 = getStringFromWasm0(ret[0], ret[1]).slice();
-            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-        }
-        return v3;
     }
     /**
      * @param {string} original_path
@@ -3188,11 +5271,22 @@ export class TextureStore {
         return v3;
     }
     /**
-     * @param {TextureStore} other
+     * @param {string} original_path
+     * @param {string} new_path
+     * @returns {string | undefined}
      */
-    extend(other) {
-        _assertClass(other, TextureStore);
-        wasm.texturestore_extend(this.__wbg_ptr, other.__wbg_ptr);
+    copy(original_path, new_path) {
+        const ptr0 = passStringToWasm0(original_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(new_path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.texturestore_copy(this.__wbg_ptr, ptr0, len0, ptr1, len1);
+        let v3;
+        if (ret[0] !== 0) {
+            v3 = getStringFromWasm0(ret[0], ret[1]).slice();
+            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        }
+        return v3;
     }
 }
 if (Symbol.dispose) TextureStore.prototype[Symbol.dispose] = TextureStore.prototype.free;
@@ -3247,33 +5341,15 @@ export function fluXisSkinToFiles(skin) {
 }
 
 /**
- * @param {OsuSkinIni} skin_ini
- * @returns {string}
- */
-export function iniToString(skin_ini) {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        _assertClass(skin_ini, OsuSkinIni);
-        const ret = wasm.iniToString(skin_ini.__wbg_ptr);
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-/**
  * @param {SkinJson} skin_json
  * @returns {string}
  */
-export function jsonToString(skin_json) {
+export function fluxisJsonToString(skin_json) {
     let deferred1_0;
     let deferred1_1;
     try {
         _assertClass(skin_json, SkinJson);
-        const ret = wasm.jsonToString(skin_json.__wbg_ptr);
+        const ret = wasm.fluxisJsonToString(skin_json.__wbg_ptr);
         deferred1_0 = ret[0];
         deferred1_1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);
@@ -3286,12 +5362,12 @@ export function jsonToString(skin_json) {
  * @param {FluXisLayout} layout_json
  * @returns {string}
  */
-export function layoutToString(layout_json) {
+export function fluxisLayoutToString(layout_json) {
     let deferred2_0;
     let deferred2_1;
     try {
         _assertClass(layout_json, FluXisLayout);
-        const ret = wasm.layoutToString(layout_json.__wbg_ptr);
+        const ret = wasm.fluxisLayoutToString(layout_json.__wbg_ptr);
         var ptr1 = ret[0];
         var len1 = ret[1];
         if (ret[3]) {
@@ -3303,6 +5379,33 @@ export function layoutToString(layout_json) {
         return getStringFromWasm0(ptr1, len1);
     } finally {
         wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
+ * @param {number} num_threads
+ * @returns {Promise<any>}
+ */
+export function initThreadPool(num_threads) {
+    const ret = wasm.initThreadPool(num_threads);
+    return ret;
+}
+
+/**
+ * @param {OsuSkinIni} skin_ini
+ * @returns {string}
+ */
+export function osuIniToString(skin_ini) {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        _assertClass(skin_ini, OsuSkinIni);
+        const ret = wasm.osuIniToString(skin_ini.__wbg_ptr);
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
     }
 }
 
@@ -3325,6 +5428,49 @@ export function osuSkinFromFiles(files) {
 export function osuSkinToFiles(skin) {
     _assertClass(skin, OsuSkin);
     const ret = wasm.osuSkinToFiles(skin.__wbg_ptr);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
+}
+
+/**
+ * @param {QuaSkinIni} skin_ini
+ * @returns {string}
+ */
+export function quaverIniToString(skin_ini) {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        _assertClass(skin_ini, QuaSkinIni);
+        const ret = wasm.quaverIniToString(skin_ini.__wbg_ptr);
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * @param {Map<any, any>} files
+ * @returns {QuaSkin}
+ */
+export function quaverSkinFromFiles(files) {
+    const ret = wasm.quaverSkinFromFiles(files);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return QuaSkin.__wrap(ret[0]);
+}
+
+/**
+ * @param {QuaSkin} skin
+ * @returns {Map<any, any>}
+ */
+export function quaverSkinToFiles(skin) {
+    _assertClass(skin, QuaSkin);
+    const ret = wasm.quaverSkinToFiles(skin.__wbg_ptr);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -3383,6 +5529,51 @@ export function texturesToFiles(textures) {
     return takeFromExternrefTable0(ret[0]);
 }
 
+export class wbg_rayon_PoolBuilder {
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(wbg_rayon_PoolBuilder.prototype);
+        obj.__wbg_ptr = ptr;
+        wbg_rayon_PoolBuilderFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        wbg_rayon_PoolBuilderFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_wbg_rayon_poolbuilder_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    numThreads() {
+        const ret = wasm.wbg_rayon_poolbuilder_numThreads(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    build() {
+        wasm.wbg_rayon_poolbuilder_build(this.__wbg_ptr);
+    }
+    /**
+     * @returns {number}
+     */
+    receiver() {
+        const ret = wasm.wbg_rayon_poolbuilder_receiver(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+}
+if (Symbol.dispose) wbg_rayon_PoolBuilder.prototype[Symbol.dispose] = wbg_rayon_PoolBuilder.prototype.free;
+
+/**
+ * @param {number} receiver
+ */
+export function wbg_rayon_start_worker(receiver) {
+    wasm.wbg_rayon_start_worker(receiver);
+}
+
 const EXPECTED_RESPONSE_TYPES = new Set(['basic', 'cors', 'default']);
 
 async function __wbg_load(module, imports) {
@@ -3422,6 +5613,18 @@ function __wbg_get_imports() {
         const ret = Error(getStringFromWasm0(arg0, arg1));
         return ret;
     };
+    imports.wbg.__wbg___wbindgen_is_undefined_f6b95eab589e0269 = function(arg0) {
+        const ret = arg0 === undefined;
+        return ret;
+    };
+    imports.wbg.__wbg___wbindgen_memory_a342e963fbcabd68 = function() {
+        const ret = wasm.memory;
+        return ret;
+    };
+    imports.wbg.__wbg___wbindgen_module_967adef62ea6cbf8 = function() {
+        const ret = __wbg_init.__wbindgen_wasm_module;
+        return ret;
+    };
     imports.wbg.__wbg___wbindgen_string_get_a2a31e16edf96e42 = function(arg0, arg1) {
         const obj = arg1;
         const ret = typeof(obj) === 'string' ? obj : undefined;
@@ -3433,6 +5636,10 @@ function __wbg_get_imports() {
     imports.wbg.__wbg___wbindgen_throw_dd24417ed36fc46e = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
+    imports.wbg.__wbg_call_abb4ff46ce38be40 = function() { return handleError(function (arg0, arg1) {
+        const ret = arg0.call(arg1);
+        return ret;
+    }, arguments) };
     imports.wbg.__wbg_fluxiskeymode_new = function(arg0) {
         const ret = FluXisKeymode.__wrap(arg0);
         return ret;
@@ -3448,7 +5655,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return wasm_bindgen__convert__closures_____invoke__h9a6e61dda56dfb1d(a, state0.b, arg0, arg1);
+                    return wasm_bindgen_aaa77acde99fbdb___convert__closures_____invoke___wasm_bindgen_aaa77acde99fbdb___JsValue__wasm_bindgen_aaa77acde99fbdb___JsValue_____(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -3460,6 +5667,16 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbg_get_6b7bd52aca3f9671 = function(arg0, arg1) {
         const ret = arg0[arg1 >>> 0];
+        return ret;
+    };
+    imports.wbg.__wbg_instanceof_Window_b5cf7783caa68180 = function(arg0) {
+        let result;
+        try {
+            result = arg0 instanceof Window;
+        } catch (_) {
+            result = false;
+        }
+        const ret = result;
         return ret;
     };
     imports.wbg.__wbg_length_22ac23eaec9d8053 = function(arg0) {
@@ -3486,6 +5703,10 @@ function __wbg_get_imports() {
         const ret = new Uint8Array(getArrayU8FromWasm0(arg0, arg1));
         return ret;
     };
+    imports.wbg.__wbg_new_no_args_cb138f77cf6151ee = function(arg0, arg1) {
+        const ret = new Function(getStringFromWasm0(arg0, arg1));
+        return ret;
+    };
     imports.wbg.__wbg_osukeymode_new = function(arg0) {
         const ret = OsuKeymode.__wrap(arg0);
         return ret;
@@ -3501,9 +5722,37 @@ function __wbg_get_imports() {
         const ret = arg0.push(arg1);
         return ret;
     };
+    imports.wbg.__wbg_quakeymode_new = function(arg0) {
+        const ret = QuaKeymode.__wrap(arg0);
+        return ret;
+    };
+    imports.wbg.__wbg_quakeymode_unwrap = function(arg0) {
+        const ret = QuaKeymode.__unwrap(arg0);
+        return ret;
+    };
     imports.wbg.__wbg_set_efaaf145b9377369 = function(arg0, arg1, arg2) {
         const ret = arg0.set(arg1, arg2);
         return ret;
+    };
+    imports.wbg.__wbg_startWorkers_2ca11761e08ff5d5 = function(arg0, arg1, arg2) {
+        const ret = startWorkers(arg0, arg1, wbg_rayon_PoolBuilder.__wrap(arg2));
+        return ret;
+    };
+    imports.wbg.__wbg_static_accessor_GLOBAL_769e6b65d6557335 = function() {
+        const ret = typeof global === 'undefined' ? null : global;
+        return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
+    };
+    imports.wbg.__wbg_static_accessor_GLOBAL_THIS_60cf02db4de8e1c1 = function() {
+        const ret = typeof globalThis === 'undefined' ? null : globalThis;
+        return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
+    };
+    imports.wbg.__wbg_static_accessor_SELF_08f5a74c69739274 = function() {
+        const ret = typeof self === 'undefined' ? null : self;
+        return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
+    };
+    imports.wbg.__wbg_static_accessor_WINDOW_a8924b26aa92d024 = function() {
+        const ret = typeof window === 'undefined' ? null : window;
+        return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
     };
     imports.wbg.__wbindgen_cast_2241b6af4c4b2941 = function(arg0, arg1) {
         // Cast intrinsic for `Ref(String) -> Externref`.

@@ -87,6 +87,67 @@ function getDataViewMemory0() {
     return cachedDataViewMemory0;
 }
 
+function takeFromExternrefTable0(idx) {
+    const value = wasm.__wbindgen_export_0.get(idx);
+    wasm.__externref_table_dealloc(idx);
+    return value;
+}
+/**
+ * @param {string} raw_chart
+ * @returns {GenericManiaChart}
+ */
+export function parseFromOsuGeneric(raw_chart) {
+    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.parseFromOsuGeneric(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return GenericManiaChart.__wrap(ret[0]);
+}
+
+/**
+ * @param {string} raw_chart
+ * @returns {GenericManiaChart}
+ */
+export function parseFromSmGeneric(raw_chart) {
+    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.parseFromSmGeneric(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return GenericManiaChart.__wrap(ret[0]);
+}
+
+/**
+ * @param {string} raw_chart
+ * @returns {GenericManiaChart}
+ */
+export function parseFromQuaGeneric(raw_chart) {
+    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.parseFromQuaGeneric(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return GenericManiaChart.__wrap(ret[0]);
+}
+
+/**
+ * @param {string} raw_chart
+ * @returns {GenericManiaChart}
+ */
+export function parseFromFscGeneric(raw_chart) {
+    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.parseFromFscGeneric(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return GenericManiaChart.__wrap(ret[0]);
+}
+
 function getArrayJsValueFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     const mem = getDataViewMemory0();
@@ -118,12 +179,6 @@ function _assertClass(instance, klass) {
     if (!(instance instanceof klass)) {
         throw new Error(`expected instance of ${klass.name}`);
     }
-}
-
-function takeFromExternrefTable0(idx) {
-    const value = wasm.__wbindgen_export_0.get(idx);
-    wasm.__externref_table_dealloc(idx);
-    return value;
 }
 /**
  * @param {GenericManiaChart} chart
@@ -222,62 +277,6 @@ export function writeToFscGeneric(chart) {
 }
 
 /**
- * @param {string} raw_chart
- * @returns {GenericManiaChart}
- */
-export function parseFromOsuGeneric(raw_chart) {
-    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.parseFromOsuGeneric(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return GenericManiaChart.__wrap(ret[0]);
-}
-
-/**
- * @param {string} raw_chart
- * @returns {GenericManiaChart}
- */
-export function parseFromSmGeneric(raw_chart) {
-    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.parseFromSmGeneric(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return GenericManiaChart.__wrap(ret[0]);
-}
-
-/**
- * @param {string} raw_chart
- * @returns {GenericManiaChart}
- */
-export function parseFromQuaGeneric(raw_chart) {
-    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.parseFromQuaGeneric(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return GenericManiaChart.__wrap(ret[0]);
-}
-
-/**
- * @param {string} raw_chart
- * @returns {GenericManiaChart}
- */
-export function parseFromFscGeneric(raw_chart) {
-    const ptr0 = passStringToWasm0(raw_chart, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.parseFromFscGeneric(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return GenericManiaChart.__wrap(ret[0]);
-}
-
-/**
  * @enum {0 | 1 | 2 | 3 | 4 | 5}
  */
 export const CatchHitobjectType = Object.freeze({
@@ -298,7 +297,7 @@ export const HitSoundType = Object.freeze({
     Finish: 3, "3": "Finish",
 });
 /**
- * @enum {0 | 1 | 2 | 3 | 4 | 5 | 6}
+ * @enum {0 | 1 | 2 | 3 | 4 | 5 | 6 | 7}
  */
 export const KeyType = Object.freeze({
     Empty: 0, "0": "Empty",
@@ -307,7 +306,8 @@ export const KeyType = Object.freeze({
     SliderEnd: 3, "3": "SliderEnd",
     Mine: 4, "4": "Mine",
     Fake: 5, "5": "Fake",
-    Unknown: 6, "6": "Unknown",
+    Tick: 6, "6": "Tick",
+    Unknown: 7, "7": "Unknown",
 });
 /**
  * @enum {0 | 1 | 2 | 3 | 4}
@@ -924,10 +924,11 @@ export class Key {
         return Key.__wrap(ret);
     }
     /**
+     * @param {number | null} [value]
      * @returns {Key}
      */
-    static mine() {
-        const ret = wasm.key_mine();
+    static mine(value) {
+        const ret = wasm.key_mine(isLikeNone(value) ? 0x100000001 : (value) >> 0);
         return Key.__wrap(ret);
     }
     /**
@@ -935,6 +936,13 @@ export class Key {
      */
     static fake() {
         const ret = wasm.key_fake();
+        return Key.__wrap(ret);
+    }
+    /**
+     * @returns {Key}
+     */
+    static tick() {
+        const ret = wasm.key_tick();
         return Key.__wrap(ret);
     }
     /**
@@ -1761,7 +1769,7 @@ export class TaikoHitobject {
      * @returns {TaikoHitobject}
      */
     static bonus_kat() {
-        const ret = wasm.key_mine();
+        const ret = wasm.taikohitobject_bonus_kat();
         return TaikoHitobject.__wrap(ret);
     }
     /**

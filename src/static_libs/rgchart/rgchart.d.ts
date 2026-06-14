@@ -1,13 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-export function writeToOsuGeneric(chart: GenericManiaChart): string;
-export function writeToSmGeneric(chart: GenericManiaChart): string;
-export function writeToQuaGeneric(chart: GenericManiaChart): string;
-export function writeToFscGeneric(chart: GenericManiaChart): string;
 export function parseFromOsuGeneric(raw_chart: string): GenericManiaChart;
 export function parseFromSmGeneric(raw_chart: string): GenericManiaChart;
 export function parseFromQuaGeneric(raw_chart: string): GenericManiaChart;
 export function parseFromFscGeneric(raw_chart: string): GenericManiaChart;
+export function writeToOsuGeneric(chart: GenericManiaChart): string;
+export function writeToSmGeneric(chart: GenericManiaChart): string;
+export function writeToQuaGeneric(chart: GenericManiaChart): string;
+export function writeToFscGeneric(chart: GenericManiaChart): string;
 export enum CatchHitobjectType {
   Empty = 0,
   Fruit = 1,
@@ -29,7 +29,8 @@ export enum KeyType {
   SliderEnd = 3,
   Mine = 4,
   Fake = 5,
-  Unknown = 6,
+  Tick = 6,
+  Unknown = 7,
 }
 export enum OsuHitobjectType {
   Empty = 0,
@@ -108,8 +109,9 @@ export class Key {
   static normal(): Key;
   static slider_start(value?: number | null): Key;
   static slider_end(): Key;
-  static mine(): Key;
+  static mine(value?: number | null): Key;
   static fake(): Key;
+  static tick(): Key;
   static unknown(): Key;
   slider_end_time(): number | undefined;
   key_type: KeyType;
@@ -211,6 +213,49 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly parseFromOsuGeneric: (a: number, b: number) => [number, number, number];
+  readonly parseFromSmGeneric: (a: number, b: number) => [number, number, number];
+  readonly parseFromQuaGeneric: (a: number, b: number) => [number, number, number];
+  readonly parseFromFscGeneric: (a: number, b: number) => [number, number, number];
+  readonly __wbg_soundeffect_free: (a: number, b: number) => void;
+  readonly __wbg_get_soundeffect_time: (a: number) => number;
+  readonly __wbg_set_soundeffect_time: (a: number, b: number) => void;
+  readonly __wbg_get_soundeffect_volume: (a: number) => number;
+  readonly __wbg_set_soundeffect_volume: (a: number, b: number) => void;
+  readonly __wbg_get_soundeffect_sample: (a: number) => number;
+  readonly __wbg_set_soundeffect_sample: (a: number, b: number) => void;
+  readonly soundeffect_new: (a: number, b: number, c: number) => number;
+  readonly __wbg_keysound_free: (a: number, b: number) => void;
+  readonly __wbg_get_keysound_volume: (a: number) => number;
+  readonly __wbg_set_keysound_volume: (a: number, b: number) => void;
+  readonly __wbg_get_keysound_hitsound_type: (a: number) => number;
+  readonly __wbg_set_keysound_hitsound_type: (a: number, b: number) => void;
+  readonly __wbg_get_keysound_sample: (a: number) => number;
+  readonly __wbg_set_keysound_sample: (a: number, b: number) => void;
+  readonly __wbg_get_keysound_has_custom: (a: number) => number;
+  readonly __wbg_set_keysound_has_custom: (a: number, b: number) => void;
+  readonly __wbg_keysoundrow_free: (a: number, b: number) => void;
+  readonly __wbg_get_keysoundrow_is_empty: (a: number) => number;
+  readonly __wbg_set_keysoundrow_is_empty: (a: number, b: number) => void;
+  readonly __wbg_soundbank_free: (a: number, b: number) => void;
+  readonly __wbg_get_soundbank_audio_tracks: (a: number) => [number, number];
+  readonly __wbg_set_soundbank_audio_tracks: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_soundbank_sound_effects: (a: number) => [number, number];
+  readonly __wbg_set_soundbank_sound_effects: (a: number, b: number, c: number) => void;
+  readonly soundbank_new: () => number;
+  readonly soundbank_add_sound_sample: (a: number, b: number, c: number) => number;
+  readonly soundbank_add_sound_sample_with_index: (a: number, b: number, c: number, d: number) => void;
+  readonly soundbank_add_sound_effect: (a: number, b: number) => void;
+  readonly soundbank_get_sound_sample: (a: number, b: number) => [number, number];
+  readonly soundbank_get_index_sample: (a: number, b: number, c: number) => number;
+  readonly soundbank_get_sample_paths: (a: number) => [number, number];
+  readonly soundbank_contains_path: (a: number, b: number, c: number) => number;
+  readonly soundbank_sample_count: (a: number) => number;
+  readonly soundbank_is_empty: (a: number) => number;
+  readonly writeToOsuGeneric: (a: number) => [number, number, number, number];
+  readonly writeToSmGeneric: (a: number) => [number, number, number, number];
+  readonly writeToQuaGeneric: (a: number) => [number, number, number, number];
+  readonly writeToFscGeneric: (a: number) => [number, number, number, number];
   readonly __wbg_metadata_free: (a: number, b: number) => void;
   readonly __wbg_get_metadata_title: (a: number) => [number, number];
   readonly __wbg_set_metadata_title: (a: number, b: number, c: number) => void;
@@ -228,6 +273,7 @@ export interface InitOutput {
   readonly __wbg_set_metadata_tags: (a: number, b: number, c: number) => void;
   readonly __wbg_get_metadata_source: (a: number) => [number, number];
   readonly __wbg_set_metadata_source: (a: number, b: number, c: number) => void;
+  readonly __wbg_timingpoints_free: (a: number, b: number) => void;
   readonly __wbg_key_free: (a: number, b: number) => void;
   readonly __wbg_get_key_key_type: (a: number) => number;
   readonly __wbg_set_key_key_type: (a: number, b: number) => void;
@@ -235,13 +281,15 @@ export interface InitOutput {
   readonly key_normal: () => number;
   readonly key_slider_start: (a: number) => number;
   readonly key_slider_end: () => number;
-  readonly key_mine: () => number;
+  readonly key_mine: (a: number) => number;
   readonly key_fake: () => number;
+  readonly key_tick: () => number;
   readonly key_unknown: () => number;
   readonly __wbg_taikohitobject_free: (a: number, b: number) => void;
   readonly __wbg_get_taikohitobject_note_type: (a: number) => number;
   readonly __wbg_set_taikohitobject_note_type: (a: number, b: number) => void;
   readonly taikohitobject_kat: () => number;
+  readonly taikohitobject_bonus_kat: () => number;
   readonly taikohitobject_drum_roll: (a: number) => number;
   readonly taikohitobject_bonus_drum_roll: (a: number) => number;
   readonly taikohitobject_balloon: (a: number) => number;
@@ -281,22 +329,17 @@ export interface InitOutput {
   readonly osuhitobject_with_combo_skip: (a: number, b: number) => number;
   readonly osuhitobject_is_new_combo: (a: number) => number;
   readonly osuhitobject_combo_skip: (a: number) => number;
-  readonly __wbg_timingpoints_free: (a: number, b: number) => void;
-  readonly __wbg_set_osuhitobject_x: (a: number, b: number) => void;
-  readonly taikohitobject_end_time: (a: number) => number;
-  readonly key_slider_end_time: (a: number) => number;
-  readonly osuhitobject_end_time: (a: number) => number;
-  readonly __wbg_get_taikohitobject_end_time: (a: number) => number;
-  readonly __wbg_get_key_slider_end_time: (a: number) => number;
-  readonly __wbg_get_osuhitobject_end_time: (a: number) => number;
-  readonly taikohitobject_empty: () => number;
-  readonly taikohitobject_don: () => number;
-  readonly taikohitobject_bonus_don: () => number;
-  readonly taikohitobject_bonus_kat: () => number;
-  readonly __wbg_set_taikohitobject_end_time: (a: number, b: number) => void;
-  readonly __wbg_set_key_slider_end_time: (a: number, b: number) => void;
-  readonly __wbg_set_osuhitobject_end_time: (a: number, b: number) => void;
-  readonly __wbg_get_osuhitobject_x: (a: number) => number;
+  readonly __wbg_genericmaniachart_free: (a: number, b: number) => void;
+  readonly __wbg_get_genericmaniachart_metadata: (a: number) => number;
+  readonly __wbg_set_genericmaniachart_metadata: (a: number, b: number) => void;
+  readonly __wbg_get_genericmaniachart_chartinfo: (a: number) => number;
+  readonly __wbg_set_genericmaniachart_chartinfo: (a: number, b: number) => void;
+  readonly __wbg_get_genericmaniachart_timing_points: (a: number) => number;
+  readonly __wbg_set_genericmaniachart_timing_points: (a: number, b: number) => void;
+  readonly __wbg_get_genericmaniachart_hitobjects: (a: number) => number;
+  readonly __wbg_set_genericmaniachart_hitobjects: (a: number, b: number) => void;
+  readonly __wbg_get_genericmaniachart_soundbank: (a: number) => number;
+  readonly __wbg_set_genericmaniachart_soundbank: (a: number, b: number) => void;
   readonly __wbg_chartinfo_free: (a: number, b: number) => void;
   readonly __wbg_get_chartinfo_difficulty_name: (a: number) => [number, number];
   readonly __wbg_set_chartinfo_difficulty_name: (a: number, b: number, c: number) => void;
@@ -321,67 +364,27 @@ export interface InitOutput {
   readonly chartinfo_new: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number) => number;
   readonly chartinfo_empty: () => number;
   readonly __wbg_hitobjects_free: (a: number, b: number) => void;
-  readonly writeToOsuGeneric: (a: number) => [number, number, number, number];
-  readonly writeToSmGeneric: (a: number) => [number, number, number, number];
-  readonly writeToQuaGeneric: (a: number) => [number, number, number, number];
-  readonly writeToFscGeneric: (a: number) => [number, number, number, number];
-  readonly __wbg_soundeffect_free: (a: number, b: number) => void;
-  readonly __wbg_get_soundeffect_time: (a: number) => number;
-  readonly __wbg_set_soundeffect_time: (a: number, b: number) => void;
-  readonly __wbg_get_soundeffect_volume: (a: number) => number;
-  readonly __wbg_set_soundeffect_volume: (a: number, b: number) => void;
-  readonly __wbg_get_soundeffect_sample: (a: number) => number;
-  readonly __wbg_set_soundeffect_sample: (a: number, b: number) => void;
-  readonly soundeffect_new: (a: number, b: number, c: number) => number;
-  readonly __wbg_keysound_free: (a: number, b: number) => void;
-  readonly __wbg_get_keysound_volume: (a: number) => number;
-  readonly __wbg_set_keysound_volume: (a: number, b: number) => void;
-  readonly __wbg_get_keysound_hitsound_type: (a: number) => number;
-  readonly __wbg_set_keysound_hitsound_type: (a: number, b: number) => void;
-  readonly __wbg_get_keysound_sample: (a: number) => number;
-  readonly __wbg_set_keysound_sample: (a: number, b: number) => void;
-  readonly __wbg_get_keysound_has_custom: (a: number) => number;
-  readonly __wbg_set_keysound_has_custom: (a: number, b: number) => void;
-  readonly __wbg_keysoundrow_free: (a: number, b: number) => void;
-  readonly __wbg_get_keysoundrow_is_empty: (a: number) => number;
-  readonly __wbg_set_keysoundrow_is_empty: (a: number, b: number) => void;
-  readonly __wbg_soundbank_free: (a: number, b: number) => void;
-  readonly __wbg_get_soundbank_audio_tracks: (a: number) => [number, number];
-  readonly __wbg_set_soundbank_audio_tracks: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_soundbank_sound_effects: (a: number) => [number, number];
-  readonly __wbg_set_soundbank_sound_effects: (a: number, b: number, c: number) => void;
-  readonly soundbank_new: () => number;
-  readonly soundbank_add_sound_sample: (a: number, b: number, c: number) => number;
-  readonly soundbank_add_sound_sample_with_index: (a: number, b: number, c: number, d: number) => void;
-  readonly soundbank_add_sound_effect: (a: number, b: number) => void;
-  readonly soundbank_get_sound_sample: (a: number, b: number) => [number, number];
-  readonly soundbank_get_index_sample: (a: number, b: number, c: number) => number;
-  readonly soundbank_get_sample_paths: (a: number) => [number, number];
-  readonly soundbank_contains_path: (a: number, b: number, c: number) => number;
-  readonly soundbank_sample_count: (a: number) => number;
-  readonly soundbank_is_empty: (a: number) => number;
-  readonly parseFromOsuGeneric: (a: number, b: number) => [number, number, number];
-  readonly parseFromSmGeneric: (a: number, b: number) => [number, number, number];
-  readonly parseFromQuaGeneric: (a: number, b: number) => [number, number, number];
-  readonly parseFromFscGeneric: (a: number, b: number) => [number, number, number];
-  readonly __wbg_genericmaniachart_free: (a: number, b: number) => void;
-  readonly __wbg_get_genericmaniachart_metadata: (a: number) => number;
-  readonly __wbg_set_genericmaniachart_metadata: (a: number, b: number) => void;
-  readonly __wbg_get_genericmaniachart_chartinfo: (a: number) => number;
-  readonly __wbg_set_genericmaniachart_chartinfo: (a: number, b: number) => void;
-  readonly __wbg_get_genericmaniachart_timing_points: (a: number) => number;
-  readonly __wbg_set_genericmaniachart_timing_points: (a: number, b: number) => void;
-  readonly __wbg_get_genericmaniachart_hitobjects: (a: number) => number;
-  readonly __wbg_set_genericmaniachart_hitobjects: (a: number, b: number) => void;
-  readonly __wbg_get_genericmaniachart_soundbank: (a: number) => number;
-  readonly __wbg_set_genericmaniachart_soundbank: (a: number, b: number) => void;
+  readonly __wbg_set_osuhitobject_x: (a: number, b: number) => void;
+  readonly taikohitobject_end_time: (a: number) => number;
+  readonly key_slider_end_time: (a: number) => number;
+  readonly osuhitobject_end_time: (a: number) => number;
+  readonly __wbg_get_taikohitobject_end_time: (a: number) => number;
+  readonly __wbg_get_key_slider_end_time: (a: number) => number;
+  readonly __wbg_get_osuhitobject_end_time: (a: number) => number;
+  readonly taikohitobject_empty: () => number;
+  readonly taikohitobject_don: () => number;
+  readonly taikohitobject_bonus_don: () => number;
+  readonly __wbg_set_taikohitobject_end_time: (a: number, b: number) => void;
+  readonly __wbg_set_key_slider_end_time: (a: number, b: number) => void;
+  readonly __wbg_set_osuhitobject_end_time: (a: number, b: number) => void;
+  readonly __wbg_get_osuhitobject_x: (a: number) => number;
   readonly __wbindgen_export_0: WebAssembly.Table;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
-  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
-  readonly __externref_drop_slice: (a: number, b: number) => void;
-  readonly __externref_table_alloc: () => number;
   readonly __externref_table_dealloc: (a: number) => void;
+  readonly __externref_drop_slice: (a: number, b: number) => void;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
+  readonly __externref_table_alloc: () => number;
   readonly __wbindgen_start: () => void;
 }
 
