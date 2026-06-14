@@ -83,6 +83,10 @@ async function runConverter(skin: OsuSkin | FluXisSkin, type: string, path: stri
             case 'fsk':
                 const fluXisSkin = rgskin.FluXisSkin.fromGenericMania(genericSkin);
                 return rgskin.fluXisSkinToFiles(fluXisSkin.skin);
+
+            case 'qs':
+            const quaSkin = rgskin.QuaSkin.fromGenericMania(genericSkin);
+            return rgskin.quaverSkinToFiles(quaSkin);
         }
     } catch (e) { 
         convertError(`Failed to convert ${path}:`, e); 
