@@ -5,7 +5,7 @@
     "menvae"
   ],
   "description": "A library for converting, loading and creating skins for various rhythm games.",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "MIT",
   "repository": {
     "type": "git",

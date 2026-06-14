@@ -547,6 +547,7 @@ export class wbg_rayon_PoolBuilder {
   [Symbol.dispose](): void;
   numThreads(): number;
   build(): void;
+  mainJS(): string;
   receiver(): number;
 }
 
@@ -978,10 +979,10 @@ export interface InitOutput {
   readonly allSamplesFromFiles: (a: any) => [number, number, number];
   readonly allTexturesFromFiles: (a: any) => [number, number, number];
   readonly fluXisSkinFromFiles: (a: any) => [number, number, number];
-  readonly osuIniToString: (a: number) => [number, number];
   readonly osuSkinFromFiles: (a: any) => [number, number, number];
-  readonly osuSkinToFiles: (a: number) => [number, number, number];
+  readonly quaverIniToString: (a: number) => [number, number];
   readonly quaverSkinFromFiles: (a: any) => [number, number, number];
+  readonly quaverSkinToFiles: (a: number) => [number, number, number];
   readonly samplesFromFiles: (a: any, b: any) => [number, number, number];
   readonly texturesFromFiles: (a: any, b: any) => [number, number, number];
   readonly __wbg_fluxiskeymode_free: (a: number, b: number) => void;
@@ -1100,6 +1101,8 @@ export interface InitOutput {
   readonly genericmaniaskin_getKeymode: (a: number, b: number) => number;
   readonly genericmaniaskin_getRequiredSamplePaths: (a: number) => [number, number];
   readonly genericmaniaskin_getRequiredTexturePaths: (a: number) => [number, number];
+  readonly osuIniToString: (a: number) => [number, number];
+  readonly osuSkinToFiles: (a: number) => [number, number, number];
   readonly osuskin_fromGenericMania: (a: number) => [number, number, number];
   readonly osuskin_getKeymode: (a: number, b: number) => number;
   readonly osuskin_getRequiredSamplePaths: (a: number) => [number, number];
@@ -1111,7 +1114,6 @@ export interface InitOutput {
   readonly osuskinini_getRequiredSamplePaths: (a: number) => [number, number];
   readonly osuskinini_getRequiredTexturePaths: (a: number) => [number, number];
   readonly osuskinini_new: () => number;
-  readonly osuskinini_toString: (a: number) => [number, number];
   readonly quaskin_fromGenericMania: (a: number) => [number, number, number];
   readonly quaskin_getKeymode: (a: number, b: number) => number;
   readonly quaskin_getRequiredSamplePaths: (a: number) => [number, number];
@@ -1122,20 +1124,20 @@ export interface InitOutput {
   readonly quaskinini_getKeymode: (a: number, b: number) => number;
   readonly quaskinini_new: () => number;
   readonly quaskinini_toString: (a: number) => [number, number];
-  readonly quaverSkinToFiles: (a: number) => [number, number, number];
   readonly __wbg_get_osuskin_samples: (a: number) => number;
   readonly __wbg_get_quaskin_samples: (a: number) => number;
   readonly __wbg_get_osuskin_textures: (a: number) => number;
   readonly __wbg_get_quaskin_textures: (a: number) => number;
   readonly __wbg_set_osuskin_textures: (a: number, b: number) => void;
   readonly __wbg_set_quaskin_textures: (a: number, b: number) => void;
-  readonly quaverIniToString: (a: number) => [number, number];
+  readonly osuskinini_toString: (a: number) => [number, number];
   readonly __wbg_set_osuskin_samples: (a: number, b: number) => void;
   readonly __wbg_set_quaskin_samples: (a: number, b: number) => void;
   readonly genericmaniaskin_toGenericMania: (a: number) => [number, number, number];
   readonly __wbg_wbg_rayon_poolbuilder_free: (a: number, b: number) => void;
   readonly initThreadPool: (a: number) => any;
   readonly wbg_rayon_poolbuilder_build: (a: number) => void;
+  readonly wbg_rayon_poolbuilder_mainJS: (a: number) => any;
   readonly wbg_rayon_poolbuilder_numThreads: (a: number) => number;
   readonly wbg_rayon_poolbuilder_receiver: (a: number) => number;
   readonly wbg_rayon_start_worker: (a: number) => void;

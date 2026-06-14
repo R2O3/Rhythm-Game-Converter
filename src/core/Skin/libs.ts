@@ -5,6 +5,7 @@ export const skinLibraries = createLibraries(async () => {
   
   if (typeof rgskin.default === 'function') {
       await rgskin.default();
+      await rgskin.initThreadPool(navigator.hardwareConcurrency);
   }
   
   return {

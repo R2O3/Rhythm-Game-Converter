@@ -42,6 +42,9 @@
 
   $: specificExportLabel = `.${skinType}`;
 
+  let isReady = false;
+  let initError = "";
+
   onMount(async () => {
     try {
         await skinLibraries.initialize();
@@ -52,8 +55,11 @@
         url.searchParams.set("type", "osk");
         
         replaceState(url, {}); 
-    } catch (e) {
-        console.error("Failed to initialize:", e);
+        
+        isReady = true;
+    } catch (e: any) {
+        console.error(e);
+        initError = e.message || e.toString();
     }
   });
 
@@ -169,6 +175,11 @@
         on:export={handleExport}
       >
         <svelte:fragment slot="form">
+        {#if initError}
+          <div style="padding: 2rem; text-align: center; color: #ff6b6b;">
+            <strong>Initialization Failed:</strong> {initError}
+          </div>
+        {:else if isReady}
           <FileSelector
             accept={prefixList(SUPPORTED_MANIA_SKIN_FORMATS, '.').join(", ")}
             multiple={false}
@@ -176,22 +187,27 @@
           />
           
           <fieldset>
-          <legend>Conversion Options</legend>
-          <div style="display: flex; justify-content: flex-end;">
-            <div style="display: flex; align-items: center; gap: 10px; white-space: nowrap;">
-              <p style="margin: 0; white-space: nowrap;">Convert to</p>
-              
-              <Dropdown 
-                id="SkinType" 
-                name="type" 
-                items={chartOptions} 
-                bind:value={skinType} 
-              />
-              
+            <legend>Conversion Options</legend>
+            <div style="display: flex; justify-content: flex-end;">
+              <div style="display: flex; align-items: center; gap: 10px; white-space: nowrap;">
+                <p style="margin: 0; white-space: nowrap;">Convert to</p>
+                
+                <Dropdown 
+                  id="SkinType" 
+                  name="type" 
+                  items={chartOptions} 
+                  bind:value={skinType} 
+                />
+                
+              </div>
             </div>
+          </fieldset>
+        {:else}
+          <div style="padding: 2rem; text-align: center; color: white;">
+            Initializing conversion libraries...
           </div>
-        </fieldset>
-        </svelte:fragment>
+        {/if}
+      </svelte:fragment>
 
         <svelte:fragment slot="convert-button">
           <LazerButton 

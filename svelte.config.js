@@ -1,5 +1,6 @@
 import adapter from '@sveltejs/adapter-netlify';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import path from 'path';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -7,14 +8,14 @@ const config = {
 
 	kit: {
 		adapter: adapter({
-      outDir: 'dist' 
-    }),
+			outDir: 'dist'
+		}),
 		alias: {
-      "$core": "./src/core",
-			"$shaders": "./src/shaders",
-			"$static_libs": "./src/static_libs",
-    }
-	},
+			$core: path.resolve('./src/core'),
+			$shaders: path.resolve('./src/shaders'),
+			$static_libs: path.resolve('./static/libs')
+		}
+	}
 };
 
 export default config;
