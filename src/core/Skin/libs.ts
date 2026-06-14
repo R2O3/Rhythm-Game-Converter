@@ -1,11 +1,25 @@
 import { createLibraries } from '$core/Libraries/libInitilazation';
 
+declare global {
+    var __RGSKIN_THREAD_POOL_INITED: boolean | undefined;
+}
+
 export const skinLibraries = createLibraries(async () => {
-  const rgskin = await import('$static_libs/rgskin');
-  
+  const modulePath = '/libs/rgskin/rgskin.js';
+  const rgskin = await import(/* @vite-ignore */ modulePath);
+
   if (typeof rgskin.default === 'function') {
       await rgskin.default();
-      await rgskin.initThreadPool(navigator.hardwareConcurrency);
+      
+      if (!globalThis.__RGSKIN_THREAD_POOL_INITED) {
+          try {
+              await rgskin.initThreadPool(navigator.hardwareConcurrency);
+              globalThis.__RGSKIN_THREAD_POOL_INITED = true;
+          } catch (e) {
+              console.warn("Rayon thread pool already initialized:", e);
+              globalThis.__RGSKIN_THREAD_POOL_INITED = true; 
+          }
+      }
   }
   
   return {
