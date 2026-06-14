@@ -11,7 +11,7 @@
   import LazerButton from '$lib/components/LazerButton.svelte';
   
   import { SUPPORTED_MANIA_SKIN_FORMATS } from '$lib/stores';
-  import { prefixList, formatTime } from '$lib/helpers';
+  import { prefixList, formatTime, isThreadingLimited } from '$lib/helpers';
   import { SaveAs } from '$core/structures/Files';
   import type { FileTreeNode } from '$core/Managers/FileManager';
   import { skinLibraries } from '$core/Skin/libs';
@@ -20,6 +20,8 @@
   import { processImportedFiles } from '$core/Skin/import';
   import { convertSkins } from '$core/Skin/convert';
   import { saveEntry, exportAllSkins } from '$core/Skin/export';
+
+  let shieldsBlocking = false;
 
   let selectedTab = 'mania';
   let skinType = 'osk';
@@ -42,25 +44,19 @@
 
   $: specificExportLabel = `.${skinType}`;
 
-  let isReady = false;
-  let initError = "";
-
   onMount(async () => {
     try {
-        await skinLibraries.initialize();
-        await FileManager.initFs();
-        
-        const url = new URL(window.location.href);
-        url.searchParams.set("mode", "mania");
-        url.searchParams.set("type", "osk");
-        
-        replaceState(url, {}); 
-        
-        isReady = true;
+      await skinLibraries.initialize();
+      await FileManager.initFs();
+      const url = new URL(window.location.href);
+      url.searchParams.set("mode", "mania");
+      url.searchParams.set("type", "osk");
+      replaceState(url, {});
     } catch (e: any) {
-        console.error(e);
-        initError = e.message || e.toString();
+      console.error("Failed to initialize:", e);
     }
+
+    shieldsBlocking = isThreadingLimited();
   });
 
   function handleTabChange(tabId: string) {
@@ -147,6 +143,14 @@
     <strong>Disclaimer:</strong> This is made to ease the hassle of porting skins so don't expect perfect conversion, but still open an issue on Github
     if you have suggestions or something isn't working or converted as expected.
   </div>
+
+  {#if shieldsBlocking}
+    &nbsp;
+    <div class="info">
+      <strong>For Brave Browser Users:</strong> Multi-threaded conversion might be unavailable or slower because of Brave Shields due to blocking fingerprinting. For full performance, consider disabling 'Block fingerprinting' in shields for this site.
+      We do not serve ads nor collect any user data.
+    </div>
+  {/if}
 </section>
 
 <hr />
@@ -175,11 +179,6 @@
         on:export={handleExport}
       >
         <svelte:fragment slot="form">
-        {#if initError}
-          <div style="padding: 2rem; text-align: center; color: #ff6b6b;">
-            <strong>Initialization Failed:</strong> {initError}
-          </div>
-        {:else if isReady}
           <FileSelector
             accept={prefixList(SUPPORTED_MANIA_SKIN_FORMATS, '.').join(", ")}
             multiple={false}
@@ -187,27 +186,22 @@
           />
           
           <fieldset>
-            <legend>Conversion Options</legend>
-            <div style="display: flex; justify-content: flex-end;">
-              <div style="display: flex; align-items: center; gap: 10px; white-space: nowrap;">
-                <p style="margin: 0; white-space: nowrap;">Convert to</p>
-                
-                <Dropdown 
-                  id="SkinType" 
-                  name="type" 
-                  items={chartOptions} 
-                  bind:value={skinType} 
-                />
-                
-              </div>
+          <legend>Conversion Options</legend>
+          <div style="display: flex; justify-content: flex-end;">
+            <div style="display: flex; align-items: center; gap: 10px; white-space: nowrap;">
+              <p style="margin: 0; white-space: nowrap;">Convert to</p>
+              
+              <Dropdown 
+                id="SkinType" 
+                name="type" 
+                items={chartOptions} 
+                bind:value={skinType} 
+              />
+              
             </div>
-          </fieldset>
-        {:else}
-          <div style="padding: 2rem; text-align: center; color: white;">
-            Initializing conversion libraries...
           </div>
-        {/if}
-      </svelte:fragment>
+        </fieldset>
+        </svelte:fragment>
 
         <svelte:fragment slot="convert-button">
           <LazerButton 

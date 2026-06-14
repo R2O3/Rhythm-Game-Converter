@@ -137,3 +137,7 @@ export function formatTime(milliseconds: number): string {
         return `${(milliseconds / 60000).toFixed(1)} minutes`;
     }
 }
+
+export function isThreadingLimited(): boolean {
+    return navigator.hardwareConcurrency <= 2 && (navigator as any).brave.isBrave()
+}
