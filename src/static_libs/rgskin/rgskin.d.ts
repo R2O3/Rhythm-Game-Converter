@@ -555,7 +555,6 @@ export function wbg_rayon_start_worker(receiver: number): void;
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
-  readonly memory: WebAssembly.Memory;
   readonly __wbg_binarystore_free: (a: number, b: number) => void;
   readonly __wbg_get_osukeymode_barline_height: (a: number) => number;
   readonly __wbg_get_osukeymode_column_line_width: (a: number) => [number, number];
@@ -979,10 +978,10 @@ export interface InitOutput {
   readonly allSamplesFromFiles: (a: any) => [number, number, number];
   readonly allTexturesFromFiles: (a: any) => [number, number, number];
   readonly fluXisSkinFromFiles: (a: any) => [number, number, number];
+  readonly osuIniToString: (a: number) => [number, number];
   readonly osuSkinFromFiles: (a: any) => [number, number, number];
-  readonly quaverIniToString: (a: number) => [number, number];
+  readonly osuSkinToFiles: (a: number) => [number, number, number];
   readonly quaverSkinFromFiles: (a: any) => [number, number, number];
-  readonly quaverSkinToFiles: (a: number) => [number, number, number];
   readonly samplesFromFiles: (a: any, b: any) => [number, number, number];
   readonly texturesFromFiles: (a: any, b: any) => [number, number, number];
   readonly __wbg_fluxiskeymode_free: (a: number, b: number) => void;
@@ -1101,8 +1100,6 @@ export interface InitOutput {
   readonly genericmaniaskin_getKeymode: (a: number, b: number) => number;
   readonly genericmaniaskin_getRequiredSamplePaths: (a: number) => [number, number];
   readonly genericmaniaskin_getRequiredTexturePaths: (a: number) => [number, number];
-  readonly osuIniToString: (a: number) => [number, number];
-  readonly osuSkinToFiles: (a: number) => [number, number, number];
   readonly osuskin_fromGenericMania: (a: number) => [number, number, number];
   readonly osuskin_getKeymode: (a: number, b: number) => number;
   readonly osuskin_getRequiredSamplePaths: (a: number) => [number, number];
@@ -1114,6 +1111,7 @@ export interface InitOutput {
   readonly osuskinini_getRequiredSamplePaths: (a: number) => [number, number];
   readonly osuskinini_getRequiredTexturePaths: (a: number) => [number, number];
   readonly osuskinini_new: () => number;
+  readonly osuskinini_toString: (a: number) => [number, number];
   readonly quaskin_fromGenericMania: (a: number) => [number, number, number];
   readonly quaskin_getKeymode: (a: number, b: number) => number;
   readonly quaskin_getRequiredSamplePaths: (a: number) => [number, number];
@@ -1124,13 +1122,14 @@ export interface InitOutput {
   readonly quaskinini_getKeymode: (a: number, b: number) => number;
   readonly quaskinini_new: () => number;
   readonly quaskinini_toString: (a: number) => [number, number];
+  readonly quaverSkinToFiles: (a: number) => [number, number, number];
   readonly __wbg_get_osuskin_samples: (a: number) => number;
   readonly __wbg_get_quaskin_samples: (a: number) => number;
   readonly __wbg_get_osuskin_textures: (a: number) => number;
   readonly __wbg_get_quaskin_textures: (a: number) => number;
   readonly __wbg_set_osuskin_textures: (a: number, b: number) => void;
   readonly __wbg_set_quaskin_textures: (a: number, b: number) => void;
-  readonly osuskinini_toString: (a: number) => [number, number];
+  readonly quaverIniToString: (a: number) => [number, number];
   readonly __wbg_set_osuskin_samples: (a: number, b: number) => void;
   readonly __wbg_set_quaskin_samples: (a: number, b: number) => void;
   readonly genericmaniaskin_toGenericMania: (a: number) => [number, number, number];
@@ -1141,6 +1140,7 @@ export interface InitOutput {
   readonly wbg_rayon_poolbuilder_receiver: (a: number) => number;
   readonly wbg_rayon_start_worker: (a: number) => void;
   readonly wasm_bindgen_aaa77acde99fbdb___convert__closures_____invoke___wasm_bindgen_aaa77acde99fbdb___JsValue__wasm_bindgen_aaa77acde99fbdb___JsValue_____: (a: number, b: number, c: any, d: any) => void;
+  readonly memory: WebAssembly.Memory;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
@@ -1149,7 +1149,8 @@ export interface InitOutput {
   readonly __externref_table_dealloc: (a: number) => void;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __externref_drop_slice: (a: number, b: number) => void;
-  readonly __wbindgen_start: () => void;
+  readonly __wbindgen_thread_destroy: (a?: number, b?: number, c?: number) => void;
+  readonly __wbindgen_start: (a: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
@@ -1158,18 +1159,20 @@ export type SyncInitInput = BufferSource | WebAssembly.Module;
 * Instantiates the given `module`, which can either be bytes or
 * a precompiled `WebAssembly.Module`.
 *
-* @param {{ module: SyncInitInput }} module - Passing `SyncInitInput` directly is deprecated.
+* @param {{ module: SyncInitInput, memory?: WebAssembly.Memory, thread_stack_size?: number }} module - Passing `SyncInitInput` directly is deprecated.
+* @param {WebAssembly.Memory} memory - Deprecated.
 *
 * @returns {InitOutput}
 */
-export function initSync(module: { module: SyncInitInput } | SyncInitInput): InitOutput;
+export function initSync(module: { module: SyncInitInput, memory?: WebAssembly.Memory, thread_stack_size?: number } | SyncInitInput, memory?: WebAssembly.Memory): InitOutput;
 
 /**
 * If `module_or_path` is {RequestInfo} or {URL}, makes a request and
 * for everything else, calls `WebAssembly.instantiate` directly.
 *
-* @param {{ module_or_path: InitInput | Promise<InitInput> }} module_or_path - Passing `InitInput` directly is deprecated.
+* @param {{ module_or_path: InitInput | Promise<InitInput>, memory?: WebAssembly.Memory, thread_stack_size?: number }} module_or_path - Passing `InitInput` directly is deprecated.
+* @param {WebAssembly.Memory} memory - Deprecated.
 *
 * @returns {Promise<InitOutput>}
 */
-export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput> } | InitInput | Promise<InitInput>): Promise<InitOutput>;
+export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput>, memory?: WebAssembly.Memory, thread_stack_size?: number } | InitInput | Promise<InitInput>, memory?: WebAssembly.Memory): Promise<InitOutput>;
