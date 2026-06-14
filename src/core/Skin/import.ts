@@ -126,6 +126,12 @@ async function loadSkinDirectory(filesMap: Map<string, Uint8Array>, folderPath: 
                     loadedData = rgskin.fluXisSkinFromFiles(filesMap);
                 }
                 break;
+
+            case 'qs':
+                if (rgskin.quaverSkinFromFiles) {
+                    loadedData = rgskin.quaverSkinFromFiles(filesMap);
+                }
+                break;
         }
         
         if (loadedData) {

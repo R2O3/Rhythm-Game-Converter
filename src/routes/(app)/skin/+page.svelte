@@ -35,6 +35,7 @@
   const readableNames: Record<string, string> = {
     'osk': 'osu! (.osk)',
     'fsk': 'fluXis (.fsk)',
+    'qs': 'Quaver (.qs)',
   };
 
   $: chartOptions = SUPPORTED_MANIA_SKIN_FORMATS.map(fmt => ({

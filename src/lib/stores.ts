@@ -16,7 +16,7 @@ export function getMapsetExtension(chartFormat: string): string {
     }
 }
 
-export const SUPPORTED_MANIA_SKIN_FORMATS: string[] = ['osk', 'fsk'];
+export const SUPPORTED_MANIA_SKIN_FORMATS: string[] = ['osk', 'fsk', 'qs'];
 
 export interface UserConfig {
     lightTheme: boolean;
