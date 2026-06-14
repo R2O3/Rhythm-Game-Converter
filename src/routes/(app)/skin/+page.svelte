@@ -149,6 +149,9 @@
     <div class="info">
       <strong>For Brave Browser Users:</strong> Multi-threaded conversion might be unavailable or slower because of Brave Shields due to blocking fingerprinting. For full performance, consider disabling 'Block fingerprinting' in shields for this site.
       We do not serve ads nor collect any user data.
+      <br/>
+      <br/>
+      This message only appears when thread count &#60= 2 and is using brave.
     </div>
   {/if}
 </section>
