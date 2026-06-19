@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { replaceState } from '$app/navigation';
+  import { page } from '$app/state';
+  import { goto } from '$app/navigation';
+  import { browser } from '$app/environment';
   
   import AppForm from '$lib/components/Forms/AppForm.svelte';
   import AppFormTab from '$lib/components/Forms/AppFormTab.svelte';
@@ -20,8 +22,9 @@
   import { convertMaps } from '$core/Map/convert';
   import { saveEntry, exportAllMaps } from '$core/Map/export';
 
-  let selectedTab = 'mania';
-  let chartType = 'osu';
+  let selectedTab = page.url.searchParams.get('mode') || 'mania';
+  let chartType = page.url.searchParams.get('type') || 'osu';
+  
   let explorerRef: any;
   let convertButtonDisabled = true;
   let selectedFiles: File[] = [];
@@ -43,16 +46,21 @@
 
   $: specificExportLabel = `.${getMapsetExtension(chartType)}`;
 
+  $: if (browser) {
+      updateUrl(selectedTab, chartType);
+  }
+
+  function updateUrl(tab: string, type: string) {
+    const url = new URL(page.url);
+    url.searchParams.set('mode', tab);
+    url.searchParams.set('type', type);
+    goto(url, { replaceState: true, noScroll: true, keepFocus: true });
+  }
+
   onMount(async () => {
     try {
         await mapLibraries.initialize();
         await FileManager.initFs();
-        
-        const url = new URL(window.location.href);
-        url.searchParams.set("mode", "mania");
-        url.searchParams.set("type", "osu");
-        
-        replaceState(url, {}); 
     } catch (e) {
         console.error("Failed to initialize:", e);
     }

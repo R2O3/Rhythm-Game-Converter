@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { replaceState } from '$app/navigation';
+  import { page } from '$app/state';
+  import { goto } from '$app/navigation';
+  import { browser } from '$app/environment';
   
   import AppForm from '$lib/components/Forms/AppForm.svelte';
   import AppFormTab from '$lib/components/Forms/AppFormTab.svelte';
@@ -23,8 +25,9 @@
 
   let shieldsBlocking = false;
 
-  let selectedTab = 'mania';
-  let skinType = 'osk';
+  let selectedTab = page.url.searchParams.get('mode') || 'mania';
+  let skinType = page.url.searchParams.get('type') || 'osk';
+  
   let explorerRef: any;
   let convertButtonDisabled = true;
   let selectedFiles: File[] = [];
@@ -45,14 +48,21 @@
 
   $: specificExportLabel = `.${skinType}`;
 
+  $: if (browser) {
+      updateUrl(selectedTab, skinType);
+  }
+
+  function updateUrl(tab: string, type: string) {
+    const url = new URL(page.url);
+    url.searchParams.set('mode', tab);
+    url.searchParams.set('type', type);
+    goto(url, { replaceState: true, noScroll: true, keepFocus: true });
+  }
+
   onMount(async () => {
     try {
       await skinLibraries.initialize();
       await FileManager.initFs();
-      const url = new URL(window.location.href);
-      url.searchParams.set("mode", "mania");
-      url.searchParams.set("type", "osk");
-      replaceState(url, {});
     } catch (e: any) {
       console.error("Failed to initialize:", e);
     }
