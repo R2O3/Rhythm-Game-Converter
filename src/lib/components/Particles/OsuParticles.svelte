@@ -21,7 +21,9 @@
   let spawnIntervalId: number;
   let updateColorFn: ((r: number, g: number, b: number) => void) | null = null;
   let cleanup: (() => void) | null = null;
+  
   let isInitialized: boolean = false;
+  let isInitializing: boolean = false;
   let isMounted: boolean = false;
 
   let disableParticles = $userConfig.disableParticles;
@@ -72,15 +74,25 @@
   }
 
   async function initializeParticles() {
-    if (isInitialized || !canvas || disableParticles) return;
+    if (isInitialized || isInitializing || !canvas || disableParticles) return;
+    
+    isInitializing = true;
     
     const gpu = await getSharedGPU(triangleThickness);
-    if (!gpu) return;
+    
+    if (!gpu || !canvas || !isMounted || disableParticles) {
+      isInitializing = false;
+      return;
+    }
     
     const { device, format, computePipeline, renderPipeline, triangleTexture, sampler } = gpu;
 
     const ctx = canvas.getContext('webgpu');
-    if (!ctx) return;
+    if (!ctx) {
+      isInitializing = false;
+      return;
+    }
+    
     ctx.configure({ device, format, alphaMode: 'premultiplied' });
 
     const resizeCanvas = () => {
@@ -165,7 +177,12 @@
 
     refreshColorFromCss();
 
-    spawnIntervalId = setInterval(() => {
+    spawnIntervalId = window.setInterval(() => {
+      if (!canvas) {
+        window.clearInterval(spawnIntervalId);
+        return;
+      }
+      
       if (disableParticles) return;
       if (instanceState.particleCount < maxParticlesCount) {
         const offset = instanceState.particleCount * particleStride;
@@ -185,6 +202,8 @@
     }, spawnInterval);
 
     const animate = () => {
+      if (!canvas) return;
+      
       if (disableParticles) {
         clearCanvas();
         return;
@@ -233,14 +252,16 @@
     cleanup = () => {
       window.removeEventListener('resize', resizeCanvas);
       if (animationId) cancelAnimationFrame(animationId);
-      if (spawnIntervalId) clearInterval(spawnIntervalId);
+      if (spawnIntervalId) window.clearInterval(spawnIntervalId);
       clearCanvas();
       isInitialized = false;
+      isInitializing = false;
       instanceState = {};
       updateColorFn = null;
     };
 
     isInitialized = true;
+    isInitializing = false;
   }
 
   $: if (isMounted) {
