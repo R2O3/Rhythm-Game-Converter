@@ -301,7 +301,6 @@
   }
 
   #logo-image {
-    background-color: #ffffff3f;
     padding: 0.4rem;
     border-radius: 5px;
     height: 80%;
