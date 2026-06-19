@@ -254,6 +254,8 @@
       if (animationId) cancelAnimationFrame(animationId);
       if (spawnIntervalId) window.clearInterval(spawnIntervalId);
       clearCanvas();
+      if (instanceState.particleBuffer) instanceState.particleBuffer.destroy();
+      if (instanceState.uniformBuffer) instanceState.uniformBuffer.destroy();
       isInitialized = false;
       isInitializing = false;
       instanceState = {};
