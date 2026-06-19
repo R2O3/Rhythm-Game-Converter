@@ -1503,6 +1503,19 @@ export class Keymode {
         wasm.__wbg_keymode_free(ptr, 0);
     }
     /**
+     * @returns {number}
+     */
+    get keymode() {
+        const ret = wasm.__wbg_get_keymode_keymode(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set keymode(arg0) {
+        wasm.__wbg_set_keymode_keymode(this.__wbg_ptr, arg0);
+    }
+    /**
      * @returns {string}
      */
     toStr() {
@@ -1538,19 +1551,6 @@ export class Keymode {
         var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
-    }
-    /**
-     * @returns {number}
-     */
-    get keymode() {
-        const ret = wasm.__wbg_get_keymode_keymode(this.__wbg_ptr);
-        return ret;
-    }
-    /**
-     * @param {number} arg0
-     */
-    set keymode(arg0) {
-        wasm.__wbg_set_keymode_keymode(this.__wbg_ptr, arg0);
     }
 }
 if (Symbol.dispose) Keymode.prototype[Symbol.dispose] = Keymode.prototype.free;
@@ -2542,7 +2542,7 @@ export class OsuSkin {
      * @returns {TextureStore}
      */
     get textures() {
-        const ret = wasm.__wbg_get_genericmaniaskin_textures(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_osuskin_textures(this.__wbg_ptr);
         return TextureStore.__wrap(ret);
     }
     /**
@@ -2551,13 +2551,13 @@ export class OsuSkin {
     set textures(arg0) {
         _assertClass(arg0, TextureStore);
         var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_genericmaniaskin_textures(this.__wbg_ptr, ptr0);
+        wasm.__wbg_set_osuskin_textures(this.__wbg_ptr, ptr0);
     }
     /**
      * @returns {BinaryStore}
      */
     get samples() {
-        const ret = wasm.__wbg_get_genericmaniaskin_samples(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_osuskin_samples(this.__wbg_ptr);
         return BinaryStore.__wrap(ret);
     }
     /**
@@ -2566,7 +2566,7 @@ export class OsuSkin {
     set samples(arg0) {
         _assertClass(arg0, BinaryStore);
         var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_genericmaniaskin_samples(this.__wbg_ptr, ptr0);
+        wasm.__wbg_set_osuskin_samples(this.__wbg_ptr, ptr0);
     }
     /**
      * @param {OsuSkinIni} skin_ini
@@ -4473,7 +4473,7 @@ export class RawBytes {
     set path(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_fluxislayout_name(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_rawbytes_path(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {Uint8Array | undefined}
