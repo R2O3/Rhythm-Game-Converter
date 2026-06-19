@@ -28,8 +28,8 @@
         <h3 class="section-title">Help</h3>
         <div class="title-separator"></div>
         <ul class="section-links">
-          <li><a href="/" class="footer-link">About</a></li>
-          <li><a href="/" class="footer-link">FAQ</a></li>
+          <li><a href="/#about" class="footer-link">About</a></li>
+          <li><a href="/#faq" class="footer-link">FAQ</a></li>
         </ul>
       </div>
     </div>

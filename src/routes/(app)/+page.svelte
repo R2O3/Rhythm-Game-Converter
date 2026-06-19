@@ -24,7 +24,7 @@
 </header>
 
 <section>
-  <h2>About</h2>
+  <h2 id="about">About</h2>
   <p>
     <abbr title="Rhythm Game Converter">RGC</abbr> is a web-based tool designed to make converting rhythm game maps and skins more convenient.
     While most existing map converters require downloading software,
@@ -42,7 +42,7 @@
 <hr />
 
 <section>
-  <h2>FAQ</h2>
+  <h2 id="faq">FAQ</h2>
   <ItemRevealContainer>
     <ItemReveal title="Is RGC safe?">
       <p>
